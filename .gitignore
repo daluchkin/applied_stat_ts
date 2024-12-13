@@ -1,7 +1,5 @@
 _book/
 _bookdown_files/
-_main_files/
-!docs/_main_files/
 **/*.bib_book/
 **/*.bib
 # R and Rstudio specific files
