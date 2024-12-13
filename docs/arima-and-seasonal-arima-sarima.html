@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 6 ARIMA and seasonal ARIMA (sARIMA) | Applied statistics: Time series analysis</title>
+  <meta name="description" content="Chapter 6 ARIMA and seasonal ARIMA (sARIMA) | Applied statistics: Time series analysis" />
+  <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 6 ARIMA and seasonal ARIMA (sARIMA) | Applied statistics: Time series analysis" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta name="github-repo" content="https://github.com/daluchkin/applied_stat_ts" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 6 ARIMA and seasonal ARIMA (sARIMA) | Applied statistics: Time series analysis" />
+  
+  
+  
+
+<meta name="author" content="Dmitry Luchkin" />
+
+
+<meta name="date" content="2024-12-13" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="arma-processes.html"/>
+<link rel="next" href="arima-with-predictors.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="https://www.youtube.com/@%D0%9F%D1%80%D0%B8%D0%BA%D0%BB%D0%B0%D0%B4%D0%BD%D0%B0%D1%8F%D1%81%D1%82%D0%B0%D1%82%D0%B8%D1%81%D1%82%D0%B8%D0%BA%D0%B0/playlists">Time Series Analysis</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html"><i class="fa fa-check"></i><b>1</b> Components of time series and naive models</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#what-is-time-series"><i class="fa fa-check"></i><b>1.1</b> What is time series?</a></li>
+<li class="chapter" data-level="1.2" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#time-series-components"><i class="fa fa-check"></i><b>1.2</b> Time Series Components</a></li>
+<li class="chapter" data-level="1.3" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#algorithm-stl"><i class="fa fa-check"></i><b>1.3</b> Algorithm STL</a></li>
+<li class="chapter" data-level="1.4" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#time-series-characteristics"><i class="fa fa-check"></i><b>1.4</b> Time Series Characteristics</a>
+<ul>
+<li class="chapter" data-level="" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#acf"><i class="fa fa-check"></i>ACF</a></li>
+<li class="chapter" data-level="" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#pacf"><i class="fa fa-check"></i>PACF</a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#simple-models"><i class="fa fa-check"></i><b>1.5</b> Simple Models</a>
+<ul>
+<li class="chapter" data-level="" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#white-noise"><i class="fa fa-check"></i>White Noise</a></li>
+<li class="chapter" data-level="" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#model-with-independent-observations"><i class="fa fa-check"></i>Model with independent observations</a></li>
+<li class="chapter" data-level="" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#naive-model-random-walk"><i class="fa fa-check"></i>Naive Model (Random Walk)</a></li>
+<li class="chapter" data-level="" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#seasonal-random-walk"><i class="fa fa-check"></i>Seasonal Random Walk</a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#examples"><i class="fa fa-check"></i><b>1.6</b> Examples</a>
+<ul>
+<li class="chapter" data-level="1.6.1" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#time-series-from-scratch"><i class="fa fa-check"></i><b>1.6.1</b> Time series from scratch</a></li>
+<li class="chapter" data-level="1.6.2" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#time-series-data-cleaning"><i class="fa fa-check"></i><b>1.6.2</b> Time Series data cleaning</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html"><i class="fa fa-check"></i><b>2</b> Exponential smoothing models</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#etsann-model"><i class="fa fa-check"></i><b>2.1</b> ETS(ANN) model</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#forecast"><i class="fa fa-check"></i><b>2.1.1</b> Forecast</a></li>
+<li class="chapter" data-level="2.1.2" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#example"><i class="fa fa-check"></i><b>2.1.2</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#etsaan-model"><i class="fa fa-check"></i><b>2.2</b> ETS(AAN) model</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#forecast-1"><i class="fa fa-check"></i><b>2.2.1</b> Forecast</a></li>
+<li class="chapter" data-level="2.2.2" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#example-1"><i class="fa fa-check"></i><b>2.2.2</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#etsaaa-model"><i class="fa fa-check"></i><b>2.3</b> ETS(AAA) model</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#forecast-2"><i class="fa fa-check"></i><b>2.3.1</b> Forecast</a></li>
+<li class="chapter" data-level="2.3.2" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#example-2"><i class="fa fa-check"></i><b>2.3.2</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#model-selection"><i class="fa fa-check"></i><b>2.4</b> Model selection</a>
+<ul>
+<li class="chapter" data-level="" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#mean-absolute-error"><i class="fa fa-check"></i>Mean Absolute Error</a></li>
+<li class="chapter" data-level="" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#root-mean-squared-error"><i class="fa fa-check"></i>Root Mean Squared Error</a></li>
+<li class="chapter" data-level="" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#mean-absolute-percentage-error"><i class="fa fa-check"></i>Mean Absolute Percentage Error</a></li>
+<li class="chapter" data-level="" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#symmetric-mean-absolute-percentage-error"><i class="fa fa-check"></i>Symmetric Mean Absolute Percentage Error</a></li>
+<li class="chapter" data-level="" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#mean-absolute-scaled-error"><i class="fa fa-check"></i>Mean Absolute Scaled Error</a></li>
+<li class="chapter" data-level="" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#akaike-information-criterion"><i class="fa fa-check"></i>Akaike Information Criterion</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#examples-1"><i class="fa fa-check"></i><b>2.5</b> Examples</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#model-selection-by-mse"><i class="fa fa-check"></i><b>2.5.1</b> Model selection by MSE</a></li>
+<li class="chapter" data-level="2.5.2" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#model-averaging"><i class="fa fa-check"></i><b>2.5.2</b> Model Averaging</a></li>
+<li class="chapter" data-level="2.5.3" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#cross-validation"><i class="fa fa-check"></i><b>2.5.3</b> Cross-validation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="ets-model-variations.html"><a href="ets-model-variations.html"><i class="fa fa-check"></i><b>3</b> ETS model variations</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="ets-model-variations.html"><a href="ets-model-variations.html#etsaadn-damped-trend"><i class="fa fa-check"></i><b>3.1</b> ETS(AAdN): damped trend</a>
+<ul>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#forecast-3"><i class="fa fa-check"></i>Forecast</a></li>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#example-3"><i class="fa fa-check"></i>Example</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="ets-model-variations.html"><a href="ets-model-variations.html#etsmnm-multiplicative-components"><i class="fa fa-check"></i><b>3.2</b> ETS(MNM): multiplicative components</a>
+<ul>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#parameters"><i class="fa fa-check"></i>Parameters</a></li>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#forecast-4"><i class="fa fa-check"></i>Forecast</a></li>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#example-4"><i class="fa fa-check"></i>Example</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="ets-model-variations.html"><a href="ets-model-variations.html#etsmadm-combinations"><i class="fa fa-check"></i><b>3.3</b> ETS(MAdM): combinations</a>
+<ul>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#parameters-1"><i class="fa fa-check"></i>Parameters</a></li>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#forecast-5"><i class="fa fa-check"></i>Forecast</a></li>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#example-5"><i class="fa fa-check"></i>Example</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="ets-model-variations.html"><a href="ets-model-variations.html#examples-2"><i class="fa fa-check"></i><b>3.4</b> Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="stationary-process.html"><a href="stationary-process.html"><i class="fa fa-check"></i><b>4</b> Stationary Process</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="stationary-process.html"><a href="stationary-process.html#ma-processes"><i class="fa fa-check"></i><b>4.1</b> MA processes</a></li>
+<li class="chapter" data-level="4.2" data-path="stationary-process.html"><a href="stationary-process.html#examples-3"><i class="fa fa-check"></i><b>4.2</b> Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="arma-processes.html"><a href="arma-processes.html"><i class="fa fa-check"></i><b>5</b> ARMA processes</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="arma-processes.html"><a href="arma-processes.html#ar-process"><i class="fa fa-check"></i><b>5.1</b> AR process</a></li>
+<li class="chapter" data-level="5.2" data-path="arma-processes.html"><a href="arma-processes.html#arma-process"><i class="fa fa-check"></i><b>5.2</b> ARMA process</a></li>
+<li class="chapter" data-level="5.3" data-path="arma-processes.html"><a href="arma-processes.html#examples-4"><i class="fa fa-check"></i><b>5.3</b> Examples</a></li>
+<li class="chapter" data-level="5.4" data-path="arma-processes.html"><a href="arma-processes.html#comparing-ar-ma-and-arma"><i class="fa fa-check"></i><b>5.4</b> Comparing AR, MA and ARMA</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html"><i class="fa fa-check"></i><b>6</b> ARIMA and seasonal ARIMA (sARIMA)</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#unit-root-test"><i class="fa fa-check"></i><b>6.1</b> Unit root test</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#kpss-test"><i class="fa fa-check"></i><b>6.1.1</b> KPSS test</a></li>
+<li class="chapter" data-level="6.1.2" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#adf-test"><i class="fa fa-check"></i><b>6.1.2</b> ADF test</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#seasonal-arima"><i class="fa fa-check"></i><b>6.2</b> Seasonal ARIMA</a>
+<ul>
+<li class="chapter" data-level="" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#step-1-how-many-times-should-i-apply-a-seasonal-differencing"><i class="fa fa-check"></i><strong>Step 1</strong>: How many times should I apply a seasonal differencing?</a></li>
+<li class="chapter" data-level="" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#step-2-how-many-times-should-i-apply-a-first-differencing"><i class="fa fa-check"></i><strong>Step 2</strong>: How many times should I apply a first differencing?</a></li>
+<li class="chapter" data-level="" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#step-3-apply-sarma-models-to-stationary-series."><i class="fa fa-check"></i><strong>Step 3</strong>: Apply SARMA models to stationary series.</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#automatic-arima"><i class="fa fa-check"></i><b>6.3</b> Automatic ARIMA</a></li>
+<li class="chapter" data-level="6.4" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#output2equations"><i class="fa fa-check"></i><b>6.4</b> Output2Equations</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html"><i class="fa fa-check"></i><b>7</b> ARIMA with predictors</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#how-to-make-predictors"><i class="fa fa-check"></i><b>7.1</b> How to make predictors?</a></li>
+<li class="chapter" data-level="7.2" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#using-lags"><i class="fa fa-check"></i><b>7.2</b> Using lags</a></li>
+<li class="chapter" data-level="7.3" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#using-function-of-lags"><i class="fa fa-check"></i><b>7.3</b> Using function of lags</a></li>
+<li class="chapter" data-level="7.4" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#time-predictors"><i class="fa fa-check"></i><b>7.4</b> Time predictors</a></li>
+<li class="chapter" data-level="7.5" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#trend-predictors"><i class="fa fa-check"></i><b>7.5</b> Trend predictors</a></li>
+<li class="chapter" data-level="7.6" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#seasonal-and-holidays-dummies"><i class="fa fa-check"></i><b>7.6</b> Seasonal and holidays dummies</a></li>
+<li class="chapter" data-level="7.7" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#sin-and-cos-over-time"><i class="fa fa-check"></i><b>7.7</b> Sin and Cos over time</a></li>
+<li class="chapter" data-level="7.8" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#arima-and-predictors"><i class="fa fa-check"></i><b>7.8</b> ARIMA and predictors</a>
+<ul>
+<li class="chapter" data-level="7.8.1" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#example-1-1"><i class="fa fa-check"></i><b>7.8.1</b> Example 1</a></li>
+<li class="chapter" data-level="7.8.2" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#example-2.-daily-data"><i class="fa fa-check"></i><b>7.8.2</b> Example 2. Daily data</a></li>
+<li class="chapter" data-level="7.8.3" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#example-3-1"><i class="fa fa-check"></i><b>7.8.3</b> Example 3</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html"><i class="fa fa-check"></i><b>8</b> Missing values, anomalies, structural shift</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#missing-values"><i class="fa fa-check"></i><b>8.1</b> Missing values</a>
+<ul>
+<li class="chapter" data-level="8.1.1" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#imputation-with-linear-interpolation"><i class="fa fa-check"></i><b>8.1.1</b> Imputation with linear interpolation</a></li>
+<li class="chapter" data-level="8.1.2" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#arima-imputation"><i class="fa fa-check"></i><b>8.1.2</b> ARIMA imputation</a></li>
+<li class="chapter" data-level="8.1.3" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#imputation-with-stl-decomposition"><i class="fa fa-check"></i><b>8.1.3</b> Imputation with STL decomposition</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#outliers-and-anomalies"><i class="fa fa-check"></i><b>8.2</b> Outliers and anomalies</a></li>
+<li class="chapter" data-level="8.3" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#structural-shift"><i class="fa fa-check"></i><b>8.3</b> Structural shift</a></li>
+<li class="chapter" data-level="8.4" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#bayesian-structural-model"><i class="fa fa-check"></i><b>8.4</b> Bayesian Structural Model</a></li>
+<li class="chapter" data-level="8.5" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#causal-impact"><i class="fa fa-check"></i><b>8.5</b> Causal impact</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="questions-and-answers.html"><a href="questions-and-answers.html"><i class="fa fa-check"></i><b>9</b> Questions and answers</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="questions-and-answers.html"><a href="questions-and-answers.html#multiseasonality"><i class="fa fa-check"></i><b>9.1</b> Multiseasonality</a></li>
+<li class="chapter" data-level="9.2" data-path="questions-and-answers.html"><a href="questions-and-answers.html#crostons-algorithm"><i class="fa fa-check"></i><b>9.2</b> Croston’s Algorithm</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/daluchkin?tab=repositories">All Repositories</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Applied statistics: Time series analysis</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="arima-and-seasonal-arima-sarima" class="section level1 hasAnchor" number="6">
+<h1><span class="header-section-number">Chapter 6</span> ARIMA and seasonal ARIMA (sARIMA)<a href="arima-and-seasonal-arima-sarima.html#arima-and-seasonal-arima-sarima" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="arima-and-seasonal-arima-sarima.html#cb201-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb201-2"><a href="arima-and-seasonal-arima-sarima.html#cb201-2" tabindex="-1"></a><span class="fu">library</span>(fpp3)</span>
+<span id="cb201-3"><a href="arima-and-seasonal-arima-sarima.html#cb201-3" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb201-4"><a href="arima-and-seasonal-arima-sarima.html#cb201-4" tabindex="-1"></a><span class="fu">library</span>(rio)</span>
+<span id="cb201-5"><a href="arima-and-seasonal-arima-sarima.html#cb201-5" tabindex="-1"></a><span class="fu">library</span>(urca)</span></code></pre></div>
+<blockquote>
+<p>How to choose <span class="math inline">\(ARIMA(p,0,q), ARIMA(p,1,q)\)</span> or <span class="math inline">\(ARIMA(p,2,q)\)</span>?</p>
+</blockquote>
+<ol style="list-style-type: decimal">
+<li>Looking at the plot. The variance of a stationary process is
+constant (approximately).</li>
+<li>Cross-validation</li>
+<li>Unit root test</li>
+</ol>
+<ul>
+<li>ARMA: only for stationary process</li>
+<li>ARIMA: for non-stationary process</li>
+</ul>
+<div id="unit-root-test" class="section level2 hasAnchor" number="6.1">
+<h2><span class="header-section-number">6.1</span> Unit root test<a href="arima-and-seasonal-arima-sarima.html#unit-root-test" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb202-1"><a href="arima-and-seasonal-arima-sarima.html#cb202-1" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="fu">paste0</span>(<span class="fu">getwd</span>(), <span class="st">&#39;/00_data/marriages.csv&#39;</span>))</span>
+<span id="cb202-2"><a href="arima-and-seasonal-arima-sarima.html#cb202-2" tabindex="-1"></a><span class="fu">glimpse</span>(m)</span></code></pre></div>
+<pre><code>## Rows: 24,852
+## Columns: 4
+## $ code  &lt;int64&gt; 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1…
+## $ name  &lt;chr&gt; &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Ал…
+## $ total &lt;int&gt; 953, 1007, 1311, 1554, 562, 1900, 2338, 3034, 2460, 1762, 1411, 1554, 1069, 1221, 1330, 1774, 609, 2107, 2708, 3272, 2483, 1825, 1721, 1940, 1006, …
+## $ date  &lt;IDate&gt; 2006-01-01, 2006-02-01, 2006-03-01, 2006-04-01, 2006-05-01, 2006-06-01, 2006-07-01, 2006-08-01, 2006-09-01, 2006-10-01, 2006-11-01, 2006-12-01, 2…</code></pre>
+<div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb204-1"><a href="arima-and-seasonal-arima-sarima.html#cb204-1" tabindex="-1"></a>ts_marriages <span class="ot">&lt;-</span> m <span class="sc">|&gt;</span></span>
+<span id="cb204-2"><a href="arima-and-seasonal-arima-sarima.html#cb204-2" tabindex="-1"></a>                <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">yearmonth</span>(date)) <span class="sc">|&gt;</span></span>
+<span id="cb204-3"><a href="arima-and-seasonal-arima-sarima.html#cb204-3" tabindex="-1"></a>                <span class="fu">as_tsibble</span>(<span class="at">index =</span> date, <span class="at">key =</span> <span class="fu">c</span>(<span class="st">&#39;code&#39;</span>, <span class="st">&#39;name&#39;</span>))</span>
+<span id="cb204-4"><a href="arima-and-seasonal-arima-sarima.html#cb204-4" tabindex="-1"></a><span class="fu">glimpse</span>(ts_marriages)</span></code></pre></div>
+<pre><code>## Rows: 24,852
+## Columns: 4
+## Key: code, name [109]
+## $ code  &lt;int64&gt; 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 3…
+## $ name  &lt;chr&gt; &quot;Центральный федеральный округ&quot;, &quot;Центральный федеральный округ&quot;, &quot;Центральный федеральный округ&quot;, &quot;Центральный федеральный округ&quot;, &quot;Центральный фе…
+## $ total &lt;int&gt; 14845, 16414, 15753, 21803, 9384, 29571, 35691, 39263, 40480, 24137, 21207, 19009, 15433, 17430, 13878, 29703, 10529, 31572, 41328, 42609, 41779, 2…
+## $ date  &lt;mth&gt; 2006 Jan, 2006 Feb, 2006 Mar, 2006 Apr, 2006 May, 2006 Jun, 2006 Jul, 2006 Aug, 2006 Sep, 2006 Oct, 2006 Nov, 2006 Dec, 2007 Jan, 2007 Feb, 2007 Ma…</code></pre>
+<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb206-1"><a href="arima-and-seasonal-arima-sarima.html#cb206-1" tabindex="-1"></a>rf_m <span class="ot">&lt;-</span> ts_marriages <span class="sc">|&gt;</span></span>
+<span id="cb206-2"><a href="arima-and-seasonal-arima-sarima.html#cb206-2" tabindex="-1"></a>  <span class="fu">filter</span>(code <span class="sc">==</span> <span class="dv">643</span>, <span class="sc">!</span><span class="fu">is.na</span>(total))</span></code></pre></div>
+<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="arima-and-seasonal-arima-sarima.html#cb207-1" tabindex="-1"></a>rf_m <span class="sc">|&gt;</span></span>
+<span id="cb207-2"><a href="arima-and-seasonal-arima-sarima.html#cb207-2" tabindex="-1"></a>  <span class="fu">gg_tsdisplay</span>(total)</span></code></pre></div>
+<p><img src="_main_files/figure-html/06-ARIMA-sARIMA-5-1.png" width="672" /></p>
+<div id="kpss-test" class="section level3 hasAnchor" number="6.1.1">
+<h3><span class="header-section-number">6.1.1</span> KPSS test<a href="arima-and-seasonal-arima-sarima.html#kpss-test" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb208-1"><a href="arima-and-seasonal-arima-sarima.html#cb208-1" tabindex="-1"></a>kpss_res <span class="ot">&lt;-</span> <span class="fu">ur.kpss</span>(rf_m<span class="sc">$</span>total, <span class="at">type =</span> <span class="st">&#39;mu&#39;</span>)</span>
+<span id="cb208-2"><a href="arima-and-seasonal-arima-sarima.html#cb208-2" tabindex="-1"></a></span>
+<span id="cb208-3"><a href="arima-and-seasonal-arima-sarima.html#cb208-3" tabindex="-1"></a><span class="co"># H0: ts = mu + stat (stationary)</span></span>
+<span id="cb208-4"><a href="arima-and-seasonal-arima-sarima.html#cb208-4" tabindex="-1"></a><span class="co"># Ha: ts = mu + stat + rw</span></span>
+<span id="cb208-5"><a href="arima-and-seasonal-arima-sarima.html#cb208-5" tabindex="-1"></a></span>
+<span id="cb208-6"><a href="arima-and-seasonal-arima-sarima.html#cb208-6" tabindex="-1"></a><span class="fu">summary</span>(kpss_res)</span></code></pre></div>
+<pre><code>## 
+## ####################### 
+## # KPSS Unit Root Test # 
+## ####################### 
+## 
+## Test is of type: mu with 4 lags. 
+## 
+## Value of test-statistic is: 0.7738 
+## 
+## Critical value for a significance level of: 
+##                 10pct  5pct 2.5pct  1pct
+## critical values 0.347 0.463  0.574 0.739</code></pre>
+<div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="arima-and-seasonal-arima-sarima.html#cb210-1" tabindex="-1"></a><span class="co"># =&gt; H0 is rejected =&gt; difference is needed</span></span></code></pre></div>
+</div>
+<div id="adf-test" class="section level3 hasAnchor" number="6.1.2">
+<h3><span class="header-section-number">6.1.2</span> ADF test<a href="arima-and-seasonal-arima-sarima.html#adf-test" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb211-1"><a href="arima-and-seasonal-arima-sarima.html#cb211-1" tabindex="-1"></a>adf_res <span class="ot">&lt;-</span> <span class="fu">ur.df</span>(rf_m<span class="sc">$</span>total, <span class="at">type =</span> <span class="st">&#39;drift&#39;</span>, <span class="at">selectlags =</span> <span class="st">&#39;AIC&#39;</span>)</span>
+<span id="cb211-2"><a href="arima-and-seasonal-arima-sarima.html#cb211-2" tabindex="-1"></a></span>
+<span id="cb211-3"><a href="arima-and-seasonal-arima-sarima.html#cb211-3" tabindex="-1"></a><span class="co"># H0: non-stationary process ts = ARIMA(p,1,q) + trend</span></span>
+<span id="cb211-4"><a href="arima-and-seasonal-arima-sarima.html#cb211-4" tabindex="-1"></a><span class="co"># Ha: stationary process ts = ARIMA(p,0,q) + const</span></span>
+<span id="cb211-5"><a href="arima-and-seasonal-arima-sarima.html#cb211-5" tabindex="-1"></a></span>
+<span id="cb211-6"><a href="arima-and-seasonal-arima-sarima.html#cb211-6" tabindex="-1"></a><span class="fu">summary</span>(adf_res)</span></code></pre></div>
+<pre><code>## 
+## ############################################### 
+## # Augmented Dickey-Fuller Test Unit Root Test # 
+## ############################################### 
+## 
+## Test regression drift 
+## 
+## 
+## Call:
+## lm(formula = z.diff ~ z.lag.1 + 1 + z.diff.lag)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -70353 -18928  -5031  15668  81259 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  3.599e+04  5.751e+03   6.257 2.08e-09 ***
+## z.lag.1     -3.982e-01  5.971e-02  -6.669 2.12e-10 ***
+## z.diff.lag   3.629e-02  6.802e-02   0.533    0.594    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 29190 on 216 degrees of freedom
+## Multiple R-squared:  0.1926, Adjusted R-squared:  0.1851 
+## F-statistic: 25.76 on 2 and 216 DF,  p-value: 9.271e-11
+## 
+## 
+## Value of test-statistic is: -6.6689 22.2376 
+## 
+## Critical values for test statistics: 
+##       1pct  5pct 10pct
+## tau2 -3.46 -2.88 -2.57
+## phi1  6.52  4.63  3.81</code></pre>
+<div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb213-1"><a href="arima-and-seasonal-arima-sarima.html#cb213-1" tabindex="-1"></a><span class="co"># =&gt; H0 is rejected =&gt; difference is not needed</span></span></code></pre></div>
+</div>
+</div>
+<div id="seasonal-arima" class="section level2 hasAnchor" number="6.2">
+<h2><span class="header-section-number">6.2</span> Seasonal ARIMA<a href="arima-and-seasonal-arima-sarima.html#seasonal-arima" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>How to choose: <span class="math inline">\(SARIMA(p, 0, q)(P, 0 , Q)\)</span> or
+<span class="math inline">\(SARIMA(p, 0, q)(P, 1 , Q)[12]\)</span>?</p>
+<div id="step-1-how-many-times-should-i-apply-a-seasonal-differencing" class="section level3 unnumbered hasAnchor">
+<h3><strong>Step 1</strong>: How many times should I apply a seasonal differencing?<a href="arima-and-seasonal-arima-sarima.html#step-1-how-many-times-should-i-apply-a-seasonal-differencing" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><strong>Step 1</strong>: Apply STL decomposition
+<span class="math inline">\(y_t = trend_t + season_t + remainder_t\)</span></li>
+<li><strong>Step 2</strong>: Calculate <span class="math inline">\(F_{season}\)</span>:
+<span class="math inline">\(F_{season} = max\{1 - \frac {sVar(remainder)}{sVar(season + remainder)}, 0\}\)</span></li>
+<li><strong>Step 3</strong>: If <span class="math inline">\(F_{season}\)</span> is below the threshold, then work with
+source series, otherwise, apply seasonal differencing. Repeat steps
+1-3 for seasonally differenced series and apply a second difference
+if it’s needed.</li>
+</ul>
+</div>
+<div id="step-2-how-many-times-should-i-apply-a-first-differencing" class="section level3 unnumbered hasAnchor">
+<h3><strong>Step 2</strong>: How many times should I apply a first differencing?<a href="arima-and-seasonal-arima-sarima.html#step-2-how-many-times-should-i-apply-a-first-differencing" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Apply the KPSS test with constant to the origin series:</p>
+<ul>
+<li>If <span class="math inline">\(H_0\)</span> is not rejected, then work with the origin series,
+otherwise, apply the test to the first differenced series. Repeat
+the step, if <span class="math inline">\(H_0\)</span> is rejected, then work with the second
+differenced test, otherwise, work with the first differenced series.</li>
+</ul>
+</div>
+<div id="step-3-apply-sarma-models-to-stationary-series." class="section level3 unnumbered hasAnchor">
+<h3><strong>Step 3</strong>: Apply SARMA models to stationary series.<a href="arima-and-seasonal-arima-sarima.html#step-3-apply-sarma-models-to-stationary-series." class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>Choose the best model by AIC (min.).</li>
+</ul>
+</div>
+</div>
+<div id="automatic-arima" class="section level2 hasAnchor" number="6.3">
+<h2><span class="header-section-number">6.3</span> Automatic ARIMA<a href="arima-and-seasonal-arima-sarima.html#automatic-arima" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb214"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb214-1"><a href="arima-and-seasonal-arima-sarima.html#cb214-1" tabindex="-1"></a><span class="co"># 1. Look at the plot, ACF, PACF</span></span>
+<span id="cb214-2"><a href="arima-and-seasonal-arima-sarima.html#cb214-2" tabindex="-1"></a></span>
+<span id="cb214-3"><a href="arima-and-seasonal-arima-sarima.html#cb214-3" tabindex="-1"></a>rf_m <span class="sc">|&gt;</span></span>
+<span id="cb214-4"><a href="arima-and-seasonal-arima-sarima.html#cb214-4" tabindex="-1"></a>  <span class="fu">gg_tsdisplay</span>(total, <span class="at">plot_type =</span> <span class="st">&#39;partial&#39;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/06-ARIMA-sARIMA-8-1.png" width="672" /></p>
+<p>Observations:</p>
+<ul>
+<li>ACF is sinusoidal - it is typical for seasonal series</li>
+<li>PACF: non-seasonal is exponentially decaying, but there is one
+significant seasonal lag. AR(1) p=1 for no-seasonal part, and AR(1)
+P=1 for seasonal part.</li>
+</ul>
+<div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb215-1"><a href="arima-and-seasonal-arima-sarima.html#cb215-1" tabindex="-1"></a>train <span class="ot">&lt;-</span> rf_m <span class="sc">|&gt;</span> <span class="fu">filter</span>(date <span class="sc">&lt;=</span> <span class="fu">yearmonth</span>(<span class="st">&#39;2022 May&#39;</span>))</span>
+<span id="cb215-2"><a href="arima-and-seasonal-arima-sarima.html#cb215-2" tabindex="-1"></a></span>
+<span id="cb215-3"><a href="arima-and-seasonal-arima-sarima.html#cb215-3" tabindex="-1"></a>models <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span></span>
+<span id="cb215-4"><a href="arima-and-seasonal-arima-sarima.html#cb215-4" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">snaive =</span> <span class="fu">SNAIVE</span>(total),</span>
+<span id="cb215-5"><a href="arima-and-seasonal-arima-sarima.html#cb215-5" tabindex="-1"></a>        <span class="at">theta =</span> <span class="fu">THETA</span>(total),</span>
+<span id="cb215-6"><a href="arima-and-seasonal-arima-sarima.html#cb215-6" tabindex="-1"></a>        <span class="at">auto =</span> <span class="fu">ARIMA</span>(total), <span class="co"># Khandakar-Hyndman Method</span></span>
+<span id="cb215-7"><a href="arima-and-seasonal-arima-sarima.html#cb215-7" tabindex="-1"></a>        <span class="at">sarima111_x11 =</span> <span class="fu">ARIMA</span>(total <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> <span class="fu">pdq</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>))</span>
+<span id="cb215-8"><a href="arima-and-seasonal-arima-sarima.html#cb215-8" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb216"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb216-1"><a href="arima-and-seasonal-arima-sarima.html#cb216-1" tabindex="-1"></a>models<span class="sc">$</span>auto[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> <span class="fu">report</span>()</span></code></pre></div>
+<pre><code>## Series: total 
+## Model: ARIMA(0,0,3)(0,1,1)[12] w/ drift 
+## 
+## Coefficients:
+##          ma1     ma2     ma3     sma1   constant
+##       0.1508  0.2176  0.3891  -0.7403  -1879.372
+## s.e.  0.0727  0.0646  0.0753   0.0671    518.162
+## 
+## sigma^2 estimated as 155918872:  log likelihood=-2010
+## AIC=4032   AICc=4032.47   BIC=4051.32</code></pre>
+<div class="sourceCode" id="cb218"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb218-1"><a href="arima-and-seasonal-arima-sarima.html#cb218-1" tabindex="-1"></a>models<span class="sc">$</span>sarima111_x11[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> <span class="fu">report</span>()</span></code></pre></div>
+<pre><code>## Series: total 
+## Model: ARIMA(1,1,1)(0,1,1)[12] 
+## 
+## Coefficients:
+##           ar1      ma1     sma1
+##       -0.0025  -0.8337  -0.7910
+## s.e.   0.1164   0.0933   0.0588
+## 
+## sigma^2 estimated as 168236130:  log likelihood=-2008.72
+## AIC=4025.43   AICc=4025.66   BIC=4038.29</code></pre>
+<div class="sourceCode" id="cb220"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb220-1"><a href="arima-and-seasonal-arima-sarima.html#cb220-1" tabindex="-1"></a>fc <span class="ot">&lt;-</span> models <span class="sc">|&gt;</span></span>
+<span id="cb220-2"><a href="arima-and-seasonal-arima-sarima.html#cb220-2" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb221"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb221-1"><a href="arima-and-seasonal-arima-sarima.html#cb221-1" tabindex="-1"></a>fc <span class="sc">|&gt;</span> <span class="fu">accuracy</span>(rf_m) <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>code, <span class="sc">-</span>name)</span></code></pre></div>
+<pre><code>## # A tibble: 4 × 10
+##   .model        .type     ME  RMSE   MAE    MPE  MAPE  MASE  RMSSE  ACF1
+##   &lt;chr&gt;         &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+## 1 auto          Test   -393. 1624. 1575. -0.535  1.50 0.126 0.0993  -0.5
+## 2 sarima111_x11 Test  -1092. 2870. 2654. -1.30   2.57 0.213 0.176   -0.5
+## 3 snaive        Test  -3297  3415. 3297  -3.15   3.15 0.264 0.209   -0.5
+## 4 theta         Test   1738. 4602. 4261.  1.14   3.75 0.341 0.282   -0.5</code></pre>
+<p>Using cross validation.</p>
+<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb223-1"><a href="arima-and-seasonal-arima-sarima.html#cb223-1" tabindex="-1"></a>m_slide <span class="ot">=</span> rf_m <span class="sc">|&gt;</span> <span class="fu">slide_tsibble</span>(<span class="at">.size =</span> <span class="dv">60</span>, <span class="at">.step =</span> <span class="dv">1</span>)</span>
+<span id="cb223-2"><a href="arima-and-seasonal-arima-sarima.html#cb223-2" tabindex="-1"></a></span>
+<span id="cb223-3"><a href="arima-and-seasonal-arima-sarima.html#cb223-3" tabindex="-1"></a>m_slide</span></code></pre></div>
+<pre><code>## # A tsibble: 9,720 x 5 [1M]
+## # Key:       .id, code, name [162]
+##       code name                  total     date   .id
+##    &lt;int64&gt; &lt;chr&gt;                 &lt;int&gt;    &lt;mth&gt; &lt;int&gt;
+##  1     643 Российская Федерация  55509 2006 Jan     1
+##  2     643 Российская Федерация  62449 2006 Feb     1
+##  3     643 Российская Федерация  70798 2006 Mar     1
+##  4     643 Российская Федерация  86055 2006 Apr     1
+##  5     643 Российская Федерация  35960 2006 May     1
+##  6     643 Российская Федерация 111409 2006 Jun     1
+##  7     643 Российская Федерация 127475 2006 Jul     1
+##  8     643 Российская Федерация 149120 2006 Aug     1
+##  9     643 Российская Федерация 151116 2006 Sep     1
+## 10     643 Российская Федерация  95192 2006 Oct     1
+## # ℹ 9,710 more rows</code></pre>
+<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb225-1"><a href="arima-and-seasonal-arima-sarima.html#cb225-1" tabindex="-1"></a>models_slide <span class="ot">&lt;-</span> m_slide <span class="sc">|&gt;</span></span>
+<span id="cb225-2"><a href="arima-and-seasonal-arima-sarima.html#cb225-2" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">snaive =</span> <span class="fu">SNAIVE</span>(total),</span>
+<span id="cb225-3"><a href="arima-and-seasonal-arima-sarima.html#cb225-3" tabindex="-1"></a>        <span class="at">theta =</span> <span class="fu">THETA</span>(total),</span>
+<span id="cb225-4"><a href="arima-and-seasonal-arima-sarima.html#cb225-4" tabindex="-1"></a>        <span class="at">auto =</span> <span class="fu">ARIMA</span>(total), <span class="co"># Khandakar-Hyndman Method</span></span>
+<span id="cb225-5"><a href="arima-and-seasonal-arima-sarima.html#cb225-5" tabindex="-1"></a>      )</span></code></pre></div>
+<div class="sourceCode" id="cb226"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb226-1"><a href="arima-and-seasonal-arima-sarima.html#cb226-1" tabindex="-1"></a>fc_slide <span class="ot">&lt;-</span> models_slide <span class="sc">|&gt;</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">1</span>)</span>
+<span id="cb226-2"><a href="arima-and-seasonal-arima-sarima.html#cb226-2" tabindex="-1"></a></span>
+<span id="cb226-3"><a href="arima-and-seasonal-arima-sarima.html#cb226-3" tabindex="-1"></a>fc_slide <span class="sc">|&gt;</span> <span class="fu">accuracy</span>(rf_m) <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>code, <span class="sc">-</span>name, <span class="sc">-</span>.type)</span></code></pre></div>
+<pre><code>## Warning: The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
+## 1 observation is missing at 2024 Jun</code></pre>
+<pre><code>## # A tibble: 3 × 9
+##   .model     ME   RMSE    MAE   MPE  MAPE  MASE RMSSE   ACF1
+##   &lt;chr&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+## 1 auto    -282. 14050. 11171. -2.00  15.1 0.886 0.831 0.171 
+## 2 snaive -1695. 16983. 12552. -4.82  17.2 0.996 1.00  0.368 
+## 3 theta   -679. 13538. 10579. -2.98  14.2 0.839 0.801 0.0545</code></pre>
+<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb229-1"><a href="arima-and-seasonal-arima-sarima.html#cb229-1" tabindex="-1"></a>model_agg <span class="ot">&lt;-</span> models_slide <span class="sc">|&gt;</span> </span>
+<span id="cb229-2"><a href="arima-and-seasonal-arima-sarima.html#cb229-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">av3 =</span> (auto <span class="sc">+</span> snaive <span class="sc">+</span> theta)<span class="sc">/</span><span class="dv">3</span>,</span>
+<span id="cb229-3"><a href="arima-and-seasonal-arima-sarima.html#cb229-3" tabindex="-1"></a>         <span class="at">auto_theta =</span> (auto <span class="sc">+</span> theta)<span class="sc">/</span><span class="dv">2</span>,</span>
+<span id="cb229-4"><a href="arima-and-seasonal-arima-sarima.html#cb229-4" tabindex="-1"></a>         <span class="at">snaive_theta =</span> (snaive <span class="sc">+</span> theta)<span class="sc">/</span><span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb230-1"><a href="arima-and-seasonal-arima-sarima.html#cb230-1" tabindex="-1"></a>fc_slide_agg <span class="ot">&lt;-</span> model_agg <span class="sc">|&gt;</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">1</span>)</span>
+<span id="cb230-2"><a href="arima-and-seasonal-arima-sarima.html#cb230-2" tabindex="-1"></a></span>
+<span id="cb230-3"><a href="arima-and-seasonal-arima-sarima.html#cb230-3" tabindex="-1"></a>fc_slide_agg <span class="sc">|&gt;</span> <span class="fu">accuracy</span>(rf_m) <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>code, <span class="sc">-</span>name, <span class="sc">-</span>.type)</span></code></pre></div>
+<pre><code>## Warning: The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
+## 1 observation is missing at 2024 Jun</code></pre>
+<pre><code>## # A tibble: 6 × 9
+##   .model           ME   RMSE    MAE   MPE  MAPE  MASE RMSSE   ACF1
+##   &lt;chr&gt;         &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+## 1 auto          -282. 14050. 11171. -2.00  15.1 0.886 0.831 0.171 
+## 2 auto_theta    -481. 13008. 10135. -2.49  13.8 0.804 0.769 0.0833
+## 3 av3           -885. 13233. 10178. -3.27  14.0 0.807 0.783 0.166 
+## 4 snaive       -1695. 16983. 12552. -4.82  17.2 0.996 1.00  0.368 
+## 5 snaive_theta -1187. 13438. 10183. -3.90  14.1 0.808 0.795 0.182 
+## 6 theta         -679. 13538. 10579. -2.98  14.2 0.839 0.801 0.0545</code></pre>
+</div>
+<div id="output2equations" class="section level2 hasAnchor" number="6.4">
+<h2><span class="header-section-number">6.4</span> Output2Equations<a href="arima-and-seasonal-arima-sarima.html#output2equations" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb233"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb233-1"><a href="arima-and-seasonal-arima-sarima.html#cb233-1" tabindex="-1"></a>train <span class="sc">|&gt;</span></span>
+<span id="cb233-2"><a href="arima-and-seasonal-arima-sarima.html#cb233-2" tabindex="-1"></a>  <span class="fu">model</span>(<span class="fu">ARIMA</span>(total <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb233-3"><a href="arima-and-seasonal-arima-sarima.html#cb233-3" tabindex="-1"></a>  <span class="fu">report</span>()</span></code></pre></div>
+<pre><code>## Series: total 
+## Model: ARIMA(2,1,1)(1,1,1)[12] 
+## 
+## Coefficients:
+##           ar1      ar2     ma1    sar1     sma1
+##       -0.9743  -0.5254  0.2502  0.0343  -0.7840
+## s.e.   0.1423   0.0855  0.1680  0.0969   0.0723
+## 
+## sigma^2 estimated as 166440821:  log likelihood=-2005.93
+## AIC=4023.86   AICc=4024.33   BIC=4043.15</code></pre>
+<p>Interpretation:</p>
+<ul>
+<li>ARIMA(2,1,1)(1,1,1)[12]: (2,1,1) - non-seasonal part, (1,1,1) -
+seasonal part:
+<ul>
+<li>AR part:
+<ul>
+<li>ARIMA(2,<strong>1</strong>,1)(1,1,1) - one non-seasonal lag, <span class="math inline">\(d=1\)</span>:
+<span class="math inline">\((1 - L)\)</span></li>
+<li>ARIMA(2,1,1)(1,<strong>1</strong>,1) - on seasonal lag, <span class="math inline">\(D=1\)</span>:
+<span class="math inline">\((1 - L^{12})\)</span></li>
+<li>ARIMA(<strong>2</strong>,1,1)(1,1,1) - AR non-seasonal part, <span class="math inline">\(p=2\)</span>, two
+non-seasonal AR params: <span class="math inline">\(ar1 = -0.9743\)</span>, <span class="math inline">\(ar2 = -0.5254\)</span>:
+<span class="math inline">\((1 - (-0.9743) \cdot L - (-0.5254)\cdot L^2)\)</span></li>
+<li>ARIMA(2,1,1)(<strong>1</strong>,1,1) - AR seasonal part, <span class="math inline">\(p=1\)</span>, one
+seasonal AR param: <span class="math inline">\(sar1 = 0.0343\)</span>:
+<span class="math inline">\((1 - (0.0343) \cdot L^{12})\)</span></li>
+<li><strong>AR summary</strong>:
+<span class="math inline">\((1 - L) \cdot (1 - L^{12}) \cdot (1 - (-0.9743) \cdot L - (-0.5254)\cdot L^2) \cdot (1 - (0.0343) \cdot L^{12}) \cdot y_t\)</span></li>
+</ul></li>
+<li>MA part:
+<ul>
+<li>ARIMA(2,1,<strong>1</strong>)(1,1,1) - one non-seasonal lag, <span class="math inline">\(q=1\)</span>,
+<span class="math inline">\(ma1 = 0.2502\)</span>: <span class="math inline">\((1 + 0.2502 \cdot L)\)</span></li>
+<li>ARIMA(2,1,1)(1,1,<strong>1</strong>) - one seasonal lag, <span class="math inline">\(Q=1\)</span>,
+<span class="math inline">\(sma1 = -0.7840\)</span>: <span class="math inline">\((1 - 0.7840 \cdot L^{12})\)</span></li>
+<li><strong>MA summary</strong>:
+<span class="math inline">\((1 + 0.2502 \cdot L) \cdot (1 - 0.7840 \cdot L^{12}) \cdot u_t\)</span>,
+where <span class="math inline">\(u_t\)</span> is white noise.</li>
+</ul></li>
+</ul></li>
+</ul>
+<p>The equation: <span class="math display">\[
+(1 - L) \cdot (1 - L^{12}) \cdot (1 - (-0.9743) \cdot L - (-0.5254)\cdot L^2) \cdot (1 - (0.0343) \cdot L^{12}) \cdot y_t = \\(1 + 0.2502 \cdot L) \cdot (1 - 0.7840 \cdot L^{12}) \cdot u_t
+\]</span></p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="arma-processes.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="arima-with-predictors.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": null,
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "lunr",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+},
+"toolbar": {
+"position": "fixed"
+},
+"info": false
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 1 Components of time series and naive models | Applied statistics: Time series analysis</title>
+  <meta name="description" content="Chapter 1 Components of time series and naive models | Applied statistics: Time series analysis" />
+  <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 1 Components of time series and naive models | Applied statistics: Time series analysis" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta name="github-repo" content="https://github.com/daluchkin/applied_stat_ts" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 1 Components of time series and naive models | Applied statistics: Time series analysis" />
+  
+  
+  
+
+<meta name="author" content="Dmitry Luchkin" />
+
+
+<meta name="date" content="2024-12-13" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="exponential-smoothing-models.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="https://www.youtube.com/@%D0%9F%D1%80%D0%B8%D0%BA%D0%BB%D0%B0%D0%B4%D0%BD%D0%B0%D1%8F%D1%81%D1%82%D0%B0%D1%82%D0%B8%D1%81%D1%82%D0%B8%D0%BA%D0%B0/playlists">Time Series Analysis</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html"><i class="fa fa-check"></i><b>1</b> Components of time series and naive models</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#what-is-time-series"><i class="fa fa-check"></i><b>1.1</b> What is time series?</a></li>
+<li class="chapter" data-level="1.2" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#time-series-components"><i class="fa fa-check"></i><b>1.2</b> Time Series Components</a></li>
+<li class="chapter" data-level="1.3" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#algorithm-stl"><i class="fa fa-check"></i><b>1.3</b> Algorithm STL</a></li>
+<li class="chapter" data-level="1.4" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#time-series-characteristics"><i class="fa fa-check"></i><b>1.4</b> Time Series Characteristics</a>
+<ul>
+<li class="chapter" data-level="" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#acf"><i class="fa fa-check"></i>ACF</a></li>
+<li class="chapter" data-level="" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#pacf"><i class="fa fa-check"></i>PACF</a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#simple-models"><i class="fa fa-check"></i><b>1.5</b> Simple Models</a>
+<ul>
+<li class="chapter" data-level="" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#white-noise"><i class="fa fa-check"></i>White Noise</a></li>
+<li class="chapter" data-level="" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#model-with-independent-observations"><i class="fa fa-check"></i>Model with independent observations</a></li>
+<li class="chapter" data-level="" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#naive-model-random-walk"><i class="fa fa-check"></i>Naive Model (Random Walk)</a></li>
+<li class="chapter" data-level="" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#seasonal-random-walk"><i class="fa fa-check"></i>Seasonal Random Walk</a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#examples"><i class="fa fa-check"></i><b>1.6</b> Examples</a>
+<ul>
+<li class="chapter" data-level="1.6.1" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#time-series-from-scratch"><i class="fa fa-check"></i><b>1.6.1</b> Time series from scratch</a></li>
+<li class="chapter" data-level="1.6.2" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#time-series-data-cleaning"><i class="fa fa-check"></i><b>1.6.2</b> Time Series data cleaning</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html"><i class="fa fa-check"></i><b>2</b> Exponential smoothing models</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#etsann-model"><i class="fa fa-check"></i><b>2.1</b> ETS(ANN) model</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#forecast"><i class="fa fa-check"></i><b>2.1.1</b> Forecast</a></li>
+<li class="chapter" data-level="2.1.2" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#example"><i class="fa fa-check"></i><b>2.1.2</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#etsaan-model"><i class="fa fa-check"></i><b>2.2</b> ETS(AAN) model</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#forecast-1"><i class="fa fa-check"></i><b>2.2.1</b> Forecast</a></li>
+<li class="chapter" data-level="2.2.2" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#example-1"><i class="fa fa-check"></i><b>2.2.2</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#etsaaa-model"><i class="fa fa-check"></i><b>2.3</b> ETS(AAA) model</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#forecast-2"><i class="fa fa-check"></i><b>2.3.1</b> Forecast</a></li>
+<li class="chapter" data-level="2.3.2" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#example-2"><i class="fa fa-check"></i><b>2.3.2</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#model-selection"><i class="fa fa-check"></i><b>2.4</b> Model selection</a>
+<ul>
+<li class="chapter" data-level="" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#mean-absolute-error"><i class="fa fa-check"></i>Mean Absolute Error</a></li>
+<li class="chapter" data-level="" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#root-mean-squared-error"><i class="fa fa-check"></i>Root Mean Squared Error</a></li>
+<li class="chapter" data-level="" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#mean-absolute-percentage-error"><i class="fa fa-check"></i>Mean Absolute Percentage Error</a></li>
+<li class="chapter" data-level="" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#symmetric-mean-absolute-percentage-error"><i class="fa fa-check"></i>Symmetric Mean Absolute Percentage Error</a></li>
+<li class="chapter" data-level="" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#mean-absolute-scaled-error"><i class="fa fa-check"></i>Mean Absolute Scaled Error</a></li>
+<li class="chapter" data-level="" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#akaike-information-criterion"><i class="fa fa-check"></i>Akaike Information Criterion</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#examples-1"><i class="fa fa-check"></i><b>2.5</b> Examples</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#model-selection-by-mse"><i class="fa fa-check"></i><b>2.5.1</b> Model selection by MSE</a></li>
+<li class="chapter" data-level="2.5.2" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#model-averaging"><i class="fa fa-check"></i><b>2.5.2</b> Model Averaging</a></li>
+<li class="chapter" data-level="2.5.3" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#cross-validation"><i class="fa fa-check"></i><b>2.5.3</b> Cross-validation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="ets-model-variations.html"><a href="ets-model-variations.html"><i class="fa fa-check"></i><b>3</b> ETS model variations</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="ets-model-variations.html"><a href="ets-model-variations.html#etsaadn-damped-trend"><i class="fa fa-check"></i><b>3.1</b> ETS(AAdN): damped trend</a>
+<ul>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#forecast-3"><i class="fa fa-check"></i>Forecast</a></li>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#example-3"><i class="fa fa-check"></i>Example</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="ets-model-variations.html"><a href="ets-model-variations.html#etsmnm-multiplicative-components"><i class="fa fa-check"></i><b>3.2</b> ETS(MNM): multiplicative components</a>
+<ul>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#parameters"><i class="fa fa-check"></i>Parameters</a></li>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#forecast-4"><i class="fa fa-check"></i>Forecast</a></li>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#example-4"><i class="fa fa-check"></i>Example</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="ets-model-variations.html"><a href="ets-model-variations.html#etsmadm-combinations"><i class="fa fa-check"></i><b>3.3</b> ETS(MAdM): combinations</a>
+<ul>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#parameters-1"><i class="fa fa-check"></i>Parameters</a></li>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#forecast-5"><i class="fa fa-check"></i>Forecast</a></li>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#example-5"><i class="fa fa-check"></i>Example</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="ets-model-variations.html"><a href="ets-model-variations.html#examples-2"><i class="fa fa-check"></i><b>3.4</b> Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="stationary-process.html"><a href="stationary-process.html"><i class="fa fa-check"></i><b>4</b> Stationary Process</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="stationary-process.html"><a href="stationary-process.html#ma-processes"><i class="fa fa-check"></i><b>4.1</b> MA processes</a></li>
+<li class="chapter" data-level="4.2" data-path="stationary-process.html"><a href="stationary-process.html#examples-3"><i class="fa fa-check"></i><b>4.2</b> Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="arma-processes.html"><a href="arma-processes.html"><i class="fa fa-check"></i><b>5</b> ARMA processes</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="arma-processes.html"><a href="arma-processes.html#ar-process"><i class="fa fa-check"></i><b>5.1</b> AR process</a></li>
+<li class="chapter" data-level="5.2" data-path="arma-processes.html"><a href="arma-processes.html#arma-process"><i class="fa fa-check"></i><b>5.2</b> ARMA process</a></li>
+<li class="chapter" data-level="5.3" data-path="arma-processes.html"><a href="arma-processes.html#examples-4"><i class="fa fa-check"></i><b>5.3</b> Examples</a></li>
+<li class="chapter" data-level="5.4" data-path="arma-processes.html"><a href="arma-processes.html#comparing-ar-ma-and-arma"><i class="fa fa-check"></i><b>5.4</b> Comparing AR, MA and ARMA</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html"><i class="fa fa-check"></i><b>6</b> ARIMA and seasonal ARIMA (sARIMA)</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#unit-root-test"><i class="fa fa-check"></i><b>6.1</b> Unit root test</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#kpss-test"><i class="fa fa-check"></i><b>6.1.1</b> KPSS test</a></li>
+<li class="chapter" data-level="6.1.2" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#adf-test"><i class="fa fa-check"></i><b>6.1.2</b> ADF test</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#seasonal-arima"><i class="fa fa-check"></i><b>6.2</b> Seasonal ARIMA</a>
+<ul>
+<li class="chapter" data-level="" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#step-1-how-many-times-should-i-apply-a-seasonal-differencing"><i class="fa fa-check"></i><strong>Step 1</strong>: How many times should I apply a seasonal differencing?</a></li>
+<li class="chapter" data-level="" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#step-2-how-many-times-should-i-apply-a-first-differencing"><i class="fa fa-check"></i><strong>Step 2</strong>: How many times should I apply a first differencing?</a></li>
+<li class="chapter" data-level="" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#step-3-apply-sarma-models-to-stationary-series."><i class="fa fa-check"></i><strong>Step 3</strong>: Apply SARMA models to stationary series.</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#automatic-arima"><i class="fa fa-check"></i><b>6.3</b> Automatic ARIMA</a></li>
+<li class="chapter" data-level="6.4" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#output2equations"><i class="fa fa-check"></i><b>6.4</b> Output2Equations</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html"><i class="fa fa-check"></i><b>7</b> ARIMA with predictors</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#how-to-make-predictors"><i class="fa fa-check"></i><b>7.1</b> How to make predictors?</a></li>
+<li class="chapter" data-level="7.2" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#using-lags"><i class="fa fa-check"></i><b>7.2</b> Using lags</a></li>
+<li class="chapter" data-level="7.3" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#using-function-of-lags"><i class="fa fa-check"></i><b>7.3</b> Using function of lags</a></li>
+<li class="chapter" data-level="7.4" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#time-predictors"><i class="fa fa-check"></i><b>7.4</b> Time predictors</a></li>
+<li class="chapter" data-level="7.5" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#trend-predictors"><i class="fa fa-check"></i><b>7.5</b> Trend predictors</a></li>
+<li class="chapter" data-level="7.6" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#seasonal-and-holidays-dummies"><i class="fa fa-check"></i><b>7.6</b> Seasonal and holidays dummies</a></li>
+<li class="chapter" data-level="7.7" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#sin-and-cos-over-time"><i class="fa fa-check"></i><b>7.7</b> Sin and Cos over time</a></li>
+<li class="chapter" data-level="7.8" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#arima-and-predictors"><i class="fa fa-check"></i><b>7.8</b> ARIMA and predictors</a>
+<ul>
+<li class="chapter" data-level="7.8.1" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#example-1-1"><i class="fa fa-check"></i><b>7.8.1</b> Example 1</a></li>
+<li class="chapter" data-level="7.8.2" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#example-2.-daily-data"><i class="fa fa-check"></i><b>7.8.2</b> Example 2. Daily data</a></li>
+<li class="chapter" data-level="7.8.3" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#example-3-1"><i class="fa fa-check"></i><b>7.8.3</b> Example 3</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html"><i class="fa fa-check"></i><b>8</b> Missing values, anomalies, structural shift</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#missing-values"><i class="fa fa-check"></i><b>8.1</b> Missing values</a>
+<ul>
+<li class="chapter" data-level="8.1.1" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#imputation-with-linear-interpolation"><i class="fa fa-check"></i><b>8.1.1</b> Imputation with linear interpolation</a></li>
+<li class="chapter" data-level="8.1.2" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#arima-imputation"><i class="fa fa-check"></i><b>8.1.2</b> ARIMA imputation</a></li>
+<li class="chapter" data-level="8.1.3" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#imputation-with-stl-decomposition"><i class="fa fa-check"></i><b>8.1.3</b> Imputation with STL decomposition</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#outliers-and-anomalies"><i class="fa fa-check"></i><b>8.2</b> Outliers and anomalies</a></li>
+<li class="chapter" data-level="8.3" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#structural-shift"><i class="fa fa-check"></i><b>8.3</b> Structural shift</a></li>
+<li class="chapter" data-level="8.4" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#bayesian-structural-model"><i class="fa fa-check"></i><b>8.4</b> Bayesian Structural Model</a></li>
+<li class="chapter" data-level="8.5" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#causal-impact"><i class="fa fa-check"></i><b>8.5</b> Causal impact</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="questions-and-answers.html"><a href="questions-and-answers.html"><i class="fa fa-check"></i><b>9</b> Questions and answers</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="questions-and-answers.html"><a href="questions-and-answers.html#multiseasonality"><i class="fa fa-check"></i><b>9.1</b> Multiseasonality</a></li>
+<li class="chapter" data-level="9.2" data-path="questions-and-answers.html"><a href="questions-and-answers.html#crostons-algorithm"><i class="fa fa-check"></i><b>9.2</b> Croston’s Algorithm</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/daluchkin?tab=repositories">All Repositories</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Applied statistics: Time series analysis</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="components-of-time-series-and-naive-models" class="section level1 hasAnchor" number="1">
+<h1><span class="header-section-number">Chapter 1</span> Components of time series and naive models<a href="components-of-time-series-and-naive-models.html#components-of-time-series-and-naive-models" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="what-is-time-series" class="section level2 hasAnchor" number="1.1">
+<h2><span class="header-section-number">1.1</span> What is time series?<a href="components-of-time-series-and-naive-models.html#what-is-time-series" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>A time series is a sequence of observations or random variables ordered by time.</p>
+</div>
+<div id="time-series-components" class="section level2 hasAnchor" number="1.2">
+<h2><span class="header-section-number">1.2</span> Time Series Components<a href="components-of-time-series-and-naive-models.html#time-series-components" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li>Trend, cyclicity, seasonality</li>
+<li>Additive and multiplicative decomposition</li>
+</ul>
+<p>The <strong>additive</strong> decomposition of a time series is represented as:</p>
+<p><span class="math display">\[Y_t = T_t + S_t + R_t\]</span></p>
+<p>where:</p>
+<ul>
+<li><span class="math inline">\(Y_t\)</span> is the observed value at time <span class="math inline">\(t\)</span>,<br />
+</li>
+<li><span class="math inline">\(T_t\)</span> is the trend component,<br />
+</li>
+<li><span class="math inline">\(S_t\)</span> is the seasonal component,<br />
+</li>
+<li><span class="math inline">\(R_t\)</span> is the residual (or random) component.</li>
+</ul>
+<p><strong>Trend</strong> is a smoothly changing component of a time series.</p>
+<p><strong>Seasonality</strong> is a strong periodic component with stable intensity.</p>
+<p>The <strong>multiplicative</strong> decomposition of a time series is represented as:</p>
+<p><span class="math display">\[Y_t = T_t \times S_t \times R_t\]</span></p>
+<p>where:<br />
+- <span class="math inline">\(Y_t\)</span> is the observed value at time <span class="math inline">\(t\)</span>,<br />
+- <span class="math inline">\(T_t\)</span> is the trend component,<br />
+- <span class="math inline">\(S_t\)</span> is the seasonal component,<br />
+- <span class="math inline">\(R_t\)</span> is the residual (or random) component.</p>
+<p>Transform additive to multiplicative:</p>
+<p><span class="math display">\[ln(Y_t) = ln(T_t \times S_t \times R_t) = ln(T_t) + ln(S_t) + ln(R_t)\]</span></p>
+</div>
+<div id="algorithm-stl" class="section level2 hasAnchor" number="1.3">
+<h2><span class="header-section-number">1.3</span> Algorithm STL<a href="components-of-time-series-and-naive-models.html#algorithm-stl" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>STL - Seasonal Trend Decomposition with Loess.</p>
+<p>Loess - local linear regression.</p>
+</div>
+<div id="time-series-characteristics" class="section level2 hasAnchor" number="1.4">
+<h2><span class="header-section-number">1.4</span> Time Series Characteristics<a href="components-of-time-series-and-naive-models.html#time-series-characteristics" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="acf" class="section level3 unnumbered hasAnchor">
+<h3>ACF<a href="components-of-time-series-and-naive-models.html#acf" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><span class="math inline">\(\hat{y}_t = \hat{\beta}_1 + \hat{\beta}_2 y_{t-1}, ACF_1 = \hat{\beta}_2\)</span></p>
+<p><span class="math inline">\(\hat{y}_t = \hat{\beta}_1 + \hat{\beta}_2 y_{t-1}, ACF_2 = \hat{\beta}_2\)</span></p>
+<p><span class="math inline">\(\hat{y}_t = \hat{\beta}_1 + \hat{\beta}_2 y_{t-k}, ACF_k = \hat{\beta}_2\)</span></p>
+<p><span class="math inline">\(ACF_k\)</span> is a sample correlation between <span class="math inline">\(y_t\)</span> and <span class="math inline">\(y_{t-k}\)</span></p>
+</div>
+<div id="pacf" class="section level3 unnumbered hasAnchor">
+<h3>PACF<a href="components-of-time-series-and-naive-models.html#pacf" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><span class="math inline">\(\hat{y}_t = \hat{\alpha} + \hat{\beta}_1y_{t-1}, PACF_1 = \hat{\beta}_1\)</span></p>
+<p><span class="math inline">\(\hat{y}_t = \hat{\alpha} + \hat{\beta}_1 y_{t-1} + \hat{\beta}_2 y_{t-2}, PACF_2 = \hat{\beta}_2\)</span></p>
+<p><span class="math inline">\(\hat{y}_t = \hat{\alpha} + \hat{\beta}_1 y_{t-1} + ... + \hat{\beta}_k y_{t-k}, PACF_k = \hat{\beta}_k\)</span></p>
+</div>
+</div>
+<div id="simple-models" class="section level2 hasAnchor" number="1.5">
+<h2><span class="header-section-number">1.5</span> Simple Models<a href="components-of-time-series-and-naive-models.html#simple-models" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="white-noise" class="section level3 unnumbered hasAnchor">
+<h3>White Noise<a href="components-of-time-series-and-naive-models.html#white-noise" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Time series <span class="math inline">\(u_t\)</span> is a white noise, if:</p>
+<ul>
+<li><span class="math inline">\(\mathbb{E}(u_t) = 0\)</span></li>
+<li><span class="math inline">\(Var(u_t) = \sigma^2\)</span></li>
+<li><span class="math inline">\(Cov(u_s, u_t) = 0, s \neq t\)</span></li>
+</ul>
+<blockquote>
+<p>White noise is a part of <strong>each</strong> statistical model.</p>
+</blockquote>
+</div>
+<div id="model-with-independent-observations" class="section level3 unnumbered hasAnchor">
+<h3>Model with independent observations<a href="components-of-time-series-and-naive-models.html#model-with-independent-observations" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><span class="math inline">\(y_t = \mu + u_t\)</span>, where <span class="math inline">\(u_t\)</span> - white noise, <span class="math inline">\(u_t \sim \mathcal{N}(0, \sigma^2)\)</span></p>
+</div>
+<div id="naive-model-random-walk" class="section level3 unnumbered hasAnchor">
+<h3>Naive Model (Random Walk)<a href="components-of-time-series-and-naive-models.html#naive-model-random-walk" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><span class="math inline">\(y_t = y_{t-1} + u_t\)</span>, where <span class="math inline">\(u_t\)</span> - white noise, <span class="math inline">\(u_t \sim \mathcal{N}(0, \sigma^2)\)</span>, <span class="math inline">\(y_1\)</span> is known.</p>
+</div>
+<div id="seasonal-random-walk" class="section level3 unnumbered hasAnchor">
+<h3>Seasonal Random Walk<a href="components-of-time-series-and-naive-models.html#seasonal-random-walk" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><span class="math inline">\(y_t = y_{t-12} + u_t\)</span>, where <span class="math inline">\(u_t\)</span> - white noise, <span class="math inline">\(u_t \sim \mathcal{N}(0, \sigma^2)\)</span>, <span class="math inline">\(y_1, ..., y_{11}\)</span> are known.</p>
+</div>
+</div>
+<div id="examples" class="section level2 hasAnchor" number="1.6">
+<h2><span class="header-section-number">1.6</span> Examples<a href="components-of-time-series-and-naive-models.html#examples" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="time-series-from-scratch" class="section level3 hasAnchor" number="1.6.1">
+<h3><span class="header-section-number">1.6.1</span> Time series from scratch<a href="components-of-time-series-and-naive-models.html#time-series-from-scratch" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Load libraries.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="components-of-time-series-and-naive-models.html#cb1-1" tabindex="-1"></a><span class="co"># loading libraries</span></span>
+<span id="cb1-2"><a href="components-of-time-series-and-naive-models.html#cb1-2" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="components-of-time-series-and-naive-models.html#cb1-3" tabindex="-1"></a><span class="fu">library</span>(fpp3)</span></code></pre></div>
+<p>Create time series from scratch.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="components-of-time-series-and-naive-models.html#cb2-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">777</span>)</span>
+<span id="cb2-2"><a href="components-of-time-series-and-naive-models.html#cb2-2" tabindex="-1"></a>n_obs <span class="ot">&lt;-</span> <span class="dv">120</span></span>
+<span id="cb2-3"><a href="components-of-time-series-and-naive-models.html#cb2-3" tabindex="-1"></a>two <span class="ot">&lt;-</span> <span class="fu">tsibble</span>(<span class="at">date =</span> <span class="fu">yearmonth</span>(<span class="fu">ymd</span>(<span class="st">&#39;2010-01-01&#39;</span>) <span class="sc">+</span> <span class="fu">months</span>(<span class="dv">0</span><span class="sc">:</span> (n_obs <span class="sc">-</span> <span class="dv">1</span>))),</span>
+<span id="cb2-4"><a href="components-of-time-series-and-naive-models.html#cb2-4" tabindex="-1"></a>               <span class="at">iid =</span> <span class="fu">rnorm</span>(n_obs, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">4</span>),</span>
+<span id="cb2-5"><a href="components-of-time-series-and-naive-models.html#cb2-5" tabindex="-1"></a>               <span class="at">rwalk =</span> <span class="dv">10</span> <span class="sc">+</span> <span class="fu">cumsum</span>(<span class="fu">rnorm</span>(n_obs, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)),</span>
+<span id="cb2-6"><a href="components-of-time-series-and-naive-models.html#cb2-6" tabindex="-1"></a>               <span class="at">index =</span> date)</span>
+<span id="cb2-7"><a href="components-of-time-series-and-naive-models.html#cb2-7" tabindex="-1"></a>two</span></code></pre></div>
+<pre><code>## # A tsibble: 120 x 3 [1M]
+##        date   iid rwalk
+##       &lt;mth&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 2010 Jan 12.0  10.3 
+##  2 2010 Feb  8.41  9.33
+##  3 2010 Mar 12.0   8.19
+##  4 2010 Apr  8.40  8.03
+##  5 2010 May 16.6   7.31
+##  6 2010 Jun 12.5   7.99
+##  7 2010 Jul 10.8   8.50
+##  8 2010 Aug 14.4   9.33
+##  9 2010 Sep  9.18 10.8 
+## 10 2010 Oct  8.48 12.4 
+## # ℹ 110 more rows</code></pre>
+<p>Have a look at the data.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="components-of-time-series-and-naive-models.html#cb4-1" tabindex="-1"></a>two <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="components-of-time-series-and-naive-models.html#cb4-2" tabindex="-1"></a>  <span class="fu">autoplot</span>(iid) <span class="sc">+</span></span>
+<span id="cb4-3"><a href="components-of-time-series-and-naive-models.html#cb4-3" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&#39;Date&#39;</span>) <span class="sc">+</span></span>
+<span id="cb4-4"><a href="components-of-time-series-and-naive-models.html#cb4-4" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&#39;IID&#39;</span>) <span class="sc">+</span></span>
+<span id="cb4-5"><a href="components-of-time-series-and-naive-models.html#cb4-5" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&#39;Independent observations&#39;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/01-time-series-components-3-1.png" width="672" /></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="components-of-time-series-and-naive-models.html#cb5-1" tabindex="-1"></a>two <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="components-of-time-series-and-naive-models.html#cb5-2" tabindex="-1"></a>  <span class="fu">autoplot</span>(rwalk) <span class="sc">+</span></span>
+<span id="cb5-3"><a href="components-of-time-series-and-naive-models.html#cb5-3" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&#39;Date&#39;</span>) <span class="sc">+</span></span>
+<span id="cb5-4"><a href="components-of-time-series-and-naive-models.html#cb5-4" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&#39;rwalk&#39;</span>) <span class="sc">+</span></span>
+<span id="cb5-5"><a href="components-of-time-series-and-naive-models.html#cb5-5" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&#39;Random walk&#39;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/01-time-series-components-4-1.png" width="672" /></p>
+<p>Seasonal plots.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="components-of-time-series-and-naive-models.html#cb6-1" tabindex="-1"></a>two <span class="sc">|&gt;</span> </span>
+<span id="cb6-2"><a href="components-of-time-series-and-naive-models.html#cb6-2" tabindex="-1"></a>  <span class="fu">gg_season</span>(rwalk)</span></code></pre></div>
+<p><img src="_main_files/figure-html/01-time-series-components-5-1.png" width="672" /></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="components-of-time-series-and-naive-models.html#cb7-1" tabindex="-1"></a>two <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="components-of-time-series-and-naive-models.html#cb7-2" tabindex="-1"></a>  <span class="fu">gg_subseries</span>(rwalk)</span></code></pre></div>
+<p><img src="_main_files/figure-html/01-time-series-components-6-1.png" width="672" /></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="components-of-time-series-and-naive-models.html#cb8-1" tabindex="-1"></a><span class="co"># random walk</span></span>
+<span id="cb8-2"><a href="components-of-time-series-and-naive-models.html#cb8-2" tabindex="-1"></a>two <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="components-of-time-series-and-naive-models.html#cb8-3" tabindex="-1"></a>  <span class="fu">gg_lag</span>(rwalk)</span></code></pre></div>
+<p><img src="_main_files/figure-html/01-time-series-components-7-1.png" width="672" /></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="components-of-time-series-and-naive-models.html#cb9-1" tabindex="-1"></a><span class="co"># independent observations</span></span>
+<span id="cb9-2"><a href="components-of-time-series-and-naive-models.html#cb9-2" tabindex="-1"></a>two <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="components-of-time-series-and-naive-models.html#cb9-3" tabindex="-1"></a>  <span class="fu">gg_lag</span>(iid)</span></code></pre></div>
+<p><img src="_main_files/figure-html/01-time-series-components-8-1.png" width="672" /></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="components-of-time-series-and-naive-models.html#cb10-1" tabindex="-1"></a>two <span class="sc">|&gt;</span> <span class="fu">gg_tsdisplay</span>(rwalk, <span class="at">plot_type =</span> <span class="st">&#39;season&#39;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/01-time-series-components-9-1.png" width="672" /></p>
+</div>
+<div id="time-series-data-cleaning" class="section level3 hasAnchor" number="1.6.2">
+<h3><span class="header-section-number">1.6.2</span> Time Series data cleaning<a href="components-of-time-series-and-naive-models.html#time-series-data-cleaning" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ol style="list-style-type: decimal">
+<li>Libraries loading</li>
+</ol>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="components-of-time-series-and-naive-models.html#cb11-1" tabindex="-1"></a><span class="co"># loading libs</span></span>
+<span id="cb11-2"><a href="components-of-time-series-and-naive-models.html#cb11-2" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb11-3"><a href="components-of-time-series-and-naive-models.html#cb11-3" tabindex="-1"></a><span class="fu">library</span>(fpp3)</span>
+<span id="cb11-4"><a href="components-of-time-series-and-naive-models.html#cb11-4" tabindex="-1"></a><span class="fu">library</span>(rio)</span></code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>Data Loading</li>
+</ol>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="components-of-time-series-and-naive-models.html#cb12-1" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="fu">paste0</span>(<span class="fu">getwd</span>(), <span class="st">&#39;/00_data/rf_marriage.xlsx&#39;</span>), <span class="at">skip =</span> <span class="dv">2</span>)</span>
+<span id="cb12-2"><a href="components-of-time-series-and-naive-models.html#cb12-2" tabindex="-1"></a><span class="fu">head</span>(d)</span></code></pre></div>
+<pre><code>##   Классификатор объектов административно-территориального деления (ОКАТО) Единица измерения                Период   2006   2007   2008   2009   2010   2011   2012
+## 1                                                643 Российская Федерация       642 единица            115 январь  55509  59495  58668  65507  62980  57949  55008
+## 2                                                643 Российская Федерация       642 единица           114 февраль  62449  68255  68195  81024  64855  68897  69384
+## 3                                                643 Российская Федерация       642 единица M01_02 январь-февраль 117958 127750 126863 146531 127835 126846 124392
+## 4                                                643 Российская Федерация       642 единица               68 март  70798  68173  85275  65250  58124  73713  62912
+## 5                                                643 Российская Федерация       642 единица       122 январь-март 188756 195923 212138 211781 185959 200559 187304
+## 6                                                643 Российская Федерация       642 единица             61 апрель  86055 106800  70528  98242 121953  93631  97401
+##     2013   2014   2015   2016   2017   2018   2019   2020   2021   2022   2023   2024
+## 1  56123  59291  58050  48523  50940  49005  45259  41233  47328  41675  43990  40799
+## 2  66604  77817  67918  55748  63581  52972  49792  65799  52021  61158  47537  47165
+## 3 122727 137108 125968 104271 114521 101977  95051 107032  99349 102833  91527  87964
+## 4  95343  70717  57537  64867  59183  56637  65253  49667  62088  56438  63539  56778
+## 5 218070 207825 183505 169138 173704 158614 160304 156699 161437 159271 155066 144742
+## 6  67605  93571  97256  58968  84361  79258  56818  33787  59499  69061  64794  65473</code></pre>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="components-of-time-series-and-naive-models.html#cb14-1" tabindex="-1"></a><span class="fu">glimpse</span>(d)</span></code></pre></div>
+<pre><code>## Rows: 2,507
+## Columns: 22
+## $ `Классификатор объектов административно-территориального деления (ОКАТО)` &lt;chr&gt; &quot;643 Российская Федерация&quot;, &quot;643 Российская Федерация&quot;, &quot;643 Российская Федерац…
+## $ `Единица измерения`                                                       &lt;chr&gt; &quot;642 единица&quot;, &quot;642 единица&quot;, &quot;642 единица&quot;, &quot;642 единица&quot;, &quot;642 единица&quot;, &quot;642…
+## $ Период                                                                    &lt;chr&gt; &quot;115 январь&quot;, &quot;114 февраль&quot;, &quot;M01_02 январь-февраль&quot;, &quot;68 март&quot;, &quot;122 январь-ма…
+## $ `2006`                                                                    &lt;dbl&gt; 55509, 62449, 117958, 70798, 188756, 86055, 274811, 35960, 310771, 111409, 4221…
+## $ `2007`                                                                    &lt;dbl&gt; 59495, 68255, 127750, 68173, 195923, 106800, 302723, 39331, 342054, 119012, 461…
+## $ `2008`                                                                    &lt;dbl&gt; 58668, 68195, 126863, 85275, 212138, 70528, 282666, 52634, 335300, 119283, 4545…
+## $ `2009`                                                                    &lt;dbl&gt; 65507, 81024, 146531, 65250, 211781, 98242, 310023, 45622, 355645, 118230, 4738…
+## $ `2010`                                                                    &lt;dbl&gt; 62980, 64855, 127835, 58124, 185959, 121953, 307912, 41339, 349251, 113994, 463…
+## $ `2011`                                                                    &lt;dbl&gt; 57949, 68897, 126846, 73713, 200559, 93631, 294190, 46364, 340554, 132709, 4732…
+## $ `2012`                                                                    &lt;dbl&gt; 55008, 69384, 124392, 62912, 187304, 97401, 284705, 45128, 329833, 137667, 4675…
+## $ `2013`                                                                    &lt;dbl&gt; 56123, 66604, 122727, 95343, 218070, 67605, 285675, 49712, 335387, 146512, 4818…
+## $ `2014`                                                                    &lt;dbl&gt; 59291, 77817, 137108, 70717, 207825, 93571, 301396, 53922, 355318, 128954, 4842…
+## $ `2015`                                                                    &lt;dbl&gt; 58050, 67918, 125968, 57537, 183505, 97256, 280761, 47687, 328448, 114524, 4429…
+## $ `2016`                                                                    &lt;dbl&gt; 48523, 55748, 104271, 64867, 169138, 58968, 228106, 47334, 275440, 114936, 3903…
+## $ `2017`                                                                    &lt;dbl&gt; 50940, 63581, 114521, 59183, 173704, 84361, 258065, 40851, 298916, 111901, 4108…
+## $ `2018`                                                                    &lt;dbl&gt; 49005, 52972, 101977, 56637, 158614, 79258, 237872, 39756, 277628, 103451, 3810…
+## $ `2019`                                                                    &lt;dbl&gt; 45259, 49792, 95051, 65253, 160304, 56818, 217122, 43531, 260653, 104709, 36536…
+## $ `2020`                                                                    &lt;dbl&gt; 41233, 65799, 107032, 49667, 156699, 33787, 190486, 15074, 205560, 68408, 27396…
+## $ `2021`                                                                    &lt;dbl&gt; 47328, 52021, 99349, 62088, 161437, 59499, 220936, 46596, 267532, 100908, 36844…
+## $ `2022`                                                                    &lt;dbl&gt; 41675, 61158, 102833, 56438, 159271, 69061, 228332, 44302, 272634, 96722, 36935…
+## $ `2023`                                                                    &lt;dbl&gt; 43990, 47537, 91527, 63539, 155066, 64794, 219860, 45499, 265359, 105701, 37106…
+## $ `2024`                                                                    &lt;dbl&gt; 40799, 47165, 87964, 56778, 144742, 65473, 210215, 51382, 261597, NA, NA, NA, N…</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Data cleaning</li>
+</ol>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="components-of-time-series-and-naive-models.html#cb16-1" tabindex="-1"></a><span class="fu">colnames</span>(d)[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&#39;region&#39;</span>, <span class="st">&#39;unit&#39;</span>, <span class="st">&#39;period&#39;</span>)</span>
+<span id="cb16-2"><a href="components-of-time-series-and-naive-models.html#cb16-2" tabindex="-1"></a><span class="fu">glimpse</span>(d)</span></code></pre></div>
+<pre><code>## Rows: 2,507
+## Columns: 22
+## $ region &lt;chr&gt; &quot;643 Российская Федерация&quot;, &quot;643 Российская Федерация&quot;, &quot;643 Российская Федерация&quot;, &quot;643 Российская Федерация&quot;, &quot;643 Российская Федерация&quot;, &quot;643 Р…
+## $ unit   &lt;chr&gt; &quot;642 единица&quot;, &quot;642 единица&quot;, &quot;642 единица&quot;, &quot;642 единица&quot;, &quot;642 единица&quot;, &quot;642 единица&quot;, &quot;642 единица&quot;, &quot;642 единица&quot;, &quot;642 единица&quot;, &quot;642 единиц…
+## $ period &lt;chr&gt; &quot;115 январь&quot;, &quot;114 февраль&quot;, &quot;M01_02 январь-февраль&quot;, &quot;68 март&quot;, &quot;122 январь-март&quot;, &quot;61 апрель&quot;, &quot;117 январь-апрель&quot;, &quot;67 май&quot;, &quot;121 январь-май&quot;, …
+## $ `2006` &lt;dbl&gt; 55509, 62449, 117958, 70798, 188756, 86055, 274811, 35960, 310771, 111409, 422180, 127475, 549655, 149120, 698775, 151116, 849891, 95192, 945083, …
+## $ `2007` &lt;dbl&gt; 59495, 68255, 127750, 68173, 195923, 106800, 302723, 39331, 342054, 119012, 461066, 147253, 608319, 163630, 771949, 152696, 924645, 108414, 103305…
+## $ `2008` &lt;dbl&gt; 58668, 68195, 126863, 85275, 212138, 70528, 282666, 52634, 335300, 119283, 454583, 125496, 580079, 192591, 772670, 129196, 901866, 107600, 1009466…
+## $ `2009` &lt;dbl&gt; 65507, 81024, 146531, 65250, 211781, 98242, 310023, 45622, 355645, 118230, 473875, 138227, 612102, 164684, 776786, 141188, 917974, 113820, 1031794…
+## $ `2010` &lt;dbl&gt; 62980, 64855, 127835, 58124, 185959, 121953, 307912, 41339, 349251, 113994, 463245, 164233, 627478, 153402, 780880, 143937, 924817, 122144, 104696…
+## $ `2011` &lt;dbl&gt; 57949, 68897, 126846, 73713, 200559, 93631, 294190, 46364, 340554, 132709, 473263, 162556, 635819, 157766, 793585, 168510, 962095, 121711, 1083806…
+## $ `2012` &lt;dbl&gt; 55008, 69384, 124392, 62912, 187304, 97401, 284705, 45128, 329833, 137667, 467500, 144355, 611855, 168085, 779940, 152328, 932268, 100937, 1033205…
+## $ `2013` &lt;dbl&gt; 56123, 66604, 122727, 95343, 218070, 67605, 285675, 49712, 335387, 146512, 481899, 141354, 623253, 181745, 804998, 144512, 949510, 102743, 1052253…
+## $ `2014` &lt;dbl&gt; 59291, 77817, 137108, 70717, 207825, 93571, 301396, 53922, 355318, 128954, 484272, 139684, 623956, 176269, 800225, 134342, 934567, 106211, 1040778…
+## $ `2015` &lt;dbl&gt; 58050, 67918, 125968, 57537, 183505, 97256, 280761, 47687, 328448, 114524, 442972, 142572, 585544, 160667, 746211, 131936, 878147, 104838, 982985,…
+## $ `2016` &lt;dbl&gt; 48523, 55748, 104271, 64867, 169138, 58968, 228106, 47334, 275440, 114936, 390376, 138733, 529109, 131756, 660865, 115462, 776327, 82752, 859079, …
+## $ `2017` &lt;dbl&gt; 50940, 63581, 114521, 59183, 173704, 84361, 258065, 40851, 298916, 111901, 410817, 150368, 561185, 138775, 699960, 125720, 825680, 80249, 905929, …
+## $ `2018` &lt;dbl&gt; 49005, 52972, 101977, 56637, 158614, 79258, 237872, 39756, 277628, 103451, 381079, 114416, 495495, 149966, 645461, 113178, 758639, 44413, 803052, …
+## $ `2019` &lt;dbl&gt; 45259, 49792, 95051, 65253, 160304, 56818, 217122, 43531, 260653, 104709, 365362, 112845, 478207, 133217, 611424, 107033, 718457, 82727, 801184, 7…
+## $ `2020` &lt;dbl&gt; 41233, 65799, 107032, 49667, 156699, 33787, 190486, 15074, 205560, 68408, 273968, 94393, 368361, 116921, 485282, 95794, 581076, 81188, 662264, 543…
+## $ `2021` &lt;dbl&gt; 47328, 52021, 99349, 62088, 161437, 59499, 220936, 46596, 267532, 100908, 368440, 125068, 493508, 120961, 614469, 102528, 716997, 82679, 799676, 6…
+## $ `2022` &lt;dbl&gt; 41675, 61158, 102833, 56438, 159271, 69061, 228332, 44302, 272634, 96722, 369356, 122660, 492016, 116404, 608420, 133021, 741441, 127250, 868691, …
+## $ `2023` &lt;dbl&gt; 43990, 47537, 91527, 63539, 155066, 64794, 219860, 45499, 265359, 105701, 371060, 120668, 491728, 123562, 615290, 108981, 724271, 76096, 800367, 6…
+## $ `2024` &lt;dbl&gt; 40799, 47165, 87964, 56778, 144742, 65473, 210215, 51382, 261597, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 10552, 12696, 23248, 146…</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="components-of-time-series-and-naive-models.html#cb18-1" tabindex="-1"></a>d<span class="sc">$</span>period <span class="sc">|&gt;</span> <span class="fu">unique</span>()</span></code></pre></div>
+<pre><code>##  [1] &quot;115 январь&quot;            &quot;114 февраль&quot;           &quot;M01_02 январь-февраль&quot; &quot;68 март&quot;               &quot;122 январь-март&quot;       &quot;61 апрель&quot;            
+##  [7] &quot;117 январь-апрель&quot;     &quot;67 май&quot;                &quot;121 январь-май&quot;        &quot;66 июнь&quot;               &quot;120 январь-июнь&quot;       &quot;65 июль&quot;              
+## [13] &quot;119 январь-июль&quot;       &quot;60 август&quot;             &quot;116 январь-август&quot;     &quot;108 сентябрь&quot;          &quot;125 январь-сентябрь&quot;   &quot;105 октябрь&quot;          
+## [19] &quot;124 январь-октябрь&quot;    &quot;104 ноябрь&quot;            &quot;123 январь-ноябрь&quot;     &quot;62 декабрь&quot;            &quot;118 январь-декабрь&quot;</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="components-of-time-series-and-naive-models.html#cb20-1" tabindex="-1"></a><span class="fu">nchar</span>(d<span class="sc">$</span>period <span class="sc">|&gt;</span> <span class="fu">unique</span>())</span></code></pre></div>
+<pre><code>##  [1] 10 11 21  7 15  9 17  6 14  7 15  7 15  9 17 12 19 11 18 10 17 10 18</code></pre>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="components-of-time-series-and-naive-models.html#cb22-1" tabindex="-1"></a>d2 <span class="ot">&lt;-</span> d <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">nchar</span>(period) <span class="sc">&lt;</span> <span class="dv">13</span>)</span>
+<span id="cb22-2"><a href="components-of-time-series-and-naive-models.html#cb22-2" tabindex="-1"></a>d2<span class="sc">$</span>period <span class="sc">|&gt;</span> <span class="fu">unique</span>()</span></code></pre></div>
+<pre><code>##  [1] &quot;115 январь&quot;   &quot;114 февраль&quot;  &quot;68 март&quot;      &quot;61 апрель&quot;    &quot;67 май&quot;       &quot;66 июнь&quot;      &quot;65 июль&quot;      &quot;60 август&quot;    &quot;108 сентябрь&quot; &quot;105 октябрь&quot; 
+## [11] &quot;104 ноябрь&quot;   &quot;62 декабрь&quot;</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="components-of-time-series-and-naive-models.html#cb24-1" tabindex="-1"></a>month_dict <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">period =</span> <span class="fu">unique</span>(d2<span class="sc">$</span>period),</span>
+<span id="cb24-2"><a href="components-of-time-series-and-naive-models.html#cb24-2" tabindex="-1"></a>                     <span class="at">month =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>)</span>
+<span id="cb24-3"><a href="components-of-time-series-and-naive-models.html#cb24-3" tabindex="-1"></a>month_dict</span></code></pre></div>
+<pre><code>## # A tibble: 12 × 2
+##    period       month
+##    &lt;chr&gt;        &lt;int&gt;
+##  1 115 январь       1
+##  2 114 февраль      2
+##  3 68 март          3
+##  4 61 апрель        4
+##  5 67 май           5
+##  6 66 июнь          6
+##  7 65 июль          7
+##  8 60 август        8
+##  9 108 сентябрь     9
+## 10 105 октябрь     10
+## 11 104 ноябрь      11
+## 12 62 декабрь      12</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="components-of-time-series-and-naive-models.html#cb26-1" tabindex="-1"></a>d3 <span class="ot">&lt;-</span> d2 <span class="sc">|&gt;</span> <span class="fu">left_join</span>(month_dict, <span class="at">by =</span> <span class="st">&#39;period&#39;</span>)</span>
+<span id="cb26-2"><a href="components-of-time-series-and-naive-models.html#cb26-2" tabindex="-1"></a><span class="fu">head</span>(d3)</span></code></pre></div>
+<pre><code>##                     region        unit      period   2006   2007   2008   2009   2010   2011   2012   2013   2014   2015   2016   2017   2018   2019  2020   2021
+## 1 643 Российская Федерация 642 единица  115 январь  55509  59495  58668  65507  62980  57949  55008  56123  59291  58050  48523  50940  49005  45259 41233  47328
+## 2 643 Российская Федерация 642 единица 114 февраль  62449  68255  68195  81024  64855  68897  69384  66604  77817  67918  55748  63581  52972  49792 65799  52021
+## 3 643 Российская Федерация 642 единица     68 март  70798  68173  85275  65250  58124  73713  62912  95343  70717  57537  64867  59183  56637  65253 49667  62088
+## 4 643 Российская Федерация 642 единица   61 апрель  86055 106800  70528  98242 121953  93631  97401  67605  93571  97256  58968  84361  79258  56818 33787  59499
+## 5 643 Российская Федерация 642 единица      67 май  35960  39331  52634  45622  41339  46364  45128  49712  53922  47687  47334  40851  39756  43531 15074  46596
+## 6 643 Российская Федерация 642 единица     66 июнь 111409 119012 119283 118230 113994 132709 137667 146512 128954 114524 114936 111901 103451 104709 68408 100908
+##    2022   2023  2024 month
+## 1 41675  43990 40799     1
+## 2 61158  47537 47165     2
+## 3 56438  63539 56778     3
+## 4 69061  64794 65473     4
+## 5 44302  45499 51382     5
+## 6 96722 105701    NA     6</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="components-of-time-series-and-naive-models.html#cb28-1" tabindex="-1"></a>d4 <span class="ot">&lt;-</span> d3 <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>unit, <span class="sc">-</span>period)</span>
+<span id="cb28-2"><a href="components-of-time-series-and-naive-models.html#cb28-2" tabindex="-1"></a><span class="fu">head</span>(d4)</span></code></pre></div>
+<pre><code>##                     region   2006   2007   2008   2009   2010   2011   2012   2013   2014   2015   2016   2017   2018   2019  2020   2021  2022   2023  2024 month
+## 1 643 Российская Федерация  55509  59495  58668  65507  62980  57949  55008  56123  59291  58050  48523  50940  49005  45259 41233  47328 41675  43990 40799     1
+## 2 643 Российская Федерация  62449  68255  68195  81024  64855  68897  69384  66604  77817  67918  55748  63581  52972  49792 65799  52021 61158  47537 47165     2
+## 3 643 Российская Федерация  70798  68173  85275  65250  58124  73713  62912  95343  70717  57537  64867  59183  56637  65253 49667  62088 56438  63539 56778     3
+## 4 643 Российская Федерация  86055 106800  70528  98242 121953  93631  97401  67605  93571  97256  58968  84361  79258  56818 33787  59499 69061  64794 65473     4
+## 5 643 Российская Федерация  35960  39331  52634  45622  41339  46364  45128  49712  53922  47687  47334  40851  39756  43531 15074  46596 44302  45499 51382     5
+## 6 643 Российская Федерация 111409 119012 119283 118230 113994 132709 137667 146512 128954 114524 114936 111901 103451 104709 68408 100908 96722 105701    NA     6</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="components-of-time-series-and-naive-models.html#cb30-1" tabindex="-1"></a>d5 <span class="ot">&lt;-</span> d4 <span class="sc">|&gt;</span></span>
+<span id="cb30-2"><a href="components-of-time-series-and-naive-models.html#cb30-2" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="st">`</span><span class="at">2006</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">2024</span><span class="st">`</span>, <span class="at">names_to =</span> <span class="st">&#39;year&#39;</span>, <span class="at">values_to =</span> <span class="st">&#39;total&#39;</span>)</span>
+<span id="cb30-3"><a href="components-of-time-series-and-naive-models.html#cb30-3" tabindex="-1"></a><span class="fu">head</span>(d5)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 4
+##   region                   month year  total
+##   &lt;chr&gt;                    &lt;int&gt; &lt;chr&gt; &lt;dbl&gt;
+## 1 643 Российская Федерация     1 2006  55509
+## 2 643 Российская Федерация     1 2007  59495
+## 3 643 Российская Федерация     1 2008  58668
+## 4 643 Российская Федерация     1 2009  65507
+## 5 643 Российская Федерация     1 2010  62980
+## 6 643 Российская Федерация     1 2011  57949</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="components-of-time-series-and-naive-models.html#cb32-1" tabindex="-1"></a><span class="fu">glimpse</span>(d5)</span></code></pre></div>
+<pre><code>## Rows: 24,852
+## Columns: 4
+## $ region &lt;chr&gt; &quot;643 Российская Федерация&quot;, &quot;643 Российская Федерация&quot;, &quot;643 Российская Федерация&quot;, &quot;643 Российская Федерация&quot;, &quot;643 Российская Федерация&quot;, &quot;643 Р…
+## $ month  &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,…
+## $ year   &lt;chr&gt; &quot;2006&quot;, &quot;2007&quot;, &quot;2008&quot;, &quot;2009&quot;, &quot;2010&quot;, &quot;2011&quot;, &quot;2012&quot;, &quot;2013&quot;, &quot;2014&quot;, &quot;2015&quot;, &quot;2016&quot;, &quot;2017&quot;, &quot;2018&quot;, &quot;2019&quot;, &quot;2020&quot;, &quot;2021&quot;, &quot;2022&quot;, &quot;2023&quot;, &quot;2…
+## $ total  &lt;dbl&gt; 55509, 59495, 58668, 65507, 62980, 57949, 55008, 56123, 59291, 58050, 48523, 50940, 49005, 45259, 41233, 47328, 41675, 43990, 40799, 62449, 68255,…</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="components-of-time-series-and-naive-models.html#cb34-1" tabindex="-1"></a>d6 <span class="ot">&lt;-</span> d5 <span class="sc">|&gt;</span></span>
+<span id="cb34-2"><a href="components-of-time-series-and-naive-models.html#cb34-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">yearmonth</span>(<span class="fu">paste0</span>(year, <span class="st">&#39;-&#39;</span>, month)))</span>
+<span id="cb34-3"><a href="components-of-time-series-and-naive-models.html#cb34-3" tabindex="-1"></a><span class="fu">glimpse</span>(d6)</span></code></pre></div>
+<pre><code>## Rows: 24,852
+## Columns: 5
+## $ region &lt;chr&gt; &quot;643 Российская Федерация&quot;, &quot;643 Российская Федерация&quot;, &quot;643 Российская Федерация&quot;, &quot;643 Российская Федерация&quot;, &quot;643 Российская Федерация&quot;, &quot;643 Р…
+## $ month  &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,…
+## $ year   &lt;chr&gt; &quot;2006&quot;, &quot;2007&quot;, &quot;2008&quot;, &quot;2009&quot;, &quot;2010&quot;, &quot;2011&quot;, &quot;2012&quot;, &quot;2013&quot;, &quot;2014&quot;, &quot;2015&quot;, &quot;2016&quot;, &quot;2017&quot;, &quot;2018&quot;, &quot;2019&quot;, &quot;2020&quot;, &quot;2021&quot;, &quot;2022&quot;, &quot;2023&quot;, &quot;2…
+## $ total  &lt;dbl&gt; 55509, 59495, 58668, 65507, 62980, 57949, 55008, 56123, 59291, 58050, 48523, 50940, 49005, 45259, 41233, 47328, 41675, 43990, 40799, 62449, 68255,…
+## $ date   &lt;mth&gt; 2006 Jan, 2007 Jan, 2008 Jan, 2009 Jan, 2010 Jan, 2011 Jan, 2012 Jan, 2013 Jan, 2014 Jan, 2015 Jan, 2016 Jan, 2017 Jan, 2018 Jan, 2019 Jan, 2020 J…</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="components-of-time-series-and-naive-models.html#cb36-1" tabindex="-1"></a>d7 <span class="ot">&lt;-</span> d6 <span class="sc">|&gt;</span></span>
+<span id="cb36-2"><a href="components-of-time-series-and-naive-models.html#cb36-2" tabindex="-1"></a>  <span class="fu">separate</span>(region, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">&#39;code&#39;</span>, <span class="st">&#39;name&#39;</span>), <span class="at">sep =</span> <span class="st">&#39; &#39;</span>, <span class="at">extra =</span> <span class="st">&#39;merge&#39;</span>)</span>
+<span id="cb36-3"><a href="components-of-time-series-and-naive-models.html#cb36-3" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="components-of-time-series-and-naive-models.html#cb36-4" tabindex="-1"></a><span class="fu">glimpse</span>(d7)</span></code></pre></div>
+<pre><code>## Rows: 24,852
+## Columns: 6
+## $ code  &lt;chr&gt; &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, …
+## $ name  &lt;chr&gt; &quot;Российская Федерация&quot;, &quot;Российская Федерация&quot;, &quot;Российская Федерация&quot;, &quot;Российская Федерация&quot;, &quot;Российская Федерация&quot;, &quot;Российская Федерация&quot;, &quot;Ро…
+## $ month &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, …
+## $ year  &lt;chr&gt; &quot;2006&quot;, &quot;2007&quot;, &quot;2008&quot;, &quot;2009&quot;, &quot;2010&quot;, &quot;2011&quot;, &quot;2012&quot;, &quot;2013&quot;, &quot;2014&quot;, &quot;2015&quot;, &quot;2016&quot;, &quot;2017&quot;, &quot;2018&quot;, &quot;2019&quot;, &quot;2020&quot;, &quot;2021&quot;, &quot;2022&quot;, &quot;2023&quot;, &quot;20…
+## $ total &lt;dbl&gt; 55509, 59495, 58668, 65507, 62980, 57949, 55008, 56123, 59291, 58050, 48523, 50940, 49005, 45259, 41233, 47328, 41675, 43990, 40799, 62449, 68255, …
+## $ date  &lt;mth&gt; 2006 Jan, 2007 Jan, 2008 Jan, 2009 Jan, 2010 Jan, 2011 Jan, 2012 Jan, 2013 Jan, 2014 Jan, 2015 Jan, 2016 Jan, 2017 Jan, 2018 Jan, 2019 Jan, 2020 Ja…</code></pre>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="components-of-time-series-and-naive-models.html#cb38-1" tabindex="-1"></a>d8 <span class="ot">&lt;-</span> d7 <span class="sc">|&gt;</span></span>
+<span id="cb38-2"><a href="components-of-time-series-and-naive-models.html#cb38-2" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>month, <span class="sc">-</span> year)</span>
+<span id="cb38-3"><a href="components-of-time-series-and-naive-models.html#cb38-3" tabindex="-1"></a><span class="fu">glimpse</span>(d8)</span></code></pre></div>
+<pre><code>## Rows: 24,852
+## Columns: 4
+## $ code  &lt;chr&gt; &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, &quot;643&quot;, …
+## $ name  &lt;chr&gt; &quot;Российская Федерация&quot;, &quot;Российская Федерация&quot;, &quot;Российская Федерация&quot;, &quot;Российская Федерация&quot;, &quot;Российская Федерация&quot;, &quot;Российская Федерация&quot;, &quot;Ро…
+## $ total &lt;dbl&gt; 55509, 59495, 58668, 65507, 62980, 57949, 55008, 56123, 59291, 58050, 48523, 50940, 49005, 45259, 41233, 47328, 41675, 43990, 40799, 62449, 68255, …
+## $ date  &lt;mth&gt; 2006 Jan, 2007 Jan, 2008 Jan, 2009 Jan, 2010 Jan, 2011 Jan, 2012 Jan, 2013 Jan, 2014 Jan, 2015 Jan, 2016 Jan, 2017 Jan, 2018 Jan, 2019 Jan, 2020 Ja…</code></pre>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="components-of-time-series-and-naive-models.html#cb40-1" tabindex="-1"></a>marriages <span class="ot">&lt;-</span> <span class="fu">as_tsibble</span>(d8, <span class="at">index =</span> date, <span class="at">key =</span> <span class="fu">c</span>(<span class="st">&#39;code&#39;</span>, <span class="st">&#39;name&#39;</span>))</span>
+<span id="cb40-2"><a href="components-of-time-series-and-naive-models.html#cb40-2" tabindex="-1"></a>marriages</span></code></pre></div>
+<pre><code>## # A tsibble: 24,852 x 4 [1M]
+## # Key:       code, name [109]
+##    code        name           total     date
+##    &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt;    &lt;mth&gt;
+##  1 01000000000 Алтайский край   953 2006 Jan
+##  2 01000000000 Алтайский край  1007 2006 Feb
+##  3 01000000000 Алтайский край  1311 2006 Mar
+##  4 01000000000 Алтайский край  1554 2006 Apr
+##  5 01000000000 Алтайский край   562 2006 May
+##  6 01000000000 Алтайский край  1900 2006 Jun
+##  7 01000000000 Алтайский край  2338 2006 Jul
+##  8 01000000000 Алтайский край  3034 2006 Aug
+##  9 01000000000 Алтайский край  2460 2006 Sep
+## 10 01000000000 Алтайский край  1762 2006 Oct
+## # ℹ 24,842 more rows</code></pre>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="components-of-time-series-and-naive-models.html#cb42-1" tabindex="-1"></a><span class="co"># plot the data</span></span>
+<span id="cb42-2"><a href="components-of-time-series-and-naive-models.html#cb42-2" tabindex="-1"></a>marriages <span class="sc">|&gt;</span></span>
+<span id="cb42-3"><a href="components-of-time-series-and-naive-models.html#cb42-3" tabindex="-1"></a>  <span class="fu">filter</span>(code <span class="sc">==</span> <span class="dv">643</span>) <span class="sc">|&gt;</span> <span class="fu">autoplot</span>()</span></code></pre></div>
+<pre><code>## Plot variable not specified, automatically selected `.vars = total`</code></pre>
+<pre><code>## Warning: Removed 7 rows containing missing values or values outside the scale range (`geom_line()`).</code></pre>
+<p><img src="_main_files/figure-html/01-time-series-components-24-1.png" width="672" /></p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="components-of-time-series-and-naive-models.html#cb45-1" tabindex="-1"></a>marriages <span class="sc">|&gt;</span></span>
+<span id="cb45-2"><a href="components-of-time-series-and-naive-models.html#cb45-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">as.Date</span>(date)) <span class="sc">|&gt;</span></span>
+<span id="cb45-3"><a href="components-of-time-series-and-naive-models.html#cb45-3" tabindex="-1"></a>  <span class="fu">export</span>(<span class="fu">paste0</span>(<span class="fu">getwd</span>(), <span class="st">&#39;/00_data/marriages.csv&#39;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="components-of-time-series-and-naive-models.html#cb46-1" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="fu">paste0</span>(<span class="fu">getwd</span>(), <span class="st">&#39;/00_data/marriages.csv&#39;</span>))</span>
+<span id="cb46-2"><a href="components-of-time-series-and-naive-models.html#cb46-2" tabindex="-1"></a><span class="fu">glimpse</span>(m)</span></code></pre></div>
+<pre><code>## Rows: 24,852
+## Columns: 4
+## $ code  &lt;int64&gt; 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1…
+## $ name  &lt;chr&gt; &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Ал…
+## $ total &lt;int&gt; 953, 1007, 1311, 1554, 562, 1900, 2338, 3034, 2460, 1762, 1411, 1554, 1069, 1221, 1330, 1774, 609, 2107, 2708, 3272, 2483, 1825, 1721, 1940, 1006, …
+## $ date  &lt;IDate&gt; 2006-01-01, 2006-02-01, 2006-03-01, 2006-04-01, 2006-05-01, 2006-06-01, 2006-07-01, 2006-08-01, 2006-09-01, 2006-10-01, 2006-11-01, 2006-12-01, 2…</code></pre>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="components-of-time-series-and-naive-models.html#cb48-1" tabindex="-1"></a>ts_marriages <span class="ot">&lt;-</span> m <span class="sc">|&gt;</span></span>
+<span id="cb48-2"><a href="components-of-time-series-and-naive-models.html#cb48-2" tabindex="-1"></a>                <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">yearmonth</span>(date)) <span class="sc">|&gt;</span></span>
+<span id="cb48-3"><a href="components-of-time-series-and-naive-models.html#cb48-3" tabindex="-1"></a>                <span class="fu">as_tsibble</span>(<span class="at">index =</span> date, <span class="at">key =</span> <span class="fu">c</span>(<span class="st">&#39;code&#39;</span>, <span class="st">&#39;name&#39;</span>))</span>
+<span id="cb48-4"><a href="components-of-time-series-and-naive-models.html#cb48-4" tabindex="-1"></a><span class="fu">glimpse</span>(ts_marriages)</span></code></pre></div>
+<pre><code>## Rows: 24,852
+## Columns: 4
+## Key: code, name [109]
+## $ code  &lt;int64&gt; 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 3…
+## $ name  &lt;chr&gt; &quot;Центральный федеральный округ&quot;, &quot;Центральный федеральный округ&quot;, &quot;Центральный федеральный округ&quot;, &quot;Центральный федеральный округ&quot;, &quot;Центральный фе…
+## $ total &lt;int&gt; 14845, 16414, 15753, 21803, 9384, 29571, 35691, 39263, 40480, 24137, 21207, 19009, 15433, 17430, 13878, 29703, 10529, 31572, 41328, 42609, 41779, 2…
+## $ date  &lt;mth&gt; 2006 Jan, 2006 Feb, 2006 Mar, 2006 Apr, 2006 May, 2006 Jun, 2006 Jul, 2006 Aug, 2006 Sep, 2006 Oct, 2006 Nov, 2006 Dec, 2007 Jan, 2007 Feb, 2007 Ma…</code></pre>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="components-of-time-series-and-naive-models.html#cb50-1" tabindex="-1"></a><span class="fu">head</span>(ts_marriages)</span></code></pre></div>
+<pre><code>## # A tsibble: 6 x 4 [1M]
+## # Key:       code, name [1]
+##      code name                          total     date
+##   &lt;int64&gt; &lt;chr&gt;                         &lt;int&gt;    &lt;mth&gt;
+## 1      30 Центральный федеральный округ 14845 2006 Jan
+## 2      30 Центральный федеральный округ 16414 2006 Feb
+## 3      30 Центральный федеральный округ 15753 2006 Mar
+## 4      30 Центральный федеральный округ 21803 2006 Apr
+## 5      30 Центральный федеральный округ  9384 2006 May
+## 6      30 Центральный федеральный округ 29571 2006 Jun</code></pre>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="components-of-time-series-and-naive-models.html#cb52-1" tabindex="-1"></a>ts_marriages <span class="sc">|&gt;</span></span>
+<span id="cb52-2"><a href="components-of-time-series-and-naive-models.html#cb52-2" tabindex="-1"></a>  <span class="fu">filter</span>(code <span class="sc">==</span> <span class="dv">643</span>) <span class="sc">|&gt;</span></span>
+<span id="cb52-3"><a href="components-of-time-series-and-naive-models.html#cb52-3" tabindex="-1"></a>  <span class="fu">gg_tsdisplay</span>(total, <span class="at">plot_type =</span> <span class="st">&#39;season&#39;</span>)</span></code></pre></div>
+<pre><code>## Warning: Removed 7 rows containing missing values or values outside the scale range (`geom_line()`).</code></pre>
+<pre><code>## Warning: Removed 7 rows containing missing values or values outside the scale range (`geom_point()`).</code></pre>
+<pre><code>## Warning: Removed 7 rows containing missing values or values outside the scale range (`geom_line()`).</code></pre>
+<p><img src="_main_files/figure-html/01-time-series-components-28-1.png" width="672" /></p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="components-of-time-series-and-naive-models.html#cb56-1" tabindex="-1"></a>m_rf <span class="ot">&lt;-</span> ts_marriages <span class="sc">|&gt;</span></span>
+<span id="cb56-2"><a href="components-of-time-series-and-naive-models.html#cb56-2" tabindex="-1"></a>  <span class="fu">filter</span>(code <span class="sc">==</span> <span class="dv">643</span>)</span>
+<span id="cb56-3"><a href="components-of-time-series-and-naive-models.html#cb56-3" tabindex="-1"></a></span>
+<span id="cb56-4"><a href="components-of-time-series-and-naive-models.html#cb56-4" tabindex="-1"></a><span class="fu">head</span>(m_rf)</span></code></pre></div>
+<pre><code>## # A tsibble: 6 x 4 [1M]
+## # Key:       code, name [1]
+##      code name                  total     date
+##   &lt;int64&gt; &lt;chr&gt;                 &lt;int&gt;    &lt;mth&gt;
+## 1     643 Российская Федерация  55509 2006 Jan
+## 2     643 Российская Федерация  62449 2006 Feb
+## 3     643 Российская Федерация  70798 2006 Mar
+## 4     643 Российская Федерация  86055 2006 Apr
+## 5     643 Российская Федерация  35960 2006 May
+## 6     643 Российская Федерация 111409 2006 Jun</code></pre>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="components-of-time-series-and-naive-models.html#cb58-1" tabindex="-1"></a><span class="fu">tail</span>(m_rf, <span class="dv">10</span>)</span></code></pre></div>
+<pre><code>## # A tsibble: 10 x 4 [1M]
+## # Key:       code, name [1]
+##       code name                 total     date
+##    &lt;int64&gt; &lt;chr&gt;                &lt;int&gt;    &lt;mth&gt;
+##  1     643 Российская Федерация 56778 2024 Mar
+##  2     643 Российская Федерация 65473 2024 Apr
+##  3     643 Российская Федерация 51382 2024 May
+##  4     643 Российская Федерация    NA 2024 Jun
+##  5     643 Российская Федерация    NA 2024 Jul
+##  6     643 Российская Федерация    NA 2024 Aug
+##  7     643 Российская Федерация    NA 2024 Sep
+##  8     643 Российская Федерация    NA 2024 Oct
+##  9     643 Российская Федерация    NA 2024 Nov
+## 10     643 Российская Федерация    NA 2024 Dec</code></pre>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="components-of-time-series-and-naive-models.html#cb60-1" tabindex="-1"></a>m_rf_full <span class="ot">&lt;-</span> m_rf <span class="sc">|&gt;</span></span>
+<span id="cb60-2"><a href="components-of-time-series-and-naive-models.html#cb60-2" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&lt;</span> <span class="fu">ymd</span>(<span class="st">&#39;2024-06-01&#39;</span>))</span></code></pre></div>
+<pre><code>## Warning: There was 1 warning in `filter()`.
+## ℹ In argument: `date &lt; ymd(&quot;2024-06-01&quot;)`.
+## Caused by warning:
+## ! Incompatible methods (&quot;&lt;.vctrs_vctr&quot;, &quot;&lt;.Date&quot;) for &quot;&lt;&quot;</code></pre>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="components-of-time-series-and-naive-models.html#cb62-1" tabindex="-1"></a>m_rf_full <span class="sc">|&gt;</span></span>
+<span id="cb62-2"><a href="components-of-time-series-and-naive-models.html#cb62-2" tabindex="-1"></a>  <span class="fu">gg_tsdisplay</span>(total, <span class="at">plot_type =</span> <span class="st">&#39;season&#39;</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/01-time-series-components-30-1.png" width="672" />
+4. Time Series Analysis</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="components-of-time-series-and-naive-models.html#cb63-1" tabindex="-1"></a>stl_model <span class="ot">&lt;-</span> m_rf_full <span class="sc">|&gt;</span></span>
+<span id="cb63-2"><a href="components-of-time-series-and-naive-models.html#cb63-2" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">decomp =</span> <span class="fu">STL</span>(total <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="dv">100</span>)))</span>
+<span id="cb63-3"><a href="components-of-time-series-and-naive-models.html#cb63-3" tabindex="-1"></a></span>
+<span id="cb63-4"><a href="components-of-time-series-and-naive-models.html#cb63-4" tabindex="-1"></a><span class="fu">components</span>(stl_model)</span></code></pre></div>
+<pre><code>## # A dable: 221 x 9 [1M]
+## # Key:     code, name, .model [1]
+## # :        total = trend + season_year + remainder
+##       code name                 .model     date  total  trend season_year remainder season_adjust
+##    &lt;int64&gt; &lt;chr&gt;                &lt;chr&gt;     &lt;mth&gt;  &lt;int&gt;  &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;
+##  1     643 Российская Федерация decomp 2006 Jan  55509 94148.     -38464.     -175.        93973.
+##  2     643 Российская Федерация decomp 2006 Feb  62449 93714.     -28148.    -3116.        90597.
+##  3     643 Российская Федерация decomp 2006 Mar  70798 92846.     -25553.     3505.        96351.
+##  4     643 Российская Федерация decomp 2006 Apr  86055 91970.     -11524.     5608.        97579.
+##  5     643 Российская Федерация decomp 2006 May  35960 89642.     -47305.    -6377.        83265.
+##  6     643 Российская Федерация decomp 2006 Jun 111409 87064.      23080.     1265.        88329.
+##  7     643 Российская Федерация decomp 2006 Jul 127475 89339.      43219.    -5083.        84256.
+##  8     643 Российская Федерация decomp 2006 Aug 149120 93710.      59269.    -3859.        89851.
+##  9     643 Российская Федерация decomp 2006 Sep 151116 95884.      39842.    15390.       111274.
+## 10     643 Российская Федерация decomp 2006 Oct  95192 96999.       5812.    -7619.        89380.
+## # ℹ 211 more rows</code></pre>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="components-of-time-series-and-naive-models.html#cb65-1" tabindex="-1"></a>stl_model <span class="sc">|&gt;</span></span>
+<span id="cb65-2"><a href="components-of-time-series-and-naive-models.html#cb65-2" tabindex="-1"></a>  <span class="fu">components</span>() <span class="sc">|&gt;</span></span>
+<span id="cb65-3"><a href="components-of-time-series-and-naive-models.html#cb65-3" tabindex="-1"></a>    <span class="fu">autoplot</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/01-time-series-components-32-1.png" width="672" /></p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="components-of-time-series-and-naive-models.html#cb66-1" tabindex="-1"></a>m_rf_full <span class="sc">|&gt;</span></span>
+<span id="cb66-2"><a href="components-of-time-series-and-naive-models.html#cb66-2" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">decomp =</span> <span class="fu">STL</span>(total <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">100</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="dv">100</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb66-3"><a href="components-of-time-series-and-naive-models.html#cb66-3" tabindex="-1"></a>  <span class="fu">components</span>() <span class="sc">|&gt;</span></span>
+<span id="cb66-4"><a href="components-of-time-series-and-naive-models.html#cb66-4" tabindex="-1"></a>    <span class="fu">autoplot</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/01-time-series-components-33-1.png" width="672" /></p>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="components-of-time-series-and-naive-models.html#cb67-1" tabindex="-1"></a>m_rf_full <span class="sc">|&gt;</span></span>
+<span id="cb67-2"><a href="components-of-time-series-and-naive-models.html#cb67-2" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">decomp =</span> <span class="fu">STL</span>(total <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">100</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="dv">5</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb67-3"><a href="components-of-time-series-and-naive-models.html#cb67-3" tabindex="-1"></a>  <span class="fu">components</span>() <span class="sc">|&gt;</span></span>
+<span id="cb67-4"><a href="components-of-time-series-and-naive-models.html#cb67-4" tabindex="-1"></a>    <span class="fu">autoplot</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/01-time-series-components-34-1.png" width="672" /></p>
+<ol start="5" style="list-style-type: decimal">
+<li>Time series features</li>
+</ol>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="components-of-time-series-and-naive-models.html#cb68-1" tabindex="-1"></a>marr_features <span class="ot">&lt;-</span> ts_marriages <span class="sc">|&gt;</span></span>
+<span id="cb68-2"><a href="components-of-time-series-and-naive-models.html#cb68-2" tabindex="-1"></a>  <span class="fu">features</span>(total, <span class="at">features =</span> feat_stl)</span></code></pre></div>
+<pre><code>## Warning: 1 error encountered for feature 1
+## [1] series is not periodic or has less than two periods</code></pre>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="components-of-time-series-and-naive-models.html#cb70-1" tabindex="-1"></a><span class="fu">glimpse</span>(marr_features)</span></code></pre></div>
+<pre><code>## Rows: 109
+## Columns: 11
+## $ code                   &lt;int64&gt; 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 643, 1000000000, 3000000000, 4000000000, 4100000000, 4130000000, 5000000000,…
+## $ name                   &lt;chr&gt; &quot;Центральный федеральный округ&quot;, &quot;Северо-Западный федеральный округ&quot;, &quot;Южный федеральный округ (по 2009 год)&quot;, &quot;Приволжский федера…
+## $ trend_strength         &lt;dbl&gt; 0.4745444, 0.6401144, 0.2735227, 0.6898244, 0.6726793, 0.8879235, 0.8977269, 0.3769994, 0.8598947, NA, 0.3462742, 0.4152795, 0.350…
+## $ seasonal_strength_year &lt;dbl&gt; 0.9104450, 0.9402161, 0.9143495, 0.9274390, 0.9170236, 0.9279884, 0.9232011, 0.9152458, 0.8603297, NA, 0.8763794, 0.8881947, 0.709…
+## $ seasonal_peak_year     &lt;dbl&gt; 8, 8, 9, 8, 8, 8, 8, 9, 8, NA, 9, 7, 9, 8, 8, 9, 8, 4, 7, 9, 9, 8, 8, 8, 8, 0, 9, 8, 8, 8, 9, 8, 8, 8, 8, 8, 7, 3, 8, 8, 8, 9, 0, …
+## $ seasonal_trough_year   &lt;dbl&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, NA, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 1, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 9, 5, 5, 5, 5, 5, …
+## $ spikiness              &lt;dbl&gt; 5.800426e+09, 4.480502e+07, 5.464045e+09, 1.368004e+09, 4.204206e+07, 7.158124e+08, 7.523537e+06, 4.923785e+08, 5.955185e+06, NA, …
+## $ linearity              &lt;dbl&gt; -2.762647e+04, -9.940055e+03, 1.537425e+03, -3.859673e+04, -1.434080e+04, -3.124289e+04, -9.716159e+03, -5.521401e+03, -1.387037e+…
+## $ curvature              &lt;dbl&gt; -6218.202397, -3926.339624, -4222.782950, -8211.754292, -2541.293495, -28907.276985, -9743.252883, -4522.012404, 1131.403734, NA, …
+## $ stl_e_acf1             &lt;dbl&gt; -0.1485399418, 0.1760381438, -0.3645523140, -0.2103411578, -0.0160823966, 0.0220078173, -0.0922420573, -0.2896106342, 0.0265822139…
+## $ stl_e_acf10            &lt;dbl&gt; 0.21015807, 0.22301008, 0.66946204, 0.21063083, 0.21637186, 0.19238858, 0.17854895, 0.29795679, 0.09421211, NA, 0.22297834, 0.5031…</code></pre>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="components-of-time-series-and-naive-models.html#cb72-1" tabindex="-1"></a><span class="fu">library</span>(ggrepel)</span>
+<span id="cb72-2"><a href="components-of-time-series-and-naive-models.html#cb72-2" tabindex="-1"></a></span>
+<span id="cb72-3"><a href="components-of-time-series-and-naive-models.html#cb72-3" tabindex="-1"></a><span class="fu">ggplot</span>(marr_features, <span class="fu">aes</span>(<span class="at">x =</span> trend_strength, <span class="at">y =</span> seasonal_strength_year, <span class="at">label=</span>name)) <span class="sc">+</span></span>
+<span id="cb72-4"><a href="components-of-time-series-and-naive-models.html#cb72-4" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb72-5"><a href="components-of-time-series-and-naive-models.html#cb72-5" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/01-time-series-components-36-1.png" width="672" /></p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="exponential-smoothing-models.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": null,
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "lunr",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+},
+"toolbar": {
+"position": "fixed"
+},
+"info": false
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -1,16 +1,7 @@
-
-# don't push local rendered files in master branch
 _book/
 _bookdown_files/
 _main_files/
-libs/
-**/*.bib
-**/*.html 
-# ignore all html files except:
-don't push local rendered files in master branch
-_book/
-_bookdown_files/
-libs/
+**/*.bib_book/
 **/*.bib
 # R and Rstudio specific files
 .Rproj.user

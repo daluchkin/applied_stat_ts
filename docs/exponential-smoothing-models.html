@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 2 Exponential smoothing models | Applied statistics: Time series analysis</title>
+  <meta name="description" content="Chapter 2 Exponential smoothing models | Applied statistics: Time series analysis" />
+  <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 2 Exponential smoothing models | Applied statistics: Time series analysis" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta name="github-repo" content="https://github.com/daluchkin/applied_stat_ts" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 2 Exponential smoothing models | Applied statistics: Time series analysis" />
+  
+  
+  
+
+<meta name="author" content="Dmitry Luchkin" />
+
+
+<meta name="date" content="2024-12-13" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="components-of-time-series-and-naive-models.html"/>
+<link rel="next" href="ets-model-variations.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="https://www.youtube.com/@%D0%9F%D1%80%D0%B8%D0%BA%D0%BB%D0%B0%D0%B4%D0%BD%D0%B0%D1%8F%D1%81%D1%82%D0%B0%D1%82%D0%B8%D1%81%D1%82%D0%B8%D0%BA%D0%B0/playlists">Time Series Analysis</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html"><i class="fa fa-check"></i><b>1</b> Components of time series and naive models</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#what-is-time-series"><i class="fa fa-check"></i><b>1.1</b> What is time series?</a></li>
+<li class="chapter" data-level="1.2" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#time-series-components"><i class="fa fa-check"></i><b>1.2</b> Time Series Components</a></li>
+<li class="chapter" data-level="1.3" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#algorithm-stl"><i class="fa fa-check"></i><b>1.3</b> Algorithm STL</a></li>
+<li class="chapter" data-level="1.4" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#time-series-characteristics"><i class="fa fa-check"></i><b>1.4</b> Time Series Characteristics</a>
+<ul>
+<li class="chapter" data-level="" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#acf"><i class="fa fa-check"></i>ACF</a></li>
+<li class="chapter" data-level="" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#pacf"><i class="fa fa-check"></i>PACF</a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#simple-models"><i class="fa fa-check"></i><b>1.5</b> Simple Models</a>
+<ul>
+<li class="chapter" data-level="" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#white-noise"><i class="fa fa-check"></i>White Noise</a></li>
+<li class="chapter" data-level="" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#model-with-independent-observations"><i class="fa fa-check"></i>Model with independent observations</a></li>
+<li class="chapter" data-level="" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#naive-model-random-walk"><i class="fa fa-check"></i>Naive Model (Random Walk)</a></li>
+<li class="chapter" data-level="" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#seasonal-random-walk"><i class="fa fa-check"></i>Seasonal Random Walk</a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#examples"><i class="fa fa-check"></i><b>1.6</b> Examples</a>
+<ul>
+<li class="chapter" data-level="1.6.1" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#time-series-from-scratch"><i class="fa fa-check"></i><b>1.6.1</b> Time series from scratch</a></li>
+<li class="chapter" data-level="1.6.2" data-path="components-of-time-series-and-naive-models.html"><a href="components-of-time-series-and-naive-models.html#time-series-data-cleaning"><i class="fa fa-check"></i><b>1.6.2</b> Time Series data cleaning</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html"><i class="fa fa-check"></i><b>2</b> Exponential smoothing models</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#etsann-model"><i class="fa fa-check"></i><b>2.1</b> ETS(ANN) model</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#forecast"><i class="fa fa-check"></i><b>2.1.1</b> Forecast</a></li>
+<li class="chapter" data-level="2.1.2" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#example"><i class="fa fa-check"></i><b>2.1.2</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#etsaan-model"><i class="fa fa-check"></i><b>2.2</b> ETS(AAN) model</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#forecast-1"><i class="fa fa-check"></i><b>2.2.1</b> Forecast</a></li>
+<li class="chapter" data-level="2.2.2" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#example-1"><i class="fa fa-check"></i><b>2.2.2</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#etsaaa-model"><i class="fa fa-check"></i><b>2.3</b> ETS(AAA) model</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#forecast-2"><i class="fa fa-check"></i><b>2.3.1</b> Forecast</a></li>
+<li class="chapter" data-level="2.3.2" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#example-2"><i class="fa fa-check"></i><b>2.3.2</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#model-selection"><i class="fa fa-check"></i><b>2.4</b> Model selection</a>
+<ul>
+<li class="chapter" data-level="" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#mean-absolute-error"><i class="fa fa-check"></i>Mean Absolute Error</a></li>
+<li class="chapter" data-level="" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#root-mean-squared-error"><i class="fa fa-check"></i>Root Mean Squared Error</a></li>
+<li class="chapter" data-level="" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#mean-absolute-percentage-error"><i class="fa fa-check"></i>Mean Absolute Percentage Error</a></li>
+<li class="chapter" data-level="" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#symmetric-mean-absolute-percentage-error"><i class="fa fa-check"></i>Symmetric Mean Absolute Percentage Error</a></li>
+<li class="chapter" data-level="" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#mean-absolute-scaled-error"><i class="fa fa-check"></i>Mean Absolute Scaled Error</a></li>
+<li class="chapter" data-level="" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#akaike-information-criterion"><i class="fa fa-check"></i>Akaike Information Criterion</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#examples-1"><i class="fa fa-check"></i><b>2.5</b> Examples</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#model-selection-by-mse"><i class="fa fa-check"></i><b>2.5.1</b> Model selection by MSE</a></li>
+<li class="chapter" data-level="2.5.2" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#model-averaging"><i class="fa fa-check"></i><b>2.5.2</b> Model Averaging</a></li>
+<li class="chapter" data-level="2.5.3" data-path="exponential-smoothing-models.html"><a href="exponential-smoothing-models.html#cross-validation"><i class="fa fa-check"></i><b>2.5.3</b> Cross-validation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="ets-model-variations.html"><a href="ets-model-variations.html"><i class="fa fa-check"></i><b>3</b> ETS model variations</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="ets-model-variations.html"><a href="ets-model-variations.html#etsaadn-damped-trend"><i class="fa fa-check"></i><b>3.1</b> ETS(AAdN): damped trend</a>
+<ul>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#forecast-3"><i class="fa fa-check"></i>Forecast</a></li>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#example-3"><i class="fa fa-check"></i>Example</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="ets-model-variations.html"><a href="ets-model-variations.html#etsmnm-multiplicative-components"><i class="fa fa-check"></i><b>3.2</b> ETS(MNM): multiplicative components</a>
+<ul>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#parameters"><i class="fa fa-check"></i>Parameters</a></li>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#forecast-4"><i class="fa fa-check"></i>Forecast</a></li>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#example-4"><i class="fa fa-check"></i>Example</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="ets-model-variations.html"><a href="ets-model-variations.html#etsmadm-combinations"><i class="fa fa-check"></i><b>3.3</b> ETS(MAdM): combinations</a>
+<ul>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#parameters-1"><i class="fa fa-check"></i>Parameters</a></li>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#forecast-5"><i class="fa fa-check"></i>Forecast</a></li>
+<li class="chapter" data-level="" data-path="ets-model-variations.html"><a href="ets-model-variations.html#example-5"><i class="fa fa-check"></i>Example</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="ets-model-variations.html"><a href="ets-model-variations.html#examples-2"><i class="fa fa-check"></i><b>3.4</b> Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="stationary-process.html"><a href="stationary-process.html"><i class="fa fa-check"></i><b>4</b> Stationary Process</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="stationary-process.html"><a href="stationary-process.html#ma-processes"><i class="fa fa-check"></i><b>4.1</b> MA processes</a></li>
+<li class="chapter" data-level="4.2" data-path="stationary-process.html"><a href="stationary-process.html#examples-3"><i class="fa fa-check"></i><b>4.2</b> Examples</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="arma-processes.html"><a href="arma-processes.html"><i class="fa fa-check"></i><b>5</b> ARMA processes</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="arma-processes.html"><a href="arma-processes.html#ar-process"><i class="fa fa-check"></i><b>5.1</b> AR process</a></li>
+<li class="chapter" data-level="5.2" data-path="arma-processes.html"><a href="arma-processes.html#arma-process"><i class="fa fa-check"></i><b>5.2</b> ARMA process</a></li>
+<li class="chapter" data-level="5.3" data-path="arma-processes.html"><a href="arma-processes.html#examples-4"><i class="fa fa-check"></i><b>5.3</b> Examples</a></li>
+<li class="chapter" data-level="5.4" data-path="arma-processes.html"><a href="arma-processes.html#comparing-ar-ma-and-arma"><i class="fa fa-check"></i><b>5.4</b> Comparing AR, MA and ARMA</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html"><i class="fa fa-check"></i><b>6</b> ARIMA and seasonal ARIMA (sARIMA)</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#unit-root-test"><i class="fa fa-check"></i><b>6.1</b> Unit root test</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#kpss-test"><i class="fa fa-check"></i><b>6.1.1</b> KPSS test</a></li>
+<li class="chapter" data-level="6.1.2" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#adf-test"><i class="fa fa-check"></i><b>6.1.2</b> ADF test</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#seasonal-arima"><i class="fa fa-check"></i><b>6.2</b> Seasonal ARIMA</a>
+<ul>
+<li class="chapter" data-level="" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#step-1-how-many-times-should-i-apply-a-seasonal-differencing"><i class="fa fa-check"></i><strong>Step 1</strong>: How many times should I apply a seasonal differencing?</a></li>
+<li class="chapter" data-level="" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#step-2-how-many-times-should-i-apply-a-first-differencing"><i class="fa fa-check"></i><strong>Step 2</strong>: How many times should I apply a first differencing?</a></li>
+<li class="chapter" data-level="" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#step-3-apply-sarma-models-to-stationary-series."><i class="fa fa-check"></i><strong>Step 3</strong>: Apply SARMA models to stationary series.</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#automatic-arima"><i class="fa fa-check"></i><b>6.3</b> Automatic ARIMA</a></li>
+<li class="chapter" data-level="6.4" data-path="arima-and-seasonal-arima-sarima.html"><a href="arima-and-seasonal-arima-sarima.html#output2equations"><i class="fa fa-check"></i><b>6.4</b> Output2Equations</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html"><i class="fa fa-check"></i><b>7</b> ARIMA with predictors</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#how-to-make-predictors"><i class="fa fa-check"></i><b>7.1</b> How to make predictors?</a></li>
+<li class="chapter" data-level="7.2" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#using-lags"><i class="fa fa-check"></i><b>7.2</b> Using lags</a></li>
+<li class="chapter" data-level="7.3" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#using-function-of-lags"><i class="fa fa-check"></i><b>7.3</b> Using function of lags</a></li>
+<li class="chapter" data-level="7.4" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#time-predictors"><i class="fa fa-check"></i><b>7.4</b> Time predictors</a></li>
+<li class="chapter" data-level="7.5" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#trend-predictors"><i class="fa fa-check"></i><b>7.5</b> Trend predictors</a></li>
+<li class="chapter" data-level="7.6" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#seasonal-and-holidays-dummies"><i class="fa fa-check"></i><b>7.6</b> Seasonal and holidays dummies</a></li>
+<li class="chapter" data-level="7.7" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#sin-and-cos-over-time"><i class="fa fa-check"></i><b>7.7</b> Sin and Cos over time</a></li>
+<li class="chapter" data-level="7.8" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#arima-and-predictors"><i class="fa fa-check"></i><b>7.8</b> ARIMA and predictors</a>
+<ul>
+<li class="chapter" data-level="7.8.1" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#example-1-1"><i class="fa fa-check"></i><b>7.8.1</b> Example 1</a></li>
+<li class="chapter" data-level="7.8.2" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#example-2.-daily-data"><i class="fa fa-check"></i><b>7.8.2</b> Example 2. Daily data</a></li>
+<li class="chapter" data-level="7.8.3" data-path="arima-with-predictors.html"><a href="arima-with-predictors.html#example-3-1"><i class="fa fa-check"></i><b>7.8.3</b> Example 3</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html"><i class="fa fa-check"></i><b>8</b> Missing values, anomalies, structural shift</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#missing-values"><i class="fa fa-check"></i><b>8.1</b> Missing values</a>
+<ul>
+<li class="chapter" data-level="8.1.1" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#imputation-with-linear-interpolation"><i class="fa fa-check"></i><b>8.1.1</b> Imputation with linear interpolation</a></li>
+<li class="chapter" data-level="8.1.2" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#arima-imputation"><i class="fa fa-check"></i><b>8.1.2</b> ARIMA imputation</a></li>
+<li class="chapter" data-level="8.1.3" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#imputation-with-stl-decomposition"><i class="fa fa-check"></i><b>8.1.3</b> Imputation with STL decomposition</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#outliers-and-anomalies"><i class="fa fa-check"></i><b>8.2</b> Outliers and anomalies</a></li>
+<li class="chapter" data-level="8.3" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#structural-shift"><i class="fa fa-check"></i><b>8.3</b> Structural shift</a></li>
+<li class="chapter" data-level="8.4" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#bayesian-structural-model"><i class="fa fa-check"></i><b>8.4</b> Bayesian Structural Model</a></li>
+<li class="chapter" data-level="8.5" data-path="missing-values-anomalies-structural-shift.html"><a href="missing-values-anomalies-structural-shift.html#causal-impact"><i class="fa fa-check"></i><b>8.5</b> Causal impact</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="questions-and-answers.html"><a href="questions-and-answers.html"><i class="fa fa-check"></i><b>9</b> Questions and answers</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="questions-and-answers.html"><a href="questions-and-answers.html#multiseasonality"><i class="fa fa-check"></i><b>9.1</b> Multiseasonality</a></li>
+<li class="chapter" data-level="9.2" data-path="questions-and-answers.html"><a href="questions-and-answers.html#crostons-algorithm"><i class="fa fa-check"></i><b>9.2</b> Croston’s Algorithm</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/daluchkin?tab=repositories">All Repositories</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Applied statistics: Time series analysis</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="exponential-smoothing-models" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">Chapter 2</span> Exponential smoothing models<a href="exponential-smoothing-models.html#exponential-smoothing-models" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="exponential-smoothing-models.html#cb73-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb73-2"><a href="exponential-smoothing-models.html#cb73-2" tabindex="-1"></a><span class="fu">library</span>(fpp3)</span>
+<span id="cb73-3"><a href="exponential-smoothing-models.html#cb73-3" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb73-4"><a href="exponential-smoothing-models.html#cb73-4" tabindex="-1"></a><span class="fu">library</span>(rio)</span></code></pre></div>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="exponential-smoothing-models.html#cb74-1" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="fu">paste0</span>(<span class="fu">getwd</span>(), <span class="st">&#39;/00_data/marriages.csv&#39;</span>))</span>
+<span id="cb74-2"><a href="exponential-smoothing-models.html#cb74-2" tabindex="-1"></a><span class="fu">glimpse</span>(m)</span></code></pre></div>
+<pre><code>## Rows: 24,852
+## Columns: 4
+## $ code  &lt;int64&gt; 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1000000000, 1…
+## $ name  &lt;chr&gt; &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Алтайский край&quot;, &quot;Ал…
+## $ total &lt;int&gt; 953, 1007, 1311, 1554, 562, 1900, 2338, 3034, 2460, 1762, 1411, 1554, 1069, 1221, 1330, 1774, 609, 2107, 2708, 3272, 2483, 1825, 1721, 1940, 1006, …
+## $ date  &lt;IDate&gt; 2006-01-01, 2006-02-01, 2006-03-01, 2006-04-01, 2006-05-01, 2006-06-01, 2006-07-01, 2006-08-01, 2006-09-01, 2006-10-01, 2006-11-01, 2006-12-01, 2…</code></pre>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="exponential-smoothing-models.html#cb76-1" tabindex="-1"></a>ts_marriages <span class="ot">&lt;-</span> m <span class="sc">|&gt;</span></span>
+<span id="cb76-2"><a href="exponential-smoothing-models.html#cb76-2" tabindex="-1"></a>                <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">yearmonth</span>(date)) <span class="sc">|&gt;</span></span>
+<span id="cb76-3"><a href="exponential-smoothing-models.html#cb76-3" tabindex="-1"></a>                <span class="fu">as_tsibble</span>(<span class="at">index =</span> date, <span class="at">key =</span> <span class="fu">c</span>(<span class="st">&#39;code&#39;</span>, <span class="st">&#39;name&#39;</span>))</span>
+<span id="cb76-4"><a href="exponential-smoothing-models.html#cb76-4" tabindex="-1"></a><span class="fu">glimpse</span>(ts_marriages)</span></code></pre></div>
+<pre><code>## Rows: 24,852
+## Columns: 4
+## Key: code, name [109]
+## $ code  &lt;int64&gt; 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 3…
+## $ name  &lt;chr&gt; &quot;Центральный федеральный округ&quot;, &quot;Центральный федеральный округ&quot;, &quot;Центральный федеральный округ&quot;, &quot;Центральный федеральный округ&quot;, &quot;Центральный фе…
+## $ total &lt;int&gt; 14845, 16414, 15753, 21803, 9384, 29571, 35691, 39263, 40480, 24137, 21207, 19009, 15433, 17430, 13878, 29703, 10529, 31572, 41328, 42609, 41779, 2…
+## $ date  &lt;mth&gt; 2006 Jan, 2006 Feb, 2006 Mar, 2006 Apr, 2006 May, 2006 Jun, 2006 Jul, 2006 Aug, 2006 Sep, 2006 Oct, 2006 Nov, 2006 Dec, 2007 Jan, 2007 Feb, 2007 Ma…</code></pre>
+<div id="etsann-model" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> ETS(ANN) model<a href="exponential-smoothing-models.html#etsann-model" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong>ETS</strong> - <strong>E</strong>rror, <strong>T</strong>rend, <strong>S</strong>easonality.<br />
+<strong>ANN</strong> - <strong>A</strong>dditive error, <strong>N</strong>o trend, <strong>N</strong>o seasonality.</p>
+<ul>
+<li><span class="math inline">\(y_t\)</span> - observed time series</li>
+<li><span class="math inline">\(l_t\)</span> - trend, cleaned time series</li>
+<li><span class="math inline">\(u_t\)</span> - random error</li>
+</ul>
+<p><span class="math display">\[
+y_t = l_{t-1} + u_t
+\]</span></p>
+<p>Assume</p>
+<ul>
+<li><span class="math inline">\(l_t = l_{t-1} + \alpha u_t\)</span>, <span class="math inline">\(l_0\)</span> - start value.</li>
+<li><span class="math inline">\(u_t \sim \mathcal{N}(0,\,\sigma^{2})\)</span> and independent.</li>
+</ul>
+<p>Parameters of the model: <span class="math inline">\(\alpha, \sigma^2, l_0\)</span>.</p>
+<p><span class="math display">\[
+\begin{cases}
+y_t = l_{t-1} + u_t \\
+l_t = l_{t-1} + \alpha u_t, l_0 - \text {start value} \\
+u_t \sim \mathcal{N}(0,\,\sigma^{2}) \text { and independent}
+\end{cases}
+\]</span></p>
+<div id="forecast" class="section level3 hasAnchor" number="2.1.1">
+<h3><span class="header-section-number">2.1.1</span> Forecast<a href="exponential-smoothing-models.html#forecast" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="one-step-forecast" class="section level4 unnumbered hasAnchor">
+<h4>One-step forecast<a href="exponential-smoothing-models.html#one-step-forecast" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><span class="math display">\[
+y_{T+1} = l_T + u_{T+1}
+\]</span></p>
+<p><span class="math display">\[
+(y_{T+1}|\mathcal{F_T}) \sim \mathcal{N}(l_T, \sigma^2)
+\]</span></p>
+</div>
+<div id="two-step-forecast" class="section level4 unnumbered hasAnchor">
+<h4>Two-step forecast<a href="exponential-smoothing-models.html#two-step-forecast" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><span class="math display">\[
+y_{T+2} = l_{T+1} + u_{T+2} = l_T + \alpha u_{T+1} + u_{T+2}
+\]</span></p>
+<p><span class="math display">\[
+(y_{T+2}|\mathcal{F_T}) \sim \mathcal{N}(l_T, \sigma^2(\alpha^2 + 1))
+\]</span></p>
+</div>
+<div id="predictive-interval" class="section level4 unnumbered hasAnchor">
+<h4>Predictive Interval<a href="exponential-smoothing-models.html#predictive-interval" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><span class="math display">\[
+[\hat l_T - 1.96\hat\sigma\sqrt{\hat\alpha^2+1}; \hat l_T + 1.96\hat\sigma\sqrt{\hat\alpha^2+1}]
+\]</span></p>
+</div>
+<div id="simple-exponential-smoothing" class="section level4 unnumbered hasAnchor">
+<h4>Simple exponential smoothing<a href="exponential-smoothing-models.html#simple-exponential-smoothing" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><span class="math display">\[
+\begin{cases}
+y_t = l_{t-1} + u_t \\
+l_t = l_{t-1} + \alpha u_t, l_0 - \text {start value}
+\end{cases}
+\]</span></p>
+<p><span class="math display">\[
+l_t = l_{t-1} + \alpha(y_t-l_{t-1}) = \alpha y_t + (1-\alpha)l_{t-1}
+\]</span></p>
+<p><span class="math display">\[
+\hat l_1 = y_1
+\]</span></p>
+<p><span class="math display">\[
+\hat l_t = \alpha y_t + (1-\alpha)\hat l_{t-1}
+\]</span></p>
+<p><span class="math display">\[
+\min_{\alpha} \sum (y_t - \hat l_t)^2
+\]</span></p>
+</div>
+</div>
+<div id="example" class="section level3 hasAnchor" number="2.1.2">
+<h3><span class="header-section-number">2.1.2</span> Example<a href="exponential-smoothing-models.html#example" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="exponential-smoothing-models.html#cb78-1" tabindex="-1"></a>rf_m <span class="ot">&lt;-</span> ts_marriages <span class="sc">|&gt;</span></span>
+<span id="cb78-2"><a href="exponential-smoothing-models.html#cb78-2" tabindex="-1"></a>  <span class="fu">filter</span>(code <span class="sc">==</span> <span class="dv">643</span>, <span class="sc">!</span><span class="fu">is.na</span>(total), <span class="fu">yearmonth</span>(date) <span class="sc">&gt;=</span> <span class="fu">yearmonth</span>(<span class="st">&#39;2017 JAN&#39;</span>),</span>
+<span id="cb78-3"><a href="exponential-smoothing-models.html#cb78-3" tabindex="-1"></a>         <span class="fu">yearmonth</span>(date) <span class="sc">&lt;=</span> <span class="fu">yearmonth</span>(<span class="st">&#39;2020 JAN&#39;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="exponential-smoothing-models.html#cb79-1" tabindex="-1"></a><span class="co"># ETS(ANN)</span></span>
+<span id="cb79-2"><a href="exponential-smoothing-models.html#cb79-2" tabindex="-1"></a>rf_m <span class="sc">|&gt;</span></span>
+<span id="cb79-3"><a href="exponential-smoothing-models.html#cb79-3" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&lt;</span> <span class="fu">yearmonth</span>(<span class="st">&#39;2019 Feb&#39;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb79-4"><a href="exponential-smoothing-models.html#cb79-4" tabindex="-1"></a>  <span class="fu">model</span>(<span class="fu">ETS</span>(total <span class="sc">~</span> <span class="fu">error</span>(<span class="st">&#39;A&#39;</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">&#39;N&#39;</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">&#39;N&#39;</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb79-5"><a href="exponential-smoothing-models.html#cb79-5" tabindex="-1"></a>  <span class="fu">forecast</span>(rf_m <span class="sc">|&gt;</span></span>
+<span id="cb79-6"><a href="exponential-smoothing-models.html#cb79-6" tabindex="-1"></a>      <span class="fu">filter</span>(date <span class="sc">&gt;=</span> <span class="fu">yearmonth</span>(<span class="st">&#39;2019 Feb&#39;</span>)), <span class="at">h=</span><span class="dv">12</span>) <span class="sc">|&gt;</span></span>
+<span id="cb79-7"><a href="exponential-smoothing-models.html#cb79-7" tabindex="-1"></a>  <span class="fu">autoplot</span>(rf_m) <span class="sc">+</span></span>
+<span id="cb79-8"><a href="exponential-smoothing-models.html#cb79-8" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&#39;ETS(ANN)&#39;</span>)</span></code></pre></div>
+<pre><code>## Warning: Input forecast horizon `h` will be ignored as `new_data` has been provided.</code></pre>
+<p><img src="_main_files/figure-html/02-exponential-smoothing-5-1.png" width="672" /></p>
+</div>
+</div>
+<div id="etsaan-model" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> ETS(AAN) model<a href="exponential-smoothing-models.html#etsaan-model" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong>ETS</strong> - <strong>E</strong>rror, <strong>T</strong>rend, <strong>S</strong>easonality.<br />
+<strong>AAN</strong> - <strong>A</strong>dditive error, <strong>A</strong>dditive trend, <strong>N</strong>o seasonality.</p>
+<ul>
+<li><span class="math inline">\(y_t\)</span> - observed time series</li>
+<li><span class="math inline">\(l_t\)</span> - trend, cleaned time series</li>
+<li><span class="math inline">\(b_t\)</span> - current speed of growth cleaned time series</li>
+<li><span class="math inline">\(u_t\)</span> - random error</li>
+</ul>
+<p><span class="math display">\[
+\begin{cases}
+y_t = l_{t-1} + b_{t-1} + u_t \\
+l_t = l_{t-1} + b_{t-1} + \alpha u_t, l_0 - \text {start value} \\
+u_t \sim \mathcal{N}(0,\,\sigma^{2}) \text { and independent} \\
+b_t = b_{t-1} + \beta u_t, \beta_0 - \text {start value}
+\end{cases}
+\]</span></p>
+<p>Parameters of the model: <span class="math inline">\(\alpha, \beta, \sigma^2, l_0, b_0\)</span>.</p>
+<div id="forecast-1" class="section level3 hasAnchor" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> Forecast<a href="exponential-smoothing-models.html#forecast-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="one-step-forecast-1" class="section level4 unnumbered hasAnchor">
+<h4>One-step forecast<a href="exponential-smoothing-models.html#one-step-forecast-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><span class="math display">\[
+y_{T+1} = l_T + b_T + u_{T+1}
+\]</span></p>
+<p><span class="math display">\[
+(y_{T+1}|\mathcal{F_T}) \sim \mathcal{N}(l_T + b_T, \sigma^2)
+\]</span></p>
+</div>
+<div id="two-step-forecast-1" class="section level4 unnumbered hasAnchor">
+<h4>Two-step forecast<a href="exponential-smoothing-models.html#two-step-forecast-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><span class="math display">\[
+y_{T+2} = l_{T+1} + b_{T+1} + u_{T+2} = (l_T + b_T+ \alpha u_{T+1}) + (b_T + \beta u_{T+1}) + u_{T+2}
+\]</span></p>
+<p><span class="math display">\[
+(y_{T+2}|\mathcal{F_T}) \sim \mathcal{N}(l_T + 2b_T, \sigma^2((\alpha + \beta)^2 + 1))
+\]</span></p>
+</div>
+</div>
+<div id="example-1" class="section level3 hasAnchor" number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span> Example<a href="exponential-smoothing-models.html#example-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="exponential-smoothing-models.html#cb81-1" tabindex="-1"></a><span class="co"># ETS(AAN)</span></span>
+<span id="cb81-2"><a href="exponential-smoothing-models.html#cb81-2" tabindex="-1"></a>rf_m <span class="sc">|&gt;</span></span>
+<span id="cb81-3"><a href="exponential-smoothing-models.html#cb81-3" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&lt;</span> <span class="fu">yearmonth</span>(<span class="st">&#39;2019 Feb&#39;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb81-4"><a href="exponential-smoothing-models.html#cb81-4" tabindex="-1"></a>  <span class="fu">model</span>(<span class="fu">ETS</span>(total <span class="sc">~</span> <span class="fu">error</span>(<span class="st">&#39;A&#39;</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">&#39;A&#39;</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">&#39;N&#39;</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb81-5"><a href="exponential-smoothing-models.html#cb81-5" tabindex="-1"></a>  <span class="fu">forecast</span>(rf_m <span class="sc">|&gt;</span></span>
+<span id="cb81-6"><a href="exponential-smoothing-models.html#cb81-6" tabindex="-1"></a>       <span class="fu">filter</span>(date <span class="sc">&gt;=</span> <span class="fu">yearmonth</span>(<span class="st">&#39;2019 Feb&#39;</span>)), <span class="at">h=</span><span class="dv">12</span>) <span class="sc">|&gt;</span></span>
+<span id="cb81-7"><a href="exponential-smoothing-models.html#cb81-7" tabindex="-1"></a>  <span class="fu">autoplot</span>(rf_m) <span class="sc">+</span></span>
+<span id="cb81-8"><a href="exponential-smoothing-models.html#cb81-8" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&#39;ETS(AAN)&#39;</span>)</span></code></pre></div>
+<pre><code>## Warning: Input forecast horizon `h` will be ignored as `new_data` has been provided.</code></pre>
+<p><img src="_main_files/figure-html/02-exponential-smoothing-6-1.png" width="672" /></p>
+</div>
+</div>
+<div id="etsaaa-model" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> ETS(AAA) model<a href="exponential-smoothing-models.html#etsaaa-model" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong>ETS</strong> - <strong>E</strong>rror, <strong>T</strong>rend, <strong>S</strong>easonality.<br />
+<strong>AAA</strong> - <strong>A</strong>dditive error, <strong>A</strong>dditive trend, <strong>A</strong>dditive seasonality.</p>
+<ul>
+<li><span class="math inline">\(y_t\)</span> - observed time series</li>
+<li><span class="math inline">\(l_t\)</span> - trend, cleaned time series</li>
+<li><span class="math inline">\(b_t\)</span> - current speed of growth cleaned time series</li>
+<li><span class="math inline">\(s_t\)</span> - seasonal component</li>
+<li><span class="math inline">\(u_t\)</span> - random error</li>
+</ul>
+<p><span class="math display">\[
+\begin{cases}
+y_t = l_{t-1} + b_{t-1} + s_{t-m} + u_t, m - \text{seasonal period} \\
+l_t = l_{t-1} + b_{t-1} + \alpha u_t, l_0 - \text {start value} \\
+u_t \sim \mathcal{N}(0,\,\sigma^{2}) \text { and independent} \\
+b_t = b_{t-1} + \beta u_t, \beta_0 - \text {start value} \\
+s_t = s_{t-m} + \gamma u_t, s_0, s_{-1},..., s_{-(m-1)} - \text{start values}
+\end{cases}
+\]</span></p>
+<p>Parameters of the model: <span class="math inline">\(\alpha, \beta, \gamma, \sigma^2, l_0, b_0, s_0, s_{-1},...,s_{-(m-1)}\)</span>.<br />
+</p>
+<p>Limitation: <span class="math inline">\(s_0 + s_{-1} + ... + s_{-(m-1)} = 0\)</span></p>
+<div id="forecast-2" class="section level3 hasAnchor" number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span> Forecast<a href="exponential-smoothing-models.html#forecast-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="one-step-forecast-2" class="section level4 unnumbered hasAnchor">
+<h4>One-step forecast<a href="exponential-smoothing-models.html#one-step-forecast-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><span class="math display">\[
+y_{T+1} = l_T + b_T + s_{T-11} + u_{T+1}
+\]</span></p>
+<p><span class="math display">\[
+(y_{T+1}|\mathcal{F_T}) \sim \mathcal{N}(l_T + b_T + s_{T-11}, \sigma^2)
+\]</span></p>
+</div>
+<div id="two-step-forecast-2" class="section level4 unnumbered hasAnchor">
+<h4>Two-step forecast<a href="exponential-smoothing-models.html#two-step-forecast-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><span class="math display">\[
+y_{T+2} = l_{T+1} + b_{T+1} + s_{T-10} + u_{T+2} = (l_T + b_T+ \alpha u_{T+1}) + (b_T + \beta u_{T+1}) + s_{T-10} + u_{T+2}
+\]</span></p>
+<p><span class="math display">\[
+(y_{T+2}|\mathcal{F_T}) \sim \mathcal{N}(l_T + 2b_T + s_{T-10}, \sigma^2((\alpha + \beta)^2 + 1))
+\]</span></p>
+</div>
+</div>
+<div id="example-2" class="section level3 hasAnchor" number="2.3.2">
+<h3><span class="header-section-number">2.3.2</span> Example<a href="exponential-smoothing-models.html#example-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="exponential-smoothing-models.html#cb83-1" tabindex="-1"></a><span class="co"># ETS(AAA)</span></span>
+<span id="cb83-2"><a href="exponential-smoothing-models.html#cb83-2" tabindex="-1"></a>rf_m <span class="sc">|&gt;</span></span>
+<span id="cb83-3"><a href="exponential-smoothing-models.html#cb83-3" tabindex="-1"></a>   <span class="fu">filter</span>(date <span class="sc">&lt;</span> <span class="fu">yearmonth</span>(<span class="st">&#39;2019 Feb&#39;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb83-4"><a href="exponential-smoothing-models.html#cb83-4" tabindex="-1"></a>  <span class="fu">model</span>(<span class="fu">ETS</span>(total <span class="sc">~</span> <span class="fu">error</span>(<span class="st">&#39;A&#39;</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">&#39;A&#39;</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">&#39;A&#39;</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb83-5"><a href="exponential-smoothing-models.html#cb83-5" tabindex="-1"></a>  <span class="fu">forecast</span>(rf_m <span class="sc">|&gt;</span></span>
+<span id="cb83-6"><a href="exponential-smoothing-models.html#cb83-6" tabindex="-1"></a>       <span class="fu">filter</span>(date <span class="sc">&gt;=</span> <span class="fu">yearmonth</span>(<span class="st">&#39;2019 Feb&#39;</span>)), <span class="at">h=</span><span class="dv">12</span>) <span class="sc">|&gt;</span></span>
+<span id="cb83-7"><a href="exponential-smoothing-models.html#cb83-7" tabindex="-1"></a>  <span class="fu">autoplot</span>(rf_m) <span class="sc">+</span></span>
+<span id="cb83-8"><a href="exponential-smoothing-models.html#cb83-8" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&#39;ETS(AAA)&#39;</span>)</span></code></pre></div>
+<pre><code>## Warning: Input forecast horizon `h` will be ignored as `new_data` has been provided.</code></pre>
+<p><img src="_main_files/figure-html/02-exponential-smoothing-7-1.png" width="672" /></p>
+</div>
+</div>
+<div id="model-selection" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> Model selection<a href="exponential-smoothing-models.html#model-selection" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="mean-absolute-error" class="section level3 unnumbered hasAnchor">
+<h3>Mean Absolute Error<a href="exponential-smoothing-models.html#mean-absolute-error" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><span class="math display">\[
+MAE = \frac {|e_{T+1}| + |e_{T+2}|+...+ |e_{T+H}|}{H}
+\]</span></p>
+</div>
+<div id="root-mean-squared-error" class="section level3 unnumbered hasAnchor">
+<h3>Root Mean Squared Error<a href="exponential-smoothing-models.html#root-mean-squared-error" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><span class="math display">\[
+RMSE = \sqrt {\frac {e_{T+1}^2 + e_{T+2}^2+...+ e_{T+H}^2}{H}}
+\]</span></p>
+</div>
+<div id="mean-absolute-percentage-error" class="section level3 unnumbered hasAnchor">
+<h3>Mean Absolute Percentage Error<a href="exponential-smoothing-models.html#mean-absolute-percentage-error" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><span class="math display">\[
+e_{t+h} = y_{t+h} - \hat y_{t+h}
+\]</span></p>
+<p><span class="math display">\[
+p_t = e_t/y_t \times 100
+\]</span></p>
+<p><span class="math display">\[
+MAPE = \frac {|p_{T+1}| + |p_{T+2}| + ... + |p_{T+H}|} H
+\]</span></p>
+</div>
+<div id="symmetric-mean-absolute-percentage-error" class="section level3 unnumbered hasAnchor">
+<h3>Symmetric Mean Absolute Percentage Error<a href="exponential-smoothing-models.html#symmetric-mean-absolute-percentage-error" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><span class="math display">\[
+p_t^s = e_t/(0.5y_t + 0.5 \hat y_t) \times 100
+\]</span></p>
+<p><span class="math display">\[
+sMAPE = \frac {|p_{T+1}^s| + |p_{T+2}^s| + ... + |p_{T+H}^s|} H
+\]</span></p>
+</div>
+<div id="mean-absolute-scaled-error" class="section level3 unnumbered hasAnchor">
+<h3>Mean Absolute Scaled Error<a href="exponential-smoothing-models.html#mean-absolute-scaled-error" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><span class="math display">\[
+\hat y_t^{naive} = y_{t-1}
+\]</span>
+<span class="math display">\[
+\hat y_t^{naive} = y_{t-12}
+\]</span>
+<span class="math display">\[
+q_t = \frac {e_t}{MAE^{naive}}
+\]</span></p>
+<p><span class="math display">\[
+MASE = \frac {|q_{T+1}| + |q_{T+2}|+...+|q_{T+H}|}{H}
+\]</span></p>
+</div>
+<div id="akaike-information-criterion" class="section level3 unnumbered hasAnchor">
+<h3>Akaike Information Criterion<a href="exponential-smoothing-models.html#akaike-information-criterion" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><span class="math display">\[
+AIC = -2lnL + 3k
+\]</span></p>
+</div>
+</div>
+<div id="examples-1" class="section level2 hasAnchor" number="2.5">
+<h2><span class="header-section-number">2.5</span> Examples<a href="exponential-smoothing-models.html#examples-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="model-selection-by-mse" class="section level3 hasAnchor" number="2.5.1">
+<h3><span class="header-section-number">2.5.1</span> Model selection by MSE<a href="exponential-smoothing-models.html#model-selection-by-mse" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="exponential-smoothing-models.html#cb85-1" tabindex="-1"></a><span class="fu">glimpse</span>(ts_marriages)</span></code></pre></div>
+<pre><code>## Rows: 24,852
+## Columns: 4
+## Key: code, name [109]
+## $ code  &lt;int64&gt; 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 3…
+## $ name  &lt;chr&gt; &quot;Центральный федеральный округ&quot;, &quot;Центральный федеральный округ&quot;, &quot;Центральный федеральный округ&quot;, &quot;Центральный федеральный округ&quot;, &quot;Центральный фе…
+## $ total &lt;int&gt; 14845, 16414, 15753, 21803, 9384, 29571, 35691, 39263, 40480, 24137, 21207, 19009, 15433, 17430, 13878, 29703, 10529, 31572, 41328, 42609, 41779, 2…
+## $ date  &lt;mth&gt; 2006 Jan, 2006 Feb, 2006 Mar, 2006 Apr, 2006 May, 2006 Jun, 2006 Jul, 2006 Aug, 2006 Sep, 2006 Oct, 2006 Nov, 2006 Dec, 2007 Jan, 2007 Feb, 2007 Ma…</code></pre>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="exponential-smoothing-models.html#cb87-1" tabindex="-1"></a>rf_m <span class="ot">&lt;-</span> ts_marriages <span class="sc">|&gt;</span></span>
+<span id="cb87-2"><a href="exponential-smoothing-models.html#cb87-2" tabindex="-1"></a>  <span class="fu">filter</span>(code <span class="sc">==</span> <span class="dv">643</span>, <span class="sc">!</span><span class="fu">is.na</span>(total))</span>
+<span id="cb87-3"><a href="exponential-smoothing-models.html#cb87-3" tabindex="-1"></a></span>
+<span id="cb87-4"><a href="exponential-smoothing-models.html#cb87-4" tabindex="-1"></a>rf_m <span class="sc">|&gt;</span></span>
+<span id="cb87-5"><a href="exponential-smoothing-models.html#cb87-5" tabindex="-1"></a>  <span class="fu">gg_tsdisplay</span>()</span></code></pre></div>
+<pre><code>## Plot variable not specified, automatically selected `y = total`</code></pre>
+<p><img src="_main_files/figure-html/02-exponential-smoothing-9-1.png" width="672" /></p>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="exponential-smoothing-models.html#cb89-1" tabindex="-1"></a>train <span class="ot">&lt;-</span> rf_m <span class="sc">|&gt;</span></span>
+<span id="cb89-2"><a href="exponential-smoothing-models.html#cb89-2" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&lt;</span> <span class="fu">yearmonth</span>(<span class="st">&#39;2022 Jan&#39;</span>))</span>
+<span id="cb89-3"><a href="exponential-smoothing-models.html#cb89-3" tabindex="-1"></a></span>
+<span id="cb89-4"><a href="exponential-smoothing-models.html#cb89-4" tabindex="-1"></a>test <span class="ot">&lt;-</span> rf_m <span class="sc">|&gt;</span></span>
+<span id="cb89-5"><a href="exponential-smoothing-models.html#cb89-5" tabindex="-1"></a>  <span class="fu">anti_join</span>(train, <span class="at">by =</span> <span class="st">&#39;date&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="exponential-smoothing-models.html#cb90-1" tabindex="-1"></a>fits <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span></span>
+<span id="cb90-2"><a href="exponential-smoothing-models.html#cb90-2" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">snaive =</span> <span class="fu">SNAIVE</span>(total),</span>
+<span id="cb90-3"><a href="exponential-smoothing-models.html#cb90-3" tabindex="-1"></a>        <span class="at">ets_aaa =</span> <span class="fu">ETS</span>(total <span class="sc">~</span> <span class="fu">error</span>(<span class="st">&#39;A&#39;</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">&#39;A&#39;</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">&#39;A&#39;</span>)),</span>
+<span id="cb90-4"><a href="exponential-smoothing-models.html#cb90-4" tabindex="-1"></a>        <span class="at">ets_ana =</span> <span class="fu">ETS</span>(total <span class="sc">~</span> <span class="fu">error</span>(<span class="st">&#39;A&#39;</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">&#39;N&#39;</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">&#39;A&#39;</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="exponential-smoothing-models.html#cb91-1" tabindex="-1"></a>fc <span class="ot">&lt;-</span> fits <span class="sc">|&gt;</span></span>
+<span id="cb91-2"><a href="exponential-smoothing-models.html#cb91-2" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">&#39;2 years&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="exponential-smoothing-models.html#cb92-1" tabindex="-1"></a>rf_m <span class="sc">|&gt;</span></span>
+<span id="cb92-2"><a href="exponential-smoothing-models.html#cb92-2" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&gt;=</span> <span class="fu">yearmonth</span>(<span class="st">&#39;2015 JAN&#39;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb92-3"><a href="exponential-smoothing-models.html#cb92-3" tabindex="-1"></a>  <span class="fu">autoplot</span>(total) <span class="sc">+</span></span>
+<span id="cb92-4"><a href="exponential-smoothing-models.html#cb92-4" tabindex="-1"></a>  <span class="fu">autolayer</span>(fc <span class="sc">|&gt;</span> <span class="fu">filter</span>(.model <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&#39;snaive&#39;</span>, <span class="st">&#39;ets_aaa&#39;</span>))) <span class="sc">+</span></span>
+<span id="cb92-5"><a href="exponential-smoothing-models.html#cb92-5" tabindex="-1"></a>  <span class="fu">facet_grid</span>(.model <span class="sc">~</span> .)</span></code></pre></div>
+<p><img src="_main_files/figure-html/02-exponential-smoothing-13-1.png" width="672" /></p>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="exponential-smoothing-models.html#cb93-1" tabindex="-1"></a>fc <span class="sc">|&gt;</span></span>
+<span id="cb93-2"><a href="exponential-smoothing-models.html#cb93-2" tabindex="-1"></a>  <span class="fu">accuracy</span>(test)</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 12
+##   .model     code name                 .type     ME   RMSE    MAE   MPE  MAPE  MASE RMSSE  ACF1
+##   &lt;chr&gt;   &lt;int64&gt; &lt;chr&gt;                &lt;chr&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 ets_aaa     643 Российская Федерация Test  12260. 19065. 14733. 17.2   19.3   NaN   NaN 0.403
+## 2 ets_ana     643 Российская Федерация Test  10085. 17827. 13310. 14.3   17.1   NaN   NaN 0.413
+## 3 snaive      643 Российская Федерация Test   6366. 15781. 10086.  5.48  11.4   NaN   NaN 0.561</code></pre>
+</div>
+<div id="model-averaging" class="section level3 hasAnchor" number="2.5.2">
+<h3><span class="header-section-number">2.5.2</span> Model Averaging<a href="exponential-smoothing-models.html#model-averaging" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="exponential-smoothing-models.html#cb95-1" tabindex="-1"></a>fits <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span></span>
+<span id="cb95-2"><a href="exponential-smoothing-models.html#cb95-2" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">snaive =</span> <span class="fu">SNAIVE</span>(total),</span>
+<span id="cb95-3"><a href="exponential-smoothing-models.html#cb95-3" tabindex="-1"></a>        <span class="at">ets_aaa =</span> <span class="fu">ETS</span>(total <span class="sc">~</span> <span class="fu">error</span>(<span class="st">&#39;A&#39;</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">&#39;A&#39;</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">&#39;A&#39;</span>)),</span>
+<span id="cb95-4"><a href="exponential-smoothing-models.html#cb95-4" tabindex="-1"></a>        <span class="at">ets_ana =</span> <span class="fu">ETS</span>(total <span class="sc">~</span> <span class="fu">error</span>(<span class="st">&#39;A&#39;</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">&#39;N&#39;</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">&#39;A&#39;</span>)),</span>
+<span id="cb95-5"><a href="exponential-smoothing-models.html#cb95-5" tabindex="-1"></a>        <span class="at">ets_aaa_ln =</span> <span class="fu">ETS</span>(<span class="fu">log</span>(total) <span class="sc">~</span> <span class="fu">error</span>(<span class="st">&#39;A&#39;</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">&#39;A&#39;</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">&#39;A&#39;</span>)),</span>
+<span id="cb95-6"><a href="exponential-smoothing-models.html#cb95-6" tabindex="-1"></a>        <span class="at">ets_ana_ln =</span> <span class="fu">ETS</span>(<span class="fu">log</span>(total) <span class="sc">~</span> <span class="fu">error</span>(<span class="st">&#39;A&#39;</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">&#39;N&#39;</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">&#39;A&#39;</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="exponential-smoothing-models.html#cb96-1" tabindex="-1"></a>fc <span class="ot">&lt;-</span> fits <span class="sc">|&gt;</span></span>
+<span id="cb96-2"><a href="exponential-smoothing-models.html#cb96-2" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">&#39;2 years&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="exponential-smoothing-models.html#cb97-1" tabindex="-1"></a>fc <span class="sc">|&gt;</span></span>
+<span id="cb97-2"><a href="exponential-smoothing-models.html#cb97-2" tabindex="-1"></a>  <span class="fu">accuracy</span>(rf_m)</span></code></pre></div>
+<pre><code>## # A tibble: 5 × 12
+##   .model        code name                 .type     ME   RMSE    MAE   MPE  MAPE  MASE RMSSE  ACF1
+##   &lt;chr&gt;      &lt;int64&gt; &lt;chr&gt;                &lt;chr&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 ets_aaa        643 Российская Федерация Test  12260. 19065. 14733. 17.2   19.3 1.16  1.15  0.403
+## 2 ets_aaa_ln     643 Российская Федерация Test   9574. 16092. 10657. 10.8   12.3 0.843 0.974 0.512
+## 3 ets_ana        643 Российская Федерация Test  10085. 17827. 13310. 14.3   17.1 1.05  1.08  0.413
+## 4 ets_ana_ln     643 Российская Федерация Test   6326. 14987.  9674.  6.99  11.0 0.765 0.907 0.511
+## 5 snaive         643 Российская Федерация Test   6366. 15781. 10086.  5.48  11.4 0.798 0.955 0.561</code></pre>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="exponential-smoothing-models.html#cb99-1" tabindex="-1"></a><span class="co"># make combinations</span></span>
+<span id="cb99-2"><a href="exponential-smoothing-models.html#cb99-2" tabindex="-1"></a>fits2 <span class="ot">&lt;-</span> fits <span class="sc">|&gt;</span></span>
+<span id="cb99-3"><a href="exponential-smoothing-models.html#cb99-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">top2 =</span> (ets_ana_ln <span class="sc">+</span> snaive)<span class="sc">/</span><span class="dv">2</span>,</span>
+<span id="cb99-4"><a href="exponential-smoothing-models.html#cb99-4" tabindex="-1"></a>         <span class="at">top3 =</span> (ets_ana_ln <span class="sc">+</span> snaive <span class="sc">+</span> ets_aaa_ln)<span class="sc">/</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="exponential-smoothing-models.html#cb100-1" tabindex="-1"></a>fits2 <span class="sc">|&gt;</span></span>
+<span id="cb100-2"><a href="exponential-smoothing-models.html#cb100-2" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">&#39;2 years&#39;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb100-3"><a href="exponential-smoothing-models.html#cb100-3" tabindex="-1"></a>  <span class="fu">accuracy</span>(rf_m)</span></code></pre></div>
+<pre><code>## # A tibble: 7 × 12
+##   .model        code name                 .type     ME   RMSE    MAE   MPE  MAPE  MASE RMSSE  ACF1
+##   &lt;chr&gt;      &lt;int64&gt; &lt;chr&gt;                &lt;chr&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 ets_aaa        643 Российская Федерация Test  12260. 19065. 14733. 17.2   19.3 1.16  1.15  0.403
+## 2 ets_aaa_ln     643 Российская Федерация Test   9574. 16092. 10657. 10.8   12.3 0.843 0.974 0.512
+## 3 ets_ana        643 Российская Федерация Test  10085. 17827. 13310. 14.3   17.1 1.05  1.08  0.413
+## 4 ets_ana_ln     643 Российская Федерация Test   6326. 14987.  9674.  6.99  11.0 0.765 0.907 0.511
+## 5 snaive         643 Российская Федерация Test   6366. 15781. 10086.  5.48  11.4 0.798 0.955 0.561
+## 6 top2           643 Российская Федерация Test   6346. 15029.  9176.  6.24  10.2 0.726 0.909 0.577
+## 7 top3           643 Российская Федерация Test   7422. 15219.  9284.  7.77  10.3 0.734 0.921 0.568</code></pre>
+</div>
+<div id="cross-validation" class="section level3 hasAnchor" number="2.5.3">
+<h3><span class="header-section-number">2.5.3</span> Cross-validation<a href="exponential-smoothing-models.html#cross-validation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="exponential-smoothing-models.html#cb102-1" tabindex="-1"></a>rf_m <span class="sc">|&gt;</span></span>
+<span id="cb102-2"><a href="exponential-smoothing-models.html#cb102-2" tabindex="-1"></a>  <span class="fu">nrow</span>()</span></code></pre></div>
+<pre><code>## [1] 221</code></pre>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="exponential-smoothing-models.html#cb104-1" tabindex="-1"></a>rf_m_stretch <span class="ot">&lt;-</span> rf_m <span class="sc">|&gt;</span></span>
+<span id="cb104-2"><a href="exponential-smoothing-models.html#cb104-2" tabindex="-1"></a>  <span class="fu">stretch_tsibble</span>(<span class="at">.init =</span> <span class="dv">200</span>, <span class="at">.step =</span> <span class="dv">1</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="exponential-smoothing-models.html#cb105-1" tabindex="-1"></a>fits <span class="ot">&lt;-</span> rf_m_stretch <span class="sc">|&gt;</span></span>
+<span id="cb105-2"><a href="exponential-smoothing-models.html#cb105-2" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">snaive =</span> <span class="fu">SNAIVE</span>(total),</span>
+<span id="cb105-3"><a href="exponential-smoothing-models.html#cb105-3" tabindex="-1"></a>        <span class="at">ets_aaa =</span> <span class="fu">ETS</span>(total <span class="sc">~</span> <span class="fu">error</span>(<span class="st">&#39;A&#39;</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">&#39;A&#39;</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">&#39;A&#39;</span>)),</span>
+<span id="cb105-4"><a href="exponential-smoothing-models.html#cb105-4" tabindex="-1"></a>        <span class="at">ets_ana =</span> <span class="fu">ETS</span>(total <span class="sc">~</span> <span class="fu">error</span>(<span class="st">&#39;A&#39;</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">&#39;N&#39;</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">&#39;A&#39;</span>)),</span>
+<span id="cb105-5"><a href="exponential-smoothing-models.html#cb105-5" tabindex="-1"></a>        <span class="at">ets_aaa_ln =</span> <span class="fu">ETS</span>(<span class="fu">log</span>(total) <span class="sc">~</span> <span class="fu">error</span>(<span class="st">&#39;A&#39;</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">&#39;A&#39;</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">&#39;A&#39;</span>)),</span>
+<span id="cb105-6"><a href="exponential-smoothing-models.html#cb105-6" tabindex="-1"></a>        <span class="at">ets_ana_ln =</span> <span class="fu">ETS</span>(<span class="fu">log</span>(total) <span class="sc">~</span> <span class="fu">error</span>(<span class="st">&#39;A&#39;</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">&#39;N&#39;</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">&#39;A&#39;</span>)))</span>
+<span id="cb105-7"><a href="exponential-smoothing-models.html#cb105-7" tabindex="-1"></a></span>
+<span id="cb105-8"><a href="exponential-smoothing-models.html#cb105-8" tabindex="-1"></a>fits <span class="sc">|&gt;</span></span>
+<span id="cb105-9"><a href="exponential-smoothing-models.html#cb105-9" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb105-10"><a href="exponential-smoothing-models.html#cb105-10" tabindex="-1"></a>  <span class="fu">accuracy</span>(rf_m)</span></code></pre></div>
+<pre><code>## Warning: The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
+## 1 observation is missing at 2024 Jun</code></pre>
+<pre><code>## # A tibble: 5 × 12
+##   .model        code name                 .type    ME   RMSE    MAE    MPE  MAPE  MASE RMSSE  ACF1
+##   &lt;chr&gt;      &lt;int64&gt; &lt;chr&gt;                &lt;chr&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 ets_aaa        643 Российская Федерация Test  1251. 16009. 11867.  0.102  14.8 0.941 0.947 0.526
+## 2 ets_aaa_ln     643 Российская Федерация Test  1068. 15350. 11553. -0.901  14.8 0.916 0.908 0.564
+## 3 ets_ana        643 Российская Федерация Test  2002. 15703. 11344.  1.28   14.1 0.900 0.929 0.518
+## 4 ets_ana_ln     643 Российская Федерация Test   385. 14567. 11041. -1.81   14.4 0.876 0.861 0.487
+## 5 snaive         643 Российская Федерация Test  1178. 22175. 14984. -1.79   17.7 1.19  1.31  0.683</code></pre>
+<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="exponential-smoothing-models.html#cb108-1" tabindex="-1"></a>fits2 <span class="ot">&lt;-</span> fits <span class="sc">|&gt;</span></span>
+<span id="cb108-2"><a href="exponential-smoothing-models.html#cb108-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">top2 =</span> (ets_ana_ln <span class="sc">+</span> ets_ana)<span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb108-3"><a href="exponential-smoothing-models.html#cb108-3" tabindex="-1"></a></span>
+<span id="cb108-4"><a href="exponential-smoothing-models.html#cb108-4" tabindex="-1"></a>fits2 <span class="sc">|&gt;</span></span>
+<span id="cb108-5"><a href="exponential-smoothing-models.html#cb108-5" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb108-6"><a href="exponential-smoothing-models.html#cb108-6" tabindex="-1"></a>  <span class="fu">accuracy</span>(rf_m)</span></code></pre></div>
+<pre><code>## Warning: The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
+## 1 observation is missing at 2024 Jun</code></pre>
+<pre><code>## # A tibble: 6 × 12
+##   .model        code name                 .type    ME   RMSE    MAE    MPE  MAPE  MASE RMSSE  ACF1
+##   &lt;chr&gt;      &lt;int64&gt; &lt;chr&gt;                &lt;chr&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 ets_aaa        643 Российская Федерация Test  1251. 16009. 11867.  0.102  14.8 0.941 0.947 0.526
+## 2 ets_aaa_ln     643 Российская Федерация Test  1068. 15350. 11553. -0.901  14.8 0.916 0.908 0.564
+## 3 ets_ana        643 Российская Федерация Test  2002. 15703. 11344.  1.28   14.1 0.900 0.929 0.518
+## 4 ets_ana_ln     643 Российская Федерация Test   385. 14567. 11041. -1.81   14.4 0.876 0.861 0.487
+## 5 snaive         643 Российская Федерация Test  1178. 22175. 14984. -1.79   17.7 1.19  1.31  0.683
+## 6 top2           643 Российская Федерация Test  1193. 15043. 11158. -0.265  14.2 0.885 0.890 0.505</code></pre>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="components-of-time-series-and-naive-models.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ets-model-variations.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": null,
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "lunr",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+},
+"toolbar": {
+"position": "fixed"
+},
+"info": false
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
