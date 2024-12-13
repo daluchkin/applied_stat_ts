@@ -1,0 +1,200 @@
+# ARMA processes
+
+```{r 05-ARMA-1 }
+
+library(tidyverse)
+library(fpp3)
+library(ggplot2)
+library(rio)
+
+```
+
+## AR process
+
+An $\textbf{AR(p)}$ process is described by the following equation:
+$$
+y_t = c + \beta_1 y_{t-1} + \ldots + \beta_p y_{t-p} + u_t,
+$$
+where $u_t$ represents white noise, and $\beta_p \neq 0$. This process is called a solution of the $MA(\infty)$ relative to $u_t$.
+
+
+$AR(p)$ process is __stationary__.
+
+## ARMA process
+
+An $\textbf{ARMA(p, q)}$ process is described by the following equation:
+
+$$
+y_t = c + \beta_1 y_{t-1} + \ldots + \beta_p y_{t-p} + u_t + \alpha_1 u_{t-1} + \ldots + \alpha_q u_{t-q},
+$$
+
+where $u_t$ represents white noise, $\beta_p \neq 0$, and $\alpha_q \neq 0$. This process is called a solution of the $MA(\infty)$ relative to $u_t$.
+
+
+## Examples
+
+```{r 05-ARMA-2 }
+
+set.seed(777)
+
+```
+
+
+```{r 05-ARMA-3 }
+
+# generate data
+data <- tibble(a = arima.sim(n = 100,
+                             model = list(ar = 0.5)),
+               b = arima.sim(n = 100,
+                             model = list(ar = 0.9)),
+               c = cumsum(rnorm(n = 100, mean = 0, sd = 1)))
+
+```
+
+
+```{r 05-ARMA-4 }
+
+data$year = 2001:2100
+data <- data |> as_tsibble(index = year)
+
+```
+
+
+```{r 05-ARMA-5 }
+
+data |>
+  gg_tsdisplay(a, plot_type = 'partial')
+
+```
+
+```{r 05-ARMA-6 }
+
+data |>
+  gg_tsdisplay(b, plot_type = 'partial')
+
+```
+
+```{r 05-ARMA-7 }
+
+data |>
+  gg_tsdisplay(c, plot_type = 'partial')
+
+```
+
+```{r 05-ARMA-8 }
+
+train <- data |> filter(year < 2081)
+
+```
+
+
+```{r 05-ARMA-9 }
+
+mod_b <- train |>
+  model(ar1 = ARIMA(b ~ pdq(1, 0, 0)), # is correct
+        ma1 = ARIMA(b ~ pdq(0, 0, 1)),
+        naive = NAIVE(b))
+
+```
+
+
+```{r 05-ARMA-10 }
+
+mod_c <- train |>
+  model(ar1 = ARIMA(c ~ pdq(1, 0, 0)),
+        ma1 = ARIMA(c ~ pdq(0, 0, 1)),
+        naive = NAIVE(c)) # is correct
+
+```
+
+
+```{r 05-ARMA-11 }
+
+fc_b <- mod_b |> forecast(h = 20)
+fc_c <- mod_c |> forecast(h = 20)
+
+```
+
+
+```{r 05-ARMA-12 }
+
+fc_b |> autoplot(data |> filter(year > 2050))
+
+```
+
+```{r 05-ARMA-13 }
+
+fc_c |> autoplot(data |> filter(year > 2050))
+
+```
+
+## Comparing AR, MA and ARMA
+
+```{r 05-ARMA-14 }
+m <- import(paste0(getwd(), '/00_data/marriages.csv'))
+glimpse(m)
+```
+
+```{r 05-ARMA-15 }
+
+m_agg <- m |> mutate(year = year(date)) |> 
+  select(-date) |>
+  group_by(code, name, year) |>
+  summarise(sum = sum(total),
+            max = max(total),
+            .groups = 'keep')
+
+glimpse(m_agg)
+
+```
+
+```{r 05-ARMA-16 }
+
+rfy <- m_agg |> filter(code == 643) |>
+  as_tsibble(index = year)
+
+rfy |>
+  gg_tsdisplay(sum, plot_type = 'partial')  
+
+```
+
+```{r 05-ARMA-17 }
+
+train <- rfy |> filter(year < 2020)
+
+models <- train |>
+  model(ar1 = ARIMA(sum ~ pdq(1, 0, 0)),
+        ma1 = ARIMA(sum ~ pdq(0, 0, 1)),
+        naive = NAIVE(sum),
+        arma11 = ARIMA(sum ~ pdq(1, 0, 1)))
+
+```
+
+
+```{r 05-ARMA-18 }
+
+report(models$ar1[[1]])
+
+```
+```{r 05-ARMA-19 }
+
+nrow(train)
+nrow(rfy)
+
+```
+
+```{r 05-ARMA-20 }
+
+fc <- models |>
+  forecast(h = 5)
+
+```
+
+
+```{r 05-ARMA-21 }
+
+fc |> accuracy(rfy)
+
+```
+
+

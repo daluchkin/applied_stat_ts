@@ -1,0 +1,250 @@
+# ARIMA and seasonal ARIMA (sARIMA)
+
+```{r 06-ARIMA-sARIMA-1 }
+
+library(tidyverse)
+library(fpp3)
+library(ggplot2)
+library(rio)
+library(urca)
+
+```
+
+> How to choose $ARIMA(p,0,q), ARIMA(p,1,q)$ or $ARIMA(p,2,q)$?
+
+1.  Looking at the plot. The variance of a stationary process is
+    constant (approximately).
+2.  Cross-validation
+3.  Unit root test
+
+-   ARMA: only for stationary process
+-   ARIMA: for non-stationary process
+
+## Unit root test
+
+```{r 06-ARIMA-sARIMA-2 }
+m <- import(paste0(getwd(), '/00_data/marriages.csv'))
+glimpse(m)
+```
+
+```{r 06-ARIMA-sARIMA-3 }
+ts_marriages <- m |>
+                mutate(date = yearmonth(date)) |>
+                as_tsibble(index = date, key = c('code', 'name'))
+glimpse(ts_marriages)
+
+```
+
+```{r 06-ARIMA-sARIMA-4 }
+
+rf_m <- ts_marriages |>
+  filter(code == 643, !is.na(total))
+
+```
+
+```{r 06-ARIMA-sARIMA-5 }
+
+rf_m |>
+  gg_tsdisplay(total)
+
+```
+
+### KPSS test
+
+```{r 06-ARIMA-sARIMA-6 }
+
+kpss_res <- ur.kpss(rf_m$total, type = 'mu')
+
+# H0: ts = mu + stat (stationary)
+# Ha: ts = mu + stat + rw
+
+summary(kpss_res)
+
+# => H0 is rejected => difference is needed
+
+```
+
+### ADF test
+
+```{r 06-ARIMA-sARIMA-7 }
+
+adf_res <- ur.df(rf_m$total, type = 'drift', selectlags = 'AIC')
+
+# H0: non-stationary process ts = ARIMA(p,1,q) + trend
+# Ha: stationary process ts = ARIMA(p,0,q) + const
+
+summary(adf_res)
+
+# => H0 is rejected => difference is not needed
+
+```
+
+## Seasonal ARIMA
+
+How to choose: $SARIMA(p, 0, q)(P, 0 , Q)$ or
+$SARIMA(p, 0, q)(P, 1 , Q)[12]$?
+
+### **Step 1**: How many times should I apply a seasonal differencing? {-}
+
+-   **Step 1**: Apply STL decomposition
+    $y_t = trend_t + season_t + remainder_t$
+-   **Step 2**: Calculate $F_{season}$:
+    $F_{season} = max\{1 - \frac {sVar(remainder)}{sVar(season + remainder)}, 0\}$
+-   **Step 3**: If $F_{season}$ is below the threshold, then work with
+    source series, otherwise, apply seasonal differencing. Repeat steps
+    1-3 for seasonally differenced series and apply a second difference
+    if it's needed.
+
+### **Step 2**: How many times should I apply a first differencing? {-}
+
+Apply the KPSS test with constant to the origin series:
+
+-   If $H_0$ is not rejected, then work with the origin series,
+    otherwise, apply the test to the first differenced series. Repeat
+    the step, if $H_0$ is rejected, then work with the second
+    differenced test, otherwise, work with the first differenced series.
+
+### **Step 3**: Apply SARMA models to stationary series. {-}
+
+-   Choose the best model by AIC (min.).
+
+## Automatic ARIMA
+
+```{r 06-ARIMA-sARIMA-8 }
+
+# 1. Look at the plot, ACF, PACF
+
+rf_m |>
+  gg_tsdisplay(total, plot_type = 'partial')
+
+```
+
+Observations:
+
+-   ACF is sinusoidal - it is typical for seasonal series
+-   PACF: non-seasonal is exponentially decaying, but there is one
+    significant seasonal lag. AR(1) p=1 for no-seasonal part, and AR(1)
+    P=1 for seasonal part.
+
+```{r 06-ARIMA-sARIMA-9 }
+
+train <- rf_m |> filter(date <= yearmonth('2022 May'))
+
+models <- train |>
+  model(snaive = SNAIVE(total),
+        theta = THETA(total),
+        auto = ARIMA(total), # Khandakar-Hyndman Method
+        sarima111_x11 = ARIMA(total ~ 0 + pdq(1,1,1) + PDQ(0:1,1,1))
+  )
+
+```
+
+```{r 06-ARIMA-sARIMA-10 }
+
+models$auto[[1]] |> report()
+
+```
+
+```{r 06-ARIMA-sARIMA-11 }
+
+models$sarima111_x11[[1]] |> report()
+
+```
+
+```{r 06-ARIMA-sARIMA-12 }
+
+fc <- models |>
+  forecast(h = 2)
+
+```
+
+```{r 06-ARIMA-sARIMA-13 }
+
+fc |> accuracy(rf_m) |> select(-code, -name)
+
+```
+
+Using cross validation.
+
+```{r 06-ARIMA-sARIMA-14 }
+
+m_slide = rf_m |> slide_tsibble(.size = 60, .step = 1)
+
+m_slide
+
+```
+
+```{r 06-ARIMA-sARIMA-15 }
+
+models_slide <- m_slide |>
+  model(snaive = SNAIVE(total),
+        theta = THETA(total),
+        auto = ARIMA(total), # Khandakar-Hyndman Method
+      )
+
+```
+
+```{r 06-ARIMA-sARIMA-16 }
+
+fc_slide <- models_slide |> forecast(h = 1)
+
+fc_slide |> accuracy(rf_m) |> select(-code, -name, -.type)
+
+```
+
+```{r 06-ARIMA-sARIMA-17 }
+
+model_agg <- models_slide |> 
+  mutate(av3 = (auto + snaive + theta)/3,
+         auto_theta = (auto + theta)/2,
+         snaive_theta = (snaive + theta)/2)
+
+```
+
+```{r 06-ARIMA-sARIMA-18 }
+
+fc_slide_agg <- model_agg |> forecast(h = 1)
+
+fc_slide_agg |> accuracy(rf_m) |> select(-code, -name, -.type)
+
+```
+
+## Output2Equations
+
+```{r 06-ARIMA-sARIMA-19 }
+
+train |>
+  model(ARIMA(total ~ pdq(2,1,1) + PDQ(1,1,1))) |>
+  report()
+
+```
+
+Interpretation:
+
+-   ARIMA(2,1,1)(1,1,1)[12]: (2,1,1) - non-seasonal part, (1,1,1) -
+    seasonal part:
+    -   AR part:
+        -   ARIMA(2,**1**,1)(1,1,1) - one non-seasonal lag, $d=1$:
+            $(1 - L)$
+        -   ARIMA(2,1,1)(1,**1**,1) - on seasonal lag, $D=1$:
+            $(1 - L^{12})$
+        -   ARIMA(**2**,1,1)(1,1,1) - AR non-seasonal part, $p=2$, two
+            non-seasonal AR params: $ar1 = -0.9743$, $ar2 = -0.5254$:
+            $(1 - (-0.9743) \cdot L - (-0.5254)\cdot L^2)$
+        -   ARIMA(2,1,1)(**1**,1,1) - AR seasonal part, $p=1$, one
+            seasonal AR param: $sar1 = 0.0343$:
+            $(1 - (0.0343) \cdot L^{12})$
+        -   **AR summary**:
+            $(1 - L) \cdot (1 - L^{12}) \cdot (1 - (-0.9743) \cdot L - (-0.5254)\cdot L^2) \cdot (1 - (0.0343) \cdot L^{12}) \cdot y_t$
+    -   MA part:
+        -   ARIMA(2,1,**1**)(1,1,1) - one non-seasonal lag, $q=1$,
+            $ma1 = 0.2502$: $(1 + 0.2502 \cdot L)$
+        -   ARIMA(2,1,1)(1,1,**1**) - one seasonal lag, $Q=1$,
+            $sma1 = -0.7840$: $(1 - 0.7840 \cdot L^{12})$
+        -   **MA summary**:
+            $(1 + 0.2502 \cdot L) \cdot (1 - 0.7840 \cdot L^{12}) \cdot u_t$,
+            where $u_t$ is white noise.
+
+The equation: $$
+(1 - L) \cdot (1 - L^{12}) \cdot (1 - (-0.9743) \cdot L - (-0.5254)\cdot L^2) \cdot (1 - (0.0343) \cdot L^{12}) \cdot y_t = \\(1 + 0.2502 \cdot L) \cdot (1 - 0.7840 \cdot L^{12}) \cdot u_t
+$$

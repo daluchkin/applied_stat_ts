@@ -1,0 +1,404 @@
+# Components of time series and naive models
+
+## What is time series?
+
+A time series is a sequence of observations or random variables ordered by time.
+
+## Time Series Components
+
+-   Trend, cyclicity, seasonality
+-   Additive and multiplicative decomposition
+
+The **additive** decomposition of a time series is represented as:
+
+$$Y_t = T_t + S_t + R_t$$
+
+where:
+
+- $Y_t$ is the observed value at time $t$,\
+- $T_t$ is the trend component,\
+- $S_t$ is the seasonal component,\
+- $R_t$ is the residual (or random) component.
+
+**Trend** is a smoothly changing component of a time series.
+
+**Seasonality** is a strong periodic component with stable intensity.
+
+The **multiplicative** decomposition of a time series is represented as:
+
+$$Y_t = T_t \times S_t \times R_t$$
+
+where:\
+- $Y_t$ is the observed value at time $t$,\
+- $T_t$ is the trend component,\
+- $S_t$ is the seasonal component,\
+- $R_t$ is the residual (or random) component.
+
+Transform additive to multiplicative:
+
+$$ln(Y_t) = ln(T_t \times S_t \times R_t) = ln(T_t) + ln(S_t) + ln(R_t)$$
+
+## Algorithm STL
+
+STL - Seasonal Trend Decomposition with Loess.
+
+Loess - local linear regression.
+
+## Time Series Characteristics
+
+### ACF {-}
+
+$\hat{y}_t = \hat{\beta}_1 + \hat{\beta}_2 y_{t-1}, ACF_1 = \hat{\beta}_2$
+
+$\hat{y}_t = \hat{\beta}_1 + \hat{\beta}_2 y_{t-1}, ACF_2 = \hat{\beta}_2$
+
+$\hat{y}_t = \hat{\beta}_1 + \hat{\beta}_2 y_{t-k}, ACF_k = \hat{\beta}_2$
+
+$ACF_k$ is a sample correlation between $y_t$ and $y_{t-k}$
+
+### PACF {-}
+
+$\hat{y}_t = \hat{\alpha} + \hat{\beta}_1y_{t-1}, PACF_1 = \hat{\beta}_1$
+
+$\hat{y}_t = \hat{\alpha} + \hat{\beta}_1 y_{t-1} + \hat{\beta}_2 y_{t-2}, PACF_2 = \hat{\beta}_2$
+
+$\hat{y}_t = \hat{\alpha} + \hat{\beta}_1 y_{t-1} + ... + \hat{\beta}_k y_{t-k}, PACF_k = \hat{\beta}_k$
+
+## Simple Models
+
+### White Noise {-}
+
+Time series $u_t$ is a white noise, if:
+
+-   $\mathbb{E}(u_t) = 0$
+-   $Var(u_t) = \sigma^2$
+-   $Cov(u_s, u_t) = 0, s \neq t$
+
+> White noise is a part of **each** statistical model.
+
+### Model with independent observations {-}
+
+$y_t = \mu + u_t$, where $u_t$ - white noise, $u_t \sim \mathcal{N}(0, \sigma^2)$
+
+### Naive Model (Random Walk) {-}
+
+$y_t = y_{t-1} + u_t$, where $u_t$ - white noise, $u_t \sim \mathcal{N}(0, \sigma^2)$, $y_1$ is known.
+
+### Seasonal Random Walk {-}
+
+$y_t = y_{t-12} + u_t$, where $u_t$ - white noise, $u_t \sim \mathcal{N}(0, \sigma^2)$, $y_1, ..., y_{11}$ are known.
+
+## Examples
+
+### Time series from scratch
+
+Load libraries.
+
+```{r 01-time-series-components-1 }
+# loading libraries
+library(tidyverse)
+library(fpp3)
+
+```
+
+Create time series from scratch.
+
+```{r 01-time-series-components-2 }
+
+set.seed(777)
+n_obs <- 120
+two <- tsibble(date = yearmonth(ymd('2010-01-01') + months(0: (n_obs - 1))),
+               iid = rnorm(n_obs, mean = 10, sd = 4),
+               rwalk = 10 + cumsum(rnorm(n_obs, mean = 0, sd = 1)),
+               index = date)
+two
+
+```
+
+Have a look at the data.
+
+```{r 01-time-series-components-3 }
+
+two |>
+  autoplot(iid) +
+  xlab('Date') +
+  ylab('IID') +
+  ggtitle('Independent observations')
+
+```
+
+```{r 01-time-series-components-4 }
+
+two |>
+  autoplot(rwalk) +
+  xlab('Date') +
+  ylab('rwalk') +
+  ggtitle('Random walk')
+
+```
+
+Seasonal plots.
+
+```{r 01-time-series-components-5 }
+
+two |> 
+  gg_season(rwalk)
+
+```
+
+```{r 01-time-series-components-6 }
+
+two |>
+  gg_subseries(rwalk)
+
+```
+
+```{r 01-time-series-components-7 }
+
+# random walk
+two |>
+  gg_lag(rwalk)
+
+```
+
+```{r 01-time-series-components-8 }
+
+# independent observations
+two |>
+  gg_lag(iid)
+
+```
+
+```{r 01-time-series-components-9 }
+
+two |> gg_tsdisplay(rwalk, plot_type = 'season')
+
+```
+
+### Time Series data cleaning
+
+1. Libraries loading
+```{r 01-time-series-components-10 }
+
+# loading libs
+library(tidyverse)
+library(fpp3)
+library(rio)
+
+```
+2. Data Loading
+
+```{r 01-time-series-components-11 }
+
+d <- import(paste0(getwd(), '/00_data/rf_marriage.xlsx'), skip = 2)
+head(d)
+glimpse(d)
+
+```
+
+3. Data cleaning
+
+```{r 01-time-series-components-12 }
+
+colnames(d)[1:3] <- c('region', 'unit', 'period')
+glimpse(d)
+
+```
+
+```{r 01-time-series-components-13 }
+
+d$period |> unique()
+
+```
+```{r 01-time-series-components-14 }
+
+nchar(d$period |> unique())
+
+```
+
+```{r 01-time-series-components-15 }
+
+d2 <- d |> filter(nchar(period) < 13)
+d2$period |> unique()
+
+```
+
+```{r 01-time-series-components-16 }
+
+month_dict <- tibble(period = unique(d2$period),
+                     month = 1:12)
+month_dict
+
+```
+
+```{r 01-time-series-components-17 }
+
+d3 <- d2 |> left_join(month_dict, by = 'period')
+head(d3)
+
+```
+
+```{r 01-time-series-components-18 }
+
+d4 <- d3 |> select(-unit, -period)
+head(d4)
+
+```
+
+```{r 01-time-series-components-19 }
+
+d5 <- d4 |>
+  pivot_longer(cols = `2006`:`2024`, names_to = 'year', values_to = 'total')
+head(d5)
+glimpse(d5)
+
+```
+
+```{r 01-time-series-components-20 }
+
+d6 <- d5 |>
+  mutate(date = yearmonth(paste0(year, '-', month)))
+glimpse(d6)
+
+```
+```{r 01-time-series-components-21 }
+
+d7 <- d6 |>
+  separate(region, into = c('code', 'name'), sep = ' ', extra = 'merge')
+
+glimpse(d7)
+
+```
+
+```{r 01-time-series-components-22 }
+
+d8 <- d7 |>
+  select(-month, - year)
+glimpse(d8)
+
+```
+```{r 01-time-series-components-23 }
+
+marriages <- as_tsibble(d8, index = date, key = c('code', 'name'))
+marriages
+
+```
+
+```{r 01-time-series-components-24 }
+
+# plot the data
+marriages |>
+  filter(code == 643) |> autoplot()
+
+```
+```{r 01-time-series-components-25 }
+
+marriages |>
+  mutate(date = as.Date(date)) |>
+  export(paste0(getwd(), '/00_data/marriages.csv'))
+
+```
+
+```{r 01-time-series-components-26 }
+
+m <- import(paste0(getwd(), '/00_data/marriages.csv'))
+glimpse(m)
+
+```
+```{r 01-time-series-components-27 }
+
+ts_marriages <- m |>
+                mutate(date = yearmonth(date)) |>
+                as_tsibble(index = date, key = c('code', 'name'))
+glimpse(ts_marriages)
+
+head(ts_marriages)
+
+```
+
+```{r 01-time-series-components-28 }
+
+ts_marriages |>
+  filter(code == 643) |>
+  gg_tsdisplay(total, plot_type = 'season')
+
+```
+
+```{r 01-time-series-components-29 }
+
+m_rf <- ts_marriages |>
+  filter(code == 643)
+
+head(m_rf)
+tail(m_rf, 10)
+
+```
+
+```{r 01-time-series-components-30 }
+
+m_rf_full <- m_rf |>
+  filter(date < ymd('2024-06-01'))
+
+m_rf_full |>
+  gg_tsdisplay(total, plot_type = 'season')
+
+```
+4. Time Series Analysis
+
+```{r 01-time-series-components-31 }
+
+stl_model <- m_rf_full |>
+  model(decomp = STL(total ~ trend(window = 7) + season(window = 100)))
+
+components(stl_model)
+
+```
+
+```{r 01-time-series-components-32 }
+
+stl_model |>
+  components() |>
+    autoplot()
+
+```
+
+```{r 01-time-series-components-33 }
+
+m_rf_full |>
+  model(decomp = STL(total ~ trend(window = 100) + season(window = 100))) |>
+  components() |>
+    autoplot()
+
+```
+
+```{r 01-time-series-components-34 }
+
+m_rf_full |>
+  model(decomp = STL(total ~ trend(window = 100) + season(window = 5))) |>
+  components() |>
+    autoplot()
+
+```
+
+5. Time series features
+
+```{r 01-time-series-components-35 }
+
+marr_features <- ts_marriages |>
+  features(total, features = feat_stl)
+           
+glimpse(marr_features)
+
+```
+
+```{r 01-time-series-components-36, warning=FALSE}
+
+library(ggrepel)
+
+ggplot(marr_features, aes(x = trend_strength, y = seasonal_strength_year, label=name)) +
+  geom_point() +
+  geom_text_repel()
+  
+
+```
+

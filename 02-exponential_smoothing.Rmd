@@ -1,0 +1,483 @@
+# Exponential smoothing models
+
+```{r 02-exponential-smoothing-1 }
+
+library(tidyverse)
+library(fpp3)
+library(ggplot2)
+library(rio)
+
+```
+
+```{r 02-exponential-smoothing-2 }
+
+m <- import(paste0(getwd(), '/00_data/marriages.csv'))
+glimpse(m)
+
+```
+
+```{r 02-exponential-smoothing-3 }
+
+ts_marriages <- m |>
+                mutate(date = yearmonth(date)) |>
+                as_tsibble(index = date, key = c('code', 'name'))
+glimpse(ts_marriages)
+
+```
+
+## ETS(ANN) model
+
+**ETS** - **E**rror, **T**rend, **S**easonality.\
+**ANN** - **A**dditive error, **N**o trend, **N**o seasonality.
+
+-   $y_t$ - observed time series
+-   $l_t$ - trend, cleaned time series
+-   $u_t$ - random error
+
+$$
+y_t = l_{t-1} + u_t
+$$
+
+Assume
+
+-   $l_t = l_{t-1} + \alpha u_t$, $l_0$ - start value.
+-   $u_t \sim \mathcal{N}(0,\,\sigma^{2})$ and independent.
+
+Parameters of the model: $\alpha, \sigma^2, l_0$.
+
+$$
+\begin{cases}
+y_t = l_{t-1} + u_t \\
+l_t = l_{t-1} + \alpha u_t, l_0 - \text {start value} \\
+u_t \sim \mathcal{N}(0,\,\sigma^{2}) \text { and independent}
+\end{cases} 
+$$
+
+### Forecast
+
+#### One-step forecast {-}
+
+$$
+y_{T+1} = l_T + u_{T+1}
+$$
+
+$$
+(y_{T+1}|\mathcal{F_T}) \sim \mathcal{N}(l_T, \sigma^2)
+$$
+
+#### Two-step forecast {-}
+
+$$
+y_{T+2} = l_{T+1} + u_{T+2} = l_T + \alpha u_{T+1} + u_{T+2}
+$$
+
+$$
+(y_{T+2}|\mathcal{F_T}) \sim \mathcal{N}(l_T, \sigma^2(\alpha^2 + 1))
+$$
+
+#### Predictive Interval {-}
+
+$$
+[\hat l_T - 1.96\hat\sigma\sqrt{\hat\alpha^2+1}; \hat l_T + 1.96\hat\sigma\sqrt{\hat\alpha^2+1}]
+$$
+
+
+#### Simple exponential smoothing {-}
+
+$$
+\begin{cases}
+y_t = l_{t-1} + u_t \\
+l_t = l_{t-1} + \alpha u_t, l_0 - \text {start value}
+\end{cases} 
+$$
+
+$$
+l_t = l_{t-1} + \alpha(y_t-l_{t-1}) = \alpha y_t + (1-\alpha)l_{t-1}
+$$
+
+$$
+\hat l_1 = y_1
+$$
+
+$$
+\hat l_t = \alpha y_t + (1-\alpha)\hat l_{t-1}
+$$
+
+$$
+\min_{\alpha} \sum (y_t - \hat l_t)^2
+$$
+
+
+### Example
+
+```{r 02-exponential-smoothing-4 }
+
+rf_m <- ts_marriages |>
+  filter(code == 643, !is.na(total), yearmonth(date) >= yearmonth('2017 JAN'),
+         yearmonth(date) <= yearmonth('2020 JAN'))
+```
+
+```{r 02-exponential-smoothing-5 }
+# ETS(ANN)
+rf_m |>
+  filter(date < yearmonth('2019 Feb')) |>
+  model(ETS(total ~ error('A') + trend('N') + season('N'))) |>
+  forecast(rf_m |>
+      filter(date >= yearmonth('2019 Feb')), h=12) |>
+  autoplot(rf_m) +
+  labs(title = 'ETS(ANN)')
+
+```
+
+
+## ETS(AAN) model
+
+
+**ETS** - **E**rror, **T**rend, **S**easonality.\
+**AAN** - **A**dditive error, **A**dditive trend, **N**o seasonality.
+
+-   $y_t$ - observed time series
+-   $l_t$ - trend, cleaned time series
+-   $b_t$ - current speed of growth cleaned time series
+-   $u_t$ - random error
+
+
+$$
+\begin{cases}
+y_t = l_{t-1} + b_{t-1} + u_t \\
+l_t = l_{t-1} + b_{t-1} + \alpha u_t, l_0 - \text {start value} \\
+u_t \sim \mathcal{N}(0,\,\sigma^{2}) \text { and independent} \\
+b_t = b_{t-1} + \beta u_t, \beta_0 - \text {start value}
+\end{cases} 
+$$
+
+
+Parameters of the model: $\alpha, \beta, \sigma^2, l_0, b_0$.
+
+### Forecast
+
+#### One-step forecast {-}
+
+$$
+y_{T+1} = l_T + b_T + u_{T+1}
+$$
+
+$$
+(y_{T+1}|\mathcal{F_T}) \sim \mathcal{N}(l_T + b_T, \sigma^2)
+$$
+
+#### Two-step forecast {-}
+
+$$
+y_{T+2} = l_{T+1} + b_{T+1} + u_{T+2} = (l_T + b_T+ \alpha u_{T+1}) + (b_T + \beta u_{T+1}) + u_{T+2}
+$$
+
+$$
+(y_{T+2}|\mathcal{F_T}) \sim \mathcal{N}(l_T + 2b_T, \sigma^2((\alpha + \beta)^2 + 1))
+$$
+
+### Example
+
+```{r 02-exponential-smoothing-6 }
+
+# ETS(AAN)
+rf_m |>
+  filter(date < yearmonth('2019 Feb')) |>
+  model(ETS(total ~ error('A') + trend('A') + season('N'))) |>
+  forecast(rf_m |>
+       filter(date >= yearmonth('2019 Feb')), h=12) |>
+  autoplot(rf_m) +
+  labs(title = 'ETS(AAN)')
+
+```
+
+
+
+## ETS(AAA) model
+
+**ETS** - **E**rror, **T**rend, **S**easonality.\
+**AAA** - **A**dditive error, **A**dditive trend, **A**dditive seasonality.
+
+-   $y_t$ - observed time series
+-   $l_t$ - trend, cleaned time series
+-   $b_t$ - current speed of growth cleaned time series
+-   $s_t$ - seasonal component
+-   $u_t$ - random error
+
+
+$$
+\begin{cases}
+y_t = l_{t-1} + b_{t-1} + s_{t-m} + u_t, m - \text{seasonal period} \\
+l_t = l_{t-1} + b_{t-1} + \alpha u_t, l_0 - \text {start value} \\
+u_t \sim \mathcal{N}(0,\,\sigma^{2}) \text { and independent} \\
+b_t = b_{t-1} + \beta u_t, \beta_0 - \text {start value} \\
+s_t = s_{t-m} + \gamma u_t, s_0, s_{-1},..., s_{-(m-1)} - \text{start values}
+\end{cases} 
+$$
+
+
+Parameters of the model: $\alpha, \beta, \gamma, \sigma^2, l_0, b_0, s_0, s_{-1},...,s_{-(m-1)}$. \
+
+Limitation: $s_0 + s_{-1} + ... + s_{-(m-1)} = 0$
+
+
+### Forecast
+
+#### One-step forecast {-}
+
+$$
+y_{T+1} = l_T + b_T + s_{T-11} + u_{T+1}
+$$
+
+$$
+(y_{T+1}|\mathcal{F_T}) \sim \mathcal{N}(l_T + b_T + s_{T-11}, \sigma^2)
+$$
+
+#### Two-step forecast {-}
+
+$$
+y_{T+2} = l_{T+1} + b_{T+1} + s_{T-10} + u_{T+2} = (l_T + b_T+ \alpha u_{T+1}) + (b_T + \beta u_{T+1}) + s_{T-10} + u_{T+2}
+$$
+
+$$
+(y_{T+2}|\mathcal{F_T}) \sim \mathcal{N}(l_T + 2b_T + s_{T-10}, \sigma^2((\alpha + \beta)^2 + 1))
+$$
+
+### Example
+
+```{r 02-exponential-smoothing-7 }
+
+# ETS(AAA)
+rf_m |>
+   filter(date < yearmonth('2019 Feb')) |>
+  model(ETS(total ~ error('A') + trend('A') + season('A'))) |>
+  forecast(rf_m |>
+       filter(date >= yearmonth('2019 Feb')), h=12) |>
+  autoplot(rf_m) +
+  labs(title = 'ETS(AAA)')
+
+```
+
+
+## Model selection
+
+
+### Mean Absolute Error {-}
+
+$$
+MAE = \frac {|e_{T+1}| + |e_{T+2}|+...+ |e_{T+H}|}{H}
+$$
+
+
+### Root Mean Squared Error {-}
+
+$$
+RMSE = \sqrt {\frac {e_{T+1}^2 + e_{T+2}^2+...+ e_{T+H}^2}{H}}
+$$
+
+
+### Mean Absolute Percentage Error {-}
+
+$$
+e_{t+h} = y_{t+h} - \hat y_{t+h}
+$$
+
+$$
+p_t = e_t/y_t \times 100
+$$
+
+$$
+MAPE = \frac {|p_{T+1}| + |p_{T+2}| + ... + |p_{T+H}|} H
+$$
+
+
+### Symmetric Mean Absolute Percentage Error {-}
+
+$$
+p_t^s = e_t/(0.5y_t + 0.5 \hat y_t) \times 100
+$$
+
+
+$$
+sMAPE = \frac {|p_{T+1}^s| + |p_{T+2}^s| + ... + |p_{T+H}^s|} H
+$$
+
+### Mean Absolute Scaled Error {-}
+
+$$
+\hat y_t^{naive} = y_{t-1}
+$$
+$$
+\hat y_t^{naive} = y_{t-12}
+$$
+$$
+q_t = \frac {e_t}{MAE^{naive}}
+$$
+
+$$
+MASE = \frac {|q_{T+1}| + |q_{T+2}|+...+|q_{T+H}|}{H}
+$$
+
+
+### Akaike Information Criterion {-}
+
+$$
+AIC = -2lnL + 3k
+$$
+
+## Examples
+
+### Model selection by MSE
+
+```{r 02-exponential-smoothing-8 }
+
+glimpse(ts_marriages)
+
+```
+
+```{r 02-exponential-smoothing-9 }
+
+rf_m <- ts_marriages |>
+  filter(code == 643, !is.na(total))
+
+rf_m |>
+  gg_tsdisplay()
+
+```
+
+
+```{r 02-exponential-smoothing-10 }
+
+train <- rf_m |>
+  filter(date < yearmonth('2022 Jan'))
+
+test <- rf_m |>
+  anti_join(train, by = 'date')
+
+```
+
+```{r 02-exponential-smoothing-11 }
+
+fits <- train |>
+  model(snaive = SNAIVE(total),
+        ets_aaa = ETS(total ~ error('A') + trend('A') + season('A')),
+        ets_ana = ETS(total ~ error('A') + trend('N') + season('A')))
+
+```
+
+```{r 02-exponential-smoothing-12 }
+
+fc <- fits |>
+  forecast(h = '2 years')
+
+```
+
+```{r 02-exponential-smoothing-13 }
+
+rf_m |>
+  filter(date >= yearmonth('2015 JAN')) |>
+  autoplot(total) +
+  autolayer(fc |> filter(.model %in% c('snaive', 'ets_aaa'))) +
+  facet_grid(.model ~ .)
+  
+
+```
+
+```{r 02-exponential-smoothing-14 }
+
+fc |>
+  accuracy(test)
+
+```
+
+
+### Model Averaging
+
+```{r 02-exponential-smoothing-15 }
+
+fits <- train |>
+  model(snaive = SNAIVE(total),
+        ets_aaa = ETS(total ~ error('A') + trend('A') + season('A')),
+        ets_ana = ETS(total ~ error('A') + trend('N') + season('A')),
+        ets_aaa_ln = ETS(log(total) ~ error('A') + trend('A') + season('A')),
+        ets_ana_ln = ETS(log(total) ~ error('A') + trend('N') + season('A')))
+
+```
+
+
+```{r 02-exponential-smoothing-16 }
+
+fc <- fits |>
+  forecast(h = '2 years')
+
+```
+
+
+```{r 02-exponential-smoothing-17 }
+
+fc |>
+  accuracy(rf_m)
+
+```
+
+```{r 02-exponential-smoothing-18 }
+
+# make combinations
+fits2 <- fits |>
+  mutate(top2 = (ets_ana_ln + snaive)/2,
+         top3 = (ets_ana_ln + snaive + ets_aaa_ln)/3)
+
+```
+
+
+```{r 02-exponential-smoothing-19 }
+
+fits2 |>
+  forecast(h = '2 years') |>
+  accuracy(rf_m)
+
+```
+
+
+### Cross-validation
+
+```{r 02-exponential-smoothing-20 }
+
+rf_m |>
+  nrow()
+
+```
+
+```{r 02-exponential-smoothing-21 }
+
+rf_m_stretch <- rf_m |>
+  stretch_tsibble(.init = 200, .step = 1)
+
+```
+
+```{r 02-exponential-smoothing-22 }
+
+fits <- rf_m_stretch |>
+  model(snaive = SNAIVE(total),
+        ets_aaa = ETS(total ~ error('A') + trend('A') + season('A')),
+        ets_ana = ETS(total ~ error('A') + trend('N') + season('A')),
+        ets_aaa_ln = ETS(log(total) ~ error('A') + trend('A') + season('A')),
+        ets_ana_ln = ETS(log(total) ~ error('A') + trend('N') + season('A')))
+
+fits |>
+  forecast(h = 1) |>
+  accuracy(rf_m)
+
+```
+
+```{r 02-exponential-smoothing-23 }
+
+fits2 <- fits |>
+  mutate(top2 = (ets_ana_ln + ets_ana)/2)
+
+fits2 |>
+  forecast(h = 1) |>
+  accuracy(rf_m)
+
+```
+

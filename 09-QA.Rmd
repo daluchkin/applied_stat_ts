@@ -1,0 +1,81 @@
+# Questions and answers
+
+
+```{r 09-QA-1 }
+
+library(tidyverse)
+library(fpp3)
+library(ggplot2)
+library(rio)
+library(urca)
+library(imputeTS)
+
+```
+
+## Multiseasonality
+
+
+```{r 09-QA-2 }
+
+bank_calls
+
+```
+
+```{r 09-QA-3 }
+
+bank_calls |>
+  autoplot(Calls)
+
+```
+
+```{r 09-QA-4 }
+
+calls_t <- bank_calls |>
+          mutate(t = row_number()) |>
+          as_tsibble(index = t)
+
+calls_t
+
+```
+
+
+```{r 09-QA-5 }
+
+mod <- calls_t |>
+  model(stl_decomp = STL(Calls ~ season(period = 169) + season(period = 169 * 5)))
+
+mod |>
+  components() |>
+  autoplot()
+
+```
+
+
+## Croston's Algorithm
+
+Generate data.
+
+```{r 09-QA-6 }
+
+n_obs <- 30
+sales <- tibble(t = 1:n_obs,
+                volume = rpois(n = n_obs, 1.2))
+
+```
+
+```{r 09-QA-7 }
+
+sales_ts <- as_tsibble(sales,
+                       index = t)
+
+mods <- sales_ts |>
+  model(crost = CROSTON(volume))
+
+frcst <- mods |>
+  forecast(h = 5)
+
+frcst |>
+  autoplot()
+
+```
+

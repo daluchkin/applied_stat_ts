@@ -1,0 +1,483 @@
+# Missing values, anomalies, structural shift
+
+
+```{r 08-missing-1 }
+
+library(tidyverse)
+library(fpp3)
+library(ggplot2)
+library(rio)
+library(urca)
+library(imputeTS)
+
+```
+
+## Missing values
+
+Data loading.
+
+```{r 08-missing-2 }
+
+air <- AirPassengers |>
+  as_tsibble()
+
+air |>
+  gg_tsdisplay()
+
+```
+
+Create some NA's.
+
+```{r 08-missing-3 }
+
+lair <- log(AirPassengers)
+lair_na <- lair
+where_na <- c(5:6, 30:32, 70, 90:91, 110, 124)
+
+lair_na[where_na] <- NA
+
+```
+
+Plot NA's.
+
+```{r 08-missing-4 }
+
+ggplot_na_distribution(lair_na)
+
+```
+
+```{r 08-missing-5 }
+
+ggplot_na_distribution2(lair_na)
+
+```
+
+### Imputation with linear interpolation
+
+```{r 08-missing-6 }
+
+# linear interpolation
+
+lair_int <- na_interpolation(lair_na)
+
+ggplot_na_imputations(lair_na, lair_int, lair)
+
+```
+
+### ARIMA imputation
+
+```{r 08-missing-7 }
+
+# ARIMA imputation
+
+mod <- arima(lair_na, order = c(1,1,0), seasonal = c(0,1,0))$model
+
+lair_arima <- na_kalman(lair_na, model = mod)
+lair_arima.auto <- na_kalman(lair_na, model = 'auto.arima')
+
+ggplot_na_imputations(lair_na, lair_arima.auto, lair)
+
+```
+
+### Imputation with STL decomposition
+
+```{r 08-missing-8 }
+
+# STL decomposition
+
+lair_seas <- na_seadec(lair_na)
+ggplot_na_imputations(lair_na, lair_seas, lair)
+
+```
+
+## Outliers and anomalies
+
+```{r 08-missing-9 }
+
+library(anomalize)
+library(tibbletime)
+library(lubridate)
+
+```
+
+Make a table from `AirPAssenger`.
+
+```{r 08-missing-10 }
+
+air <- tibble(pass=AirPassengers)
+
+head(air)
+
+```
+
+Add a new column for date.
+
+```{r 08-missing-11 }
+
+n <- nrow(air)
+air2 <- air |> mutate(date = ymd('1949-01-01') + months(0:(n-1)))
+
+air2
+
+```
+Plot the data.
+
+```{r 08-missing-12 }
+
+qplot(data=air2, x = date, y = pass, geom = 'line')
+
+```
+
+Make a log-transformation to stabilize the variance of the data.
+
+```{r 08-missing-13 }
+
+air3 <- air2 |> mutate(ln_pass = log(pass))
+air3
+
+```
+
+Plot the transformed data.
+
+```{r 08-missing-14 }
+
+qplot(data=air3, x = date, y = ln_pass, geom = 'line')
+
+```
+
+Make a couple of anomalies to try to identify them.
+
+```{r 08-missing-15 }
+
+air4 <- air3 |> mutate(ln_pass_an = ln_pass)
+air4$ln_pass_an[30] = 6
+air4$ln_pass_an[110] = 5.3
+
+qplot(data=air4, x = date, y = ln_pass_an, geom = 'line')
+
+```
+
+Run a STL decomposition to identify anomalies.
+
+```{r 08-missing-16 }
+
+decomp <- time_decompose(air4, target = ln_pass_an, frequency = 12)
+
+decomp
+
+```
+
+Identify anomalies by reminder component.
+
+```{r 08-missing-17 }
+
+decomp2 <- anomalize(decomp, target = remainder)
+
+glimpse(decomp2)
+
+```
+
+**Columns:**
+
++ **date:** date of observation
++ **observed:** observed value
++ **season:** seasonal component
++ **trend:** trend component
++ **remainder:** remainder component
++ **remainder_l1:** left bound of the normal value
++ **remainder_l2:** right bound of the normal value
++ **anomaly:** whether the observation is an anomaly or not
+
+
+Plot the anomalies.
+
+```{r 08-missing-18 }
+
+decomp2 |> plot_anomalies()
+
+```
+
+Recompose the left and right bounds into the original variable (transformed).
+
+```{r 08-missing-19 }
+
+decomp3 <- time_recompose(decomp2)
+glimpse(decomp3)
+
+```
+
+Plot the decomposition.
+
+```{r 08-missing-20 }
+
+plot_anomaly_decomposition(decomp2)
+
+```
+
+Clean the data into the origin series (transformed).
+
+```{r 08-missing-21 }
+
+decomp4 <- clean_anomalies(decomp3)
+glimpse(decomp4)
+
+```
+The data are now without anomalies.
+
+```{r 08-missing-22 }
+
+qplot(data=decomp4, x = date, y = observed_cleaned, geom = 'line')
+
+```
+
+## Structural shift
+
+```{r 08-missing-23 }
+
+library(changepoint)
+
+```
+
+
+
+```{r 08-missing-24 }
+
+m <- import('https://github.com/akarlinsky/world_mortality/raw/main/world_mortality.csv')
+glimpse(m)
+
+```
+```{r 08-missing-25 }
+
+m2 <- m |>
+  filter(time_unit == 'monthly', country_name == 'Russia') |>
+  mutate(date = ymd(paste0(year, '-', time, '-01'))) |>
+  select(date, deaths)
+
+qplot(data = m2, x = date, y = deaths, geom = 'line')
+
+```
+
+Make a STL decomposition.
+
+```{r 08-missing-26 }
+
+nm3 <- m2 |>
+  as_tbl_time(index = date)
+
+decomp <- time_decompose(nm3, target = deaths)
+
+```
+
+```{r 08-missing-27 }
+
+decomp
+
+```
+
+Find a structural shift.
+
+```{r 08-missing-28 }
+
+# AMOC = At Most One Changepoint
+one_break <- cpt.mean(nm3$deaths, method = 'AMOC')
+
+one_break
+
+```
+
+Look at the structural shift.
+
+```{r 08-missing-29 }
+
+nm3[64, ]
+
+```
+Plot the structural shift.
+
+```{r 08-missing-30 }
+
+plot(one_break)
+
+# => Assumption: The structural shift because of the COVID
+
+```
+
+Apply 3 structural shifts searching.
+
+```{r 08-missing-31 }
+
+# BigSeg = Binary Segmentation
+all_breaks <- cpt.mean(nm3$deaths, method = 'BinSeg', Q = 3)
+
+all_breaks
+plot(all_breaks)
+
+```
+
+Apply to decomposed series.
+
+```{r 08-missing-32 }
+
+# AMOC = At Most One Changepoint 
+one_break <- cpt.mean(decomp$remainder, method = 'AMOC')
+one_break
+plot(one_break)
+
+```
+
+## Bayesian Structural Model 
+
+```{r 08-missing-33 }
+
+library(bsts)
+
+```
+
+Plot the data.
+
+```{r 08-missing-34 }
+
+plot(AirPassengers)
+
+```
+
+Log the data to stabilize the variance.
+
+```{r 08-missing-35 }
+
+log_air <- log(AirPassengers)
+plot(log_air)
+
+```
+
+Observations:
+
++ Stable variance of the transformed data
++ There is a linear trend
++ There is a seasonality
+
+
+**Step by step:** \
+
+
+1. Create an empty list
+
+```{r 08-missing-36 }
+
+model = list()
+
+```
+
+2. Add a trend
+
+```{r 08-missing-37 }
+
+model <- AddLocalLinearTrend(model, y = log_air)
+
+```
+
+3. Add a season
+
+```{r 08-missing-38 }
+
+model <- AddTrig(model, y = log_air, period = 12, frequencies = 1:2)
+
+```
+
+4. Run generation
+
+```{r 08-missing-39 }
+
+poster <- bsts(log_air, state.specification = model, niter = 2000)
+
+```
+5. Plot the data
+
+```{r 08-missing-40 }
+
+plot(poster, 'components')
+
+```
+
+6. Make forecasts.
+
+```{r 08-missing-41 }
+
+frst <- predict(poster, horizon = 24, quantiles = c(0.05, 0.95),
+                burn = 1000)
+
+frst$mean
+
+```
+
+```{r 08-missing-42 }
+
+plot(frst)
+
+```
+
+## Causal impact
+
+```{r 08-missing-43 }
+
+library(CausalImpact)
+
+```
+
+```{r 08-missing-44 }
+
+m <- import('https://github.com/akarlinsky/world_mortality/raw/main/world_mortality.csv')
+glimpse(m)
+
+```
+```{r 08-missing-45 }
+
+m2 <- m |>
+  filter(time_unit == 'monthly', country_name == 'Russia') |>
+  mutate(date = ymd(paste0(year, '-', time, '-01'))) |>
+  select(date, deaths)
+
+qplot(data = m2, x = date, y = deaths, geom = 'line')
+
+```
+
+```{r 08-missing-46 }
+
+start_covid <- 61 # number of observation when the Covid has been started
+
+impact <- CausalImpact(data = m2$deaths, pre.period = c(1, start_covid-1), 
+                       post.period = c(start_covid, nrow(m2)))
+
+```
+
+
+```{r 08-missing-47}
+
+impact
+
+```
+
+
+```{r 08-missing-48 }
+
+plot(impact)
+
+```
+
+
+```{r 08-missing-49 }
+
+summary(impact)
+
+```
+
+
+```{r 08-missing-50 }
+
+summary(impact, 'report')
+
+```
+
+
+
+

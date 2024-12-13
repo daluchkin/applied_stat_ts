@@ -1,0 +1,184 @@
+# Stationary Process
+
+
+```{r 04-stationarity-1 }
+
+library(tidyverse)
+library(fpp3)
+library(ggplot2)
+library(rio)
+
+```
+
+**Stationary process** is a random process with constant characteristics.
+
+$$
+\begin{cases}
+\mathbb E(y_t) = \mu \\
+Cov(y_t, y_{t+k}) = \gamma_k
+\end{cases}
+$$
++ Random walk is an example of non-stationary process
++ Random sample is an example of stationary process
+
+## MA processes
+
+For a process $y_t$ where $t \in \mathbb Z$, lagged process $Ly_t$ is the same sequence of values with shifted index:
+
+$$
+Ly_t = y_{t-1}
+$$
+
+$$
+L^2y_t = L \cdot L \cdot y_t = L \cdot y_{t-1} = y_{t-2}
+$$
+
+$$
+\bigtriangleup y_t = y_t - y_{t-1} = (1-L)y_t
+$$
+
+Seasonal difference:
+
+$$
+\bigtriangleup_{12} y_t = y_{t} - y_{t-12} = (1-L^{12})y_t
+$$
+
+
+A process $y_t$ that can be written as
+$$
+y_t = \mu + u_t +\alpha_1u_{t-1} +...+\alpha_qu_{t-q},
+$$
+where $\alpha_q \ne 0$ and $u_t$ is a white noise, we can name $MA(q)$ process.
+
+> ACF of MA(q) process suddenly becomes zero for all lags $k > q$.
+
+> PACF of MA(q) process convergates to zero exponentially fast.
+
+> MA(q) process is stationary.
+
+
+## Examples
+
+```{r 04-stationarity-2 }
+
+set.seed(777)
+
+```
+
+
+```{r 04-stationarity-3 }
+
+data <- tibble(y = arima.sim(n = 120, model = list(ma = 0.9)))
+
+data$date <- yearmonth(ymd('2000-12-01') + months(1:120))
+
+data
+
+```
+
+```{r 04-stationarity-4 }
+
+data <- as_tsibble(data, index = date)
+
+data
+
+```
+
+```{r 04-stationarity-5 }
+
+data |> gg_tsdisplay()
+
+```
+
+```{r 04-stationarity-6 }
+
+data |>
+  ACF() |>
+  autoplot()
+
+```
+
+```{r 04-stationarity-7 }
+
+
+data |>
+  PACF() |>
+  autoplot()
+
+
+```
+
+```{r 04-stationarity-8 }
+m <- import(paste0(getwd(), '/00_data/marriages.csv'))
+glimpse(m)
+```
+
+```{r 04-stationarity-9 }
+ts_marriages <- m |>
+                mutate(date = yearmonth(date)) |>
+                as_tsibble(index = date, key = c('code', 'name'))
+glimpse(ts_marriages)
+
+```
+
+```{r 04-stationarity-10 }
+
+rf_m <- ts_marriages |>
+  filter(code == 643, !is.na(total))
+
+```
+
+
+```{r 04-stationarity-11 }
+
+rf_m |>
+  gg_tsdisplay(total)
+
+```
+
+```{r 04-stationarity-12 }
+
+rf_train <- rf_m |>
+  filter(date < yearmonth('2022 May'))
+
+mods <- rf_train |>
+  model(snaive = SNAIVE(total),
+         theta = THETA(total),
+         ma12 = ARIMA(total ~ 1 + pdq(0, 0, 12) + PDQ(0, 0, 0)),
+         stl_ma = decomposition_model(STL(total ~ season(window = Inf)),
+                                      ARIMA(season_adjust ~ 1 + pdq(0, 0, 1:5) + PDQ(0, 0, 0)),
+                                      SNAIVE(season_year)))
+
+mods
+
+```
+
+```{r 04-stationarity-13 }
+
+report(mods$ma12[[1]])
+
+```
+
+```{r 04-stationarity-14 }
+
+report(mods$stl_ma[[1]])
+
+```
+
+```{r 04-stationarity-15 }
+
+fc <- mods |>
+  forecast(h = '2 years')
+
+```
+
+
+```{r 04-stationarity-16 }
+
+fc |>
+  accuracy(rf_m)
+
+```
+
+
+

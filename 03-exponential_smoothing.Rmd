@@ -1,0 +1,374 @@
+# ETS model variations
+
+```{r 03-exponential-smoothing-1 }
+
+# Libraries loading
+library(tidyverse)
+library(fpp3)
+library(ggplot2)
+library(rio)
+
+```
+
+```{r 03-exponential-smoothing-2 }
+
+# data loading
+m <- import(paste0(getwd(), '/00_data/marriages.csv'))
+glimpse(m)
+
+```
+
+```{r 03-exponential-smoothing-3 }
+
+ts_marriages <- m |>
+                mutate(date = yearmonth(date)) |>
+                as_tsibble(index = date, key = c('code', 'name'))
+glimpse(ts_marriages)
+
+```
+
+```{r 03-exponential-smoothing-4 }
+
+rf_m <- ts_marriages |>
+  filter(code == 643, !is.na(total))
+
+```
+
+## ETS(AAdN): damped trend
+
+In an **ETS model** with a **damped trend**, a special coefficient is
+added to allow the trend's growth or decline to slow down over time.
+This is useful when you expect that the trend will not continue to grow
+or decrease at the same rate indefinitely but instead will gradually
+slow down.
+
+A **damping parameter** $\phi$ is introduced, which lies between 0
+and 1. This parameter controls how the trend slows down. - If
+$\phi = 1$, the trend remains additive (linear) and is not damped. - If
+$\phi < 1$, the trend gradually reduces, slowing down over time.
+
+In an **ETS(AAdN)** model (**A**dditive Error, **A**dditive **d**amped
+Trend, **N**o Seasonality), the model is described as follows:
+
+$$
+\begin{cases}
+y_t = \ell_{t-1} + \phi b _{t-1} + \beta u_t \\
+b_t = \phi b _{t-1} + \beta u_t, b_0 - \text {start value} \\
+l_t = \ell_{t-1} + \phi b _{t-1} + \alpha u_t, \ell_0 - \text {start value} \\
+u_t \sim \mathcal{N}(0,\,\sigma^{2}) \text { and independent}
+\end{cases}
+$$
+
+Parameters: $\alpha, \sigma^2, \ell_0, b_0, \beta, \phi$\
+
+### Forecast {-}
+
+
+#### One-step forecast {-}
+
+$$
+y_{T+1} = \ell_T + \phi b_T + u_{T+1}
+$$
+
+$$
+(y_{T+1}|\mathcal{F_T}) \sim \mathcal{N}(l_T + \phi b_T, \sigma^2)
+$$
+
+
+#### Two-step forecast {-}
+
+$$
+y_{T+2} = l_{T+1} + \phi b_{T+1} + u_{T+2} = (l_T + \phi b_T + \alpha u_{T+1}) + \phi(\phi b_T + \beta u_{T+1}) + u_{T+2}
+$$
+
+$$
+(y_{T+2}|\mathcal{F_T}) \sim \mathcal{N}(l_T + (\phi + \phi^2)b_T, \sigma^2((\alpha + \phi \beta)^2 + 1))
+$$
+
+
+### Example {-}
+
+```{r 03-exponential-smoothing-5 }
+
+rf_y <- rf_m |>
+  index_by(year(date)) |>
+  summarize(total = sum(total)) |>
+  filter(`year(date)` < 2021)
+
+rf_y|>
+  model(ETS(total ~ error('A') + trend('Ad') + season('N'))) |>
+  forecast(h = 10) |>
+  autoplot(rf_y) +
+  labs(title = 'ETS(AAdN): mariages in Russia', y = 'Mariages')
+
+```
+
+## ETS(MNM): multiplicative components
+
+**ETS** - **E**rror, **T**rend, **S**easonality.\
+**MNM** - **M**ultiplicative error, **N**o trend, **M**o seasonality.
+
+
+$$
+\begin{cases}
+y_t = l_{t-1} \times s_{t-12} \times (1 + u_t) \\
+l_t = l_{t-1} \times (1 + \alpha u_t), l_0 - \text {start value} \\
+s_t = s_{t-12} \times (1 + \gamma u_t), s_0, ..., s_{-11} - \text {start values} \\
+u_t \sim \mathcal{N}(0,\,\sigma^{2}) \text { and independent}
+\end{cases} 
+$$
+
+-   $y_t$ - observed value at time $t$
+-   $\ell_t$ - trend, or level at time $T$
+-   $s_t$ - seasonal component
+-   $u_t$ - random error
+
+### Parameters {-}
+
+-   Non-seasonal parameters: $\alpha, \sigma^2, l_0$
+-   Seasonal parameters: $\gamma, s_0, s_{-1},..., s_{-11}$
+
+Limitation: $s_0 \times s_{-1} \times...\times s_{-11} = 1$
+
+-   $y_t, \ell_t$ - original units
+-   $s_t, u_t$ - fraction
+-   $s_t$ is measured relative to one, for example, $s_t = 0.9$ means it
+    is 10% below the trend.
+-   $u_t$ is measured relative to zero, for example, $u_t = -0.1$ means
+    a 10% decrease.
+
+### Forecast {-}
+
+#### One-step forecast {-}
+
+$$
+y_{T+1} = l_T \times s_{T-11} \times (1 + u_{T+1})
+$$
+
+$$
+(y_{T+1}|\mathcal{F_T}) \sim \mathcal{N}(\ell_T \times s_{T-11}, (\ell_T \times s_{T-11})^2\sigma^2)
+$$
+
+#### Two-step forecast {-}
+
+$$
+y_{T+2} = l_{T+1} \times s_{T-10} \times (1+u_{T+2}) = l_T (1+ \alpha u_{T+1}) \times s_{T-10} \times (1 + u_{T+2})
+$$
+
+### Example {-}
+
+```{r 03-exponential-smoothing-6 }
+
+fc1 <- aus_production |>
+  filter(year(Quarter) < 1970) |>
+  model(ETS(Electricity ~ error('M') + trend('N') + season('M'))) |>
+  forecast(h = 16)
+
+fc2 <- aus_production |>
+  filter(year(Quarter) < 1980) |>
+  model(ETS(Electricity ~ error('M') + trend('N') + season('M'))) |>
+  forecast(h = 16)
+
+aus_production |>
+  filter(year(Quarter) < 1980) |>
+  autoplot(Electricity) +
+  autolayer(fc1) +
+  autolayer(fc2) +
+  labs(title = 'ETS(MNM): electricity production in Australia')
+
+```
+
+
+## ETS(MAdM): combinations
+
+**MAdM**: **M**ultiplicative error, **A**dditive **d**umped trend,
+**M**ultiplicative seasonality
+
+$$
+\begin{cases}
+y_t = (l_{t-1} + \phi b_{t-1}) \times s_{t-12} \times (1 + u_t) \\
+l_t = (l_{t-1} + \phi b_{t-1}) \times (1 + \alpha u_t), l_0 - \text {start value} \\
+b_t = \phi b_{t-1} + \beta(l_{t-1} + \phi b_{t-1})u_t, b_0 - \text {start value}\\
+s_t = s_{t-12} \times (1 + \gamma u_t), s_0, ..., s_{-11} - \text {start values} \\
+u_t \sim \mathcal{N}(0,\,\sigma^{2}) \text { and independent}
+\end{cases}
+$$
+
+### Parameters {-}
+
+-   Non-seasonal parameters: $\alpha, \beta, \sigma, \phi, l_0, b_0$
+-   Seasonal parameters: $\gamma, s_0, s_{-1}, ... , s_{-11}$
+
+### Forecast {-}
+
+#### One-step forecast {-}
+
+$$
+y_{T+1} = (l_T + \phi b_T) \times s_{T-11} \times (1 + u_{T+1})
+$$
+
+$$
+(y_{T+1}|\mathcal{F_T}) \sim \mathcal{N}((\ell_T + \phi b_T) \times s_{T-11}, (\ell_T + \phi b_T)^2 \times s_{T-11}^2 \times \sigma^2)
+$$
+
+### Example {-}
+
+```{r 03-exponential-smoothing-7 }
+
+rf_m |>
+  filter(year(date) > 2012, year(date) < 2022) |>
+  model(ETS(total ~ error('M') + trend('Ad') + season('M'))) |>
+  forecast(h = 48) |>
+  autoplot(rf_m) +
+  labs(title = 'EST(MAdM): forecast')
+
+```
+
+
+Combinations:
+
+-   **Errors:** A, M
+-   **Trend:** N, A, Ad, M, Md
+-   **Seasonality:** N, A, M
+
+
+Historic naming:
+
+-   **ETS(ANN)** - Simple Exponential Smoothing
+-   **ETS(AAA)** - Additive Holt-Winters Method
+-   **ETS(AAM)** - Multiplicative Holt-Winters Method
+-   **ETS(AAdM)** - Damped Additive Trend with Multiplicative Seasonality
+    (Damped Holt-Winters)
+
+
+## Examples
+
+```{r 03-exponential-smoothing-8 }
+
+rf_m |>
+  gg_tsdisplay(total)
+
+```
+
+Split into training and test set.
+
+```{r 03-exponential-smoothing-9 }
+
+rf_train <- rf_m |>
+      filter(year(date) < 2020)
+rf_test <- rf_m |>
+  anti_join(rf_train, by = 'date')
+
+```
+
+
+```{r 03-exponential-smoothing-10 }
+
+models <- rf_train |>
+  model(
+    snaive = SNAIVE(total),
+    ANA = ETS(total ~ error('A') + trend('N') + season('A')),
+    AAA = ETS(total ~ error('A') + trend('A') + season('A')),
+    AAdA = ETS(total ~ error('A') + trend('Ad') + season('A')),
+    zzz = ETS(total), # select the best model by AIC
+    azz = ETS(total ~ error('A')),
+    theta = THETA(total) # theta method
+  )
+
+```
+
+
+```{r 03-exponential-smoothing-11 }
+
+models$zzz[[1]] |> report()
+
+```
+
+```{r 03-exponential-smoothing-12 }
+
+models$theta[[1]] |> report()
+
+```
+
+```{r 03-exponential-smoothing-13 }
+
+fc <- models |>
+  forecast(h = 72)
+
+```
+
+
+```{r 03-exponential-smoothing-14 }
+
+fc |> accuracy(rf_m)
+
+```
+
+```{r 03-exponential-smoothing-15, fig.width=6, fig.height=8}
+
+rf_m |>
+  autoplot(total) +
+  autolayer(fc) +
+  facet_grid(.model ~ .)
+
+```
+Composite model.
+
+```{r 03-exponential-smoothing-16 }
+
+models <- rf_train |>
+  model(
+    snaive = SNAIVE(total),
+    theta = THETA(total),
+    composit = decomposition_model(
+      STL(total ~ season(window = Inf)),
+      ETS(season_adjust ~ error('A') + trend('Ad') + season('N')),
+      SNAIVE(season_year) ))
+
+```
+
+
+```{r 03-exponential-smoothing-17 }
+
+models |>
+  forecast(h = 48) |>
+  accuracy(rf_m)
+
+```
+
+Model evaluation for multiple time series.
+
+```{r 03-exponential-smoothing-18 }
+
+train <- ts_marriages |>
+  filter(year(date) < 2020)
+
+```
+
+
+```{r 03-exponential-smoothing-19 }
+models <- train |>
+  model(
+    snaive = SNAIVE(total),
+    zzz = ETS(log(total)), # select the best model by AIC
+    theta = THETA(total)
+  )
+
+```
+
+```{r 03-exponential-smoothing-20 }
+
+acc <- models |>
+  forecast(h = 48) |> 
+  accuracy(rf_m)
+
+```
+
+```{r 03-exponential-smoothing-21 }
+
+acc |>
+  group_by(.model) |>
+  summarise(avg_MAE = mean(MAE, na.rm = TRUE))
+
+```
+

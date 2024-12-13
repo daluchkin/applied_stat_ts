@@ -1,0 +1,434 @@
+# ARIMA with predictors
+
+```{r 07-ARIMA-predictors-1 }
+
+library(tidyverse)
+library(fpp3)
+library(ggplot2)
+library(rio)
+library(urca)
+
+```
+
+## How to make predictors?
+
++ Using lags $y_{t-k}$
++ Using functions over lags
+
+## Using lags
+
+Training set:
+
+$$
+\begin{pmatrix}
+  y_3 \\ 
+  y_4 \\
+  y_5 \\
+  \vdots \\
+  y_T
+\end{pmatrix}
+\begin{pmatrix}
+  y_1 & y_2 \\
+  y_2 & y_3 \\
+  y_3 & y_4 \\
+  \vdots & \vdots \\
+  y_{T-2} & y_{T-1}
+\end{pmatrix}
+$$
+
+> **Note!** Each added lag reduces the thaining set.
+
+
+## Using function of lags
+
++ __Aggregating functions__: minimum, maximum, mean, median, range, variance, standard deviation,...
++ An argument of aggregating function:
+  + Moving window
+  + Growing window
+  
+
+Example of maximum over a moving window and minimum over a growing window:
+
+$$
+\begin{pmatrix}
+  y_3 \\ 
+  y_4 \\
+  y_5 \\
+  \vdots \\
+  y_T
+\end{pmatrix}
+\begin{pmatrix}
+  max(y_1, y_2) & min(y_1, y_2) \\
+  max(y_2, y_3) & min(y_1, y_2, y_3) \\
+  max(y_3, y_4) & min(y_1, \dots , y_4) \\
+  \vdots & \vdots \\
+  max(y_{T-2}, y_{T-1}) & min(y_1,\dots, y_{T-1})
+\end{pmatrix}
+$$
+
+## Time predictors
+
++ Trend predictors
++ Seasonal and holidays dummies
++ Sin and Cos over time
+
+
+## Trend predictors
+
+
+$$
+\begin{pmatrix}
+  y_3 \\ 
+  y_4 \\
+  y_5 \\
+  \vdots \\
+  y_T
+\end{pmatrix}
+\begin{pmatrix}
+  1 & \sqrt 1 \\
+  2 & \sqrt 2 \\
+  3 & \sqrt 3 \\
+  \vdots & \vdots \\
+  T & \sqrt T
+\end{pmatrix}
+$$
+
+Forecast:
+
+$$
+\begin{pmatrix}
+  ?
+\end{pmatrix}
+\begin{pmatrix}
+  T+1 & \sqrt {T+1}
+\end{pmatrix}
+$$
+
+A monotone transformation:
+
++ It is __useless__ for tree-based algorithms
++ The origin variable could be transformed: log, Box-Cox,...
+
+## Seasonal and holidays dummies
+
+Seasonal dummies (for quarterly seasonality):
+
+$$
+\begin{pmatrix}
+  y_1 \\
+  y_2 \\
+  y_3 \\ 
+  y_4 \\
+  y_5 \\
+  y_6 \\
+  \vdots \\
+  y_T
+\end{pmatrix}
+\begin{pmatrix}
+  1 & 0 & 0 & 0 \\
+  0 & 1 & 0 & 0 \\
+  0 & 0 & 1 & 0 \\
+  0 & 0 & 0 & 1 \\
+  1 & 0 & 0 & 0 \\
+  0 & 1 & 0 & 0 \\
+  \vdots & \vdots & \vdots & \vdots \\
+  0 & 0 & 1 & 0 \\
+\end{pmatrix}
+$$
+> __Important!__ For multiple regression with seasonal dummy variables, you have two options: either include a dummy variable for each season and omit the constant (intercept), or include the intercept and use dummy variables for all but one season.
+
+## Sin and Cos over time
+
+For daily data:
+
++ Add predictor $cos(\frac {2\pi} {365} \cdot t)$ and $sin(\frac {2\pi} {365} \cdot t)$
++ Add predictor $cos(\frac {2\pi} {365} \cdot 2t)$ and $sin(\frac {2\pi} {365} \cdot 2t)$
++ Add predictor $cos(\frac {2\pi} {365} \cdot 3t)$ and $sin(\frac {2\pi} {365} \cdot 3t)$
++ $\dots$
+
+## ARIMA and predictors
+
++ Linear regression with ARMA errors
++ ARMAX model
++ ARDL model
+
+### Example 1
+
+```{r 07-ARIMA-predictors-2 }
+
+library(caret)
+library(ranger)
+library(xgboost)
+
+```
+
+
+```{r 07-ARIMA-predictors-3 }
+
+air <- as_tsibble(AirPassengers)
+
+gg_tsdisplay(air)
+
+```
+
+Make a variance stable.
+
+```{r 07-ARIMA-predictors-4 }
+
+air2 <- air |>
+  mutate(ln_pass=log(value), t = 1:nrow(air))
+
+glimpse(air2)
+
+```
+```{r 07-ARIMA-predictors-5 }
+
+air2 |>
+  gg_tsdisplay(ln_pass)
+
+```
+
+```{r 07-ARIMA-predictors-6 }
+
+fourier_x <- forecast::fourier(AirPassengers, K = 2)
+
+fourier_x
+
+# sin(2pi t/12) cos(2pi t/12)
+# sin(2pi t/12 * 2) cos(2pi t/12 * 2)
+
+```
+
+```{r 07-ARIMA-predictors-7 }
+
+colnames(fourier_x) <- c('s1', 'c1', 's2', 'c2')
+
+```
+
+```{r 07-ARIMA-predictors-8 }
+
+air3 <- bind_cols(air2, fourier_x)
+
+glimpse(air3)
+
+```
+
+```{r 07-ARIMA-predictors-9 }
+
+air3_test <- tail(air3, 24)
+air3_train <- head(air3, -24)
+
+autoplot(air3_train, ln_pass) +
+  autolayer(air3_test, ln_pass, col='red')
+
+```
+
+
+Linear regression:
+
+```{r 07-ARIMA-predictors-10 }
+
+cv_params <- trainControl(method = 'cv', number = 5)
+
+ols <- train(ln_pass ~ t + s1 + c1 + s2 + c2,
+             data = air3_train,
+             trControl = cv_params,
+             method = 'lm')
+
+```
+
+Random Forest:
+
+```{r 07-ARIMA-predictors-11 }
+
+rf <- train(ln_pass ~ t + s1 + c1 + s2 + c2,
+             data = air3_train,
+             trControl = cv_params,
+             method = 'ranger', num.trees = 10000)
+
+```
+
+Gradient Boosting:
+
+```{r 07-ARIMA-predictors-12, warning=FALSE}
+
+gb <- train(ln_pass ~ t + s1 + c1 + s2 + c2,
+             data = air3_train,
+             trControl = cv_params,
+             method = 'xgbTree')
+
+```
+
+```{r 07-ARIMA-predictors-13 }
+
+ols_fcst <- predict(ols, air3_test)
+rf_fcst <- predict(rf, air3_test)
+gb_fcst <- predict(gb, air3_test)
+
+```
+
+
+```{r 07-ARIMA-predictors-14 }
+
+air4_test <- air3_test |>
+  mutate(ols = ols_fcst,
+         rf = rf_fcst,
+         gb = gb_fcst)
+
+```
+
+
+```{r 07-ARIMA-predictors-15 }
+
+air4_test |>
+  glimpse()
+
+```
+
+```{r 07-ARIMA-predictors-16 }
+
+air3_train |>
+  autoplot(ln_pass) +
+  autolayer(air4_test, ln_pass) +
+  autolayer(air4_test, ols, col='red') +
+  autolayer(air4_test, rf, col='green') +
+  autolayer(air4_test, gb, col='blue')
+
+```
+
+### Example 2. Daily data
+
+```{r 07-ARIMA-predictors-17 }
+
+library(tsibbledata)
+
+```
+
+
+```{r 07-ARIMA-predictors-18 }
+
+head(vic_elec)
+
+```
+
+```{r 07-ARIMA-predictors-19 }
+
+elec <- vic_elec |>
+  index_by(Date) |>
+  summarise(dem = mean(Demand), temp = mean(Temperature))
+
+gg_tsdisplay(elec)
+
+```
+
+```{r 07-ARIMA-predictors-20 }
+
+gg_tsdisplay(tail(elec, 60))
+
+```
+
+```{r 07-ARIMA-predictors-21 }
+
+elec_train <- head(elec, -60)
+elec_test <- tail(elec, 60)
+
+```
+
+
+```{r 07-ARIMA-predictors-22 }
+
+mods <- elec_train |>
+  model(
+    naive = NAIVE(dem),
+    arima_fK1 = ARIMA(dem ~ fourier(K = 1) + PDQ(0, 0, 0)),
+    arima_fK2 = ARIMA(dem ~ fourier(K = 2) + PDQ(0, 0, 0)),
+    arima_fK3 = ARIMA(dem ~ fourier(K = 3) + PDQ(0, 0, 0))
+  )
+
+```
+
+```{r 07-ARIMA-predictors-23 }
+
+frct <- mods |>
+  forecast(h = 60)
+
+frct |>
+  autoplot(tail(elec_train, 30)) +
+  facet_grid(.model ~ .)
+
+```
+
+```{r 07-ARIMA-predictors-24 }
+
+frct |> accuracy(elec)
+
+```
+
+
+### Example 3
+
+```{r 07-ARIMA-predictors-25 }
+
+library(ARDL)
+
+```
+
+```{r 07-ARIMA-predictors-26 }
+
+glimpse(denmark)
+
+```
+
+```{r 07-ARIMA-predictors-27 }
+
+time(denmark)
+
+```
+
+```{r 07-ARIMA-predictors-28 }
+
+den <- as_tibble(denmark)
+
+den
+
+```
+
+```{r 07-ARIMA-predictors-29 }
+
+den2 <- den |> mutate(quarter = yearquarter(time(denmark)))
+den2
+
+```
+
+```{r 07-ARIMA-predictors-30 }
+
+den3 <- as_tsibble(den2, index = quarter)
+
+den3 |>
+  gg_tsdisplay(LRM)
+
+```
+
+```{r 07-ARIMA-predictors-31 }
+
+ardl1 <- ardl(data = denmark, LRM ~ LRY + IBO + IDE,
+              order = c(2, 1, 2, 2))
+
+ardl1
+
+```
+
+```{r 07-ARIMA-predictors-32 }
+
+ardl_many <- auto_ardl(data = denmark, LRM ~ LRY + IBO + IDE, max_order = 3)
+
+ardl_many
+
+```
+
+```{r 07-ARIMA-predictors-33 }
+
+ardl_many$best_model
+
+```
+
