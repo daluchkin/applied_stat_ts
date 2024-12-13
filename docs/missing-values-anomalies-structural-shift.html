@@ -138,7 +138,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="https://www.youtube.com/@%D0%9F%D1%80%D0%B8%D0%BA%D0%BB%D0%B0%D0%B4%D0%BD%D0%B0%D1%8F%D1%81%D1%82%D0%B0%D1%82%D0%B8%D1%81%D1%82%D0%B8%D0%BA%D0%B0/playlists">Time Series Analysis</a></li>
+<li><a href="https://www.youtube.com/@%D0%9F%D1%80%D0%B8%D0%BA%D0%BB%D0%B0%D0%B4%D0%BD%D0%B0%D1%8F%D1%81%D1%82%D0%B0%D1%82%D0%B8%D1%81%D1%82%D0%B8%D0%BA%D0%B0/playlists">Time Series Analysis (Lectures)</a></li>
 
 <li class="divider"></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
@@ -573,7 +573,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ##        ~~   : S4 class containing 12 slots with names
 ##               cpttype date version data.set method test.stat pen.type pen.value minseglen cpts ncpts.max param.est 
 ## 
-## Created on  : Fri Dec 13 17:45:26 2024 
+## Created on  : Fri Dec 13 18:04:52 2024 
 ## 
 ## summary(.)  :
 ## ----------
@@ -606,7 +606,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ##        ~~   : S4 class containing 14 slots with names
 ##               cpts.full pen.value.full data.set cpttype method test.stat pen.type pen.value minseglen cpts ncpts.max param.est date version 
 ## 
-## Created on  : Fri Dec 13 17:45:27 2024 
+## Created on  : Fri Dec 13 18:04:52 2024 
 ## 
 ## summary(.)  :
 ## ----------
@@ -635,7 +635,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ##        ~~   : S4 class containing 12 slots with names
 ##               cpttype date version data.set method test.stat pen.type pen.value minseglen cpts ncpts.max param.est 
 ## 
-## Created on  : Fri Dec 13 17:45:27 2024 
+## Created on  : Fri Dec 13 18:04:52 2024 
 ## 
 ## summary(.)  :
 ## ----------
@@ -684,16 +684,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Run generation</li>
 </ol>
 <div class="sourceCode" id="cb352"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb352-1"><a href="missing-values-anomalies-structural-shift.html#cb352-1" tabindex="-1"></a>poster <span class="ot">&lt;-</span> <span class="fu">bsts</span>(log_air, <span class="at">state.specification =</span> model, <span class="at">niter =</span> <span class="dv">2000</span>)</span></code></pre></div>
-<pre><code>## =-=-=-=-= Iteration 0 Fri Dec 13 17:45:27 2024 =-=-=-=-=
-## =-=-=-=-= Iteration 200 Fri Dec 13 17:45:29 2024 =-=-=-=-=
-## =-=-=-=-= Iteration 400 Fri Dec 13 17:45:30 2024 =-=-=-=-=
-## =-=-=-=-= Iteration 600 Fri Dec 13 17:45:32 2024 =-=-=-=-=
-## =-=-=-=-= Iteration 800 Fri Dec 13 17:45:34 2024 =-=-=-=-=
-## =-=-=-=-= Iteration 1000 Fri Dec 13 17:45:35 2024 =-=-=-=-=
-## =-=-=-=-= Iteration 1200 Fri Dec 13 17:45:37 2024 =-=-=-=-=
-## =-=-=-=-= Iteration 1400 Fri Dec 13 17:45:39 2024 =-=-=-=-=
-## =-=-=-=-= Iteration 1600 Fri Dec 13 17:45:40 2024 =-=-=-=-=
-## =-=-=-=-= Iteration 1800 Fri Dec 13 17:45:42 2024 =-=-=-=-=</code></pre>
+<pre><code>## =-=-=-=-= Iteration 0 Fri Dec 13 18:04:52 2024 =-=-=-=-=
+## =-=-=-=-= Iteration 200 Fri Dec 13 18:04:54 2024 =-=-=-=-=
+## =-=-=-=-= Iteration 400 Fri Dec 13 18:04:56 2024 =-=-=-=-=
+## =-=-=-=-= Iteration 600 Fri Dec 13 18:04:58 2024 =-=-=-=-=
+## =-=-=-=-= Iteration 800 Fri Dec 13 18:04:59 2024 =-=-=-=-=
+## =-=-=-=-= Iteration 1000 Fri Dec 13 18:05:01 2024 =-=-=-=-=
+## =-=-=-=-= Iteration 1200 Fri Dec 13 18:05:03 2024 =-=-=-=-=
+## =-=-=-=-= Iteration 1400 Fri Dec 13 18:05:05 2024 =-=-=-=-=
+## =-=-=-=-= Iteration 1600 Fri Dec 13 18:05:07 2024 =-=-=-=-=
+## =-=-=-=-= Iteration 1800 Fri Dec 13 18:05:09 2024 =-=-=-=-=</code></pre>
 <ol start="5" style="list-style-type: decimal">
 <li>Plot the data</li>
 </ol>
@@ -706,8 +706,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb355-2"><a href="missing-values-anomalies-structural-shift.html#cb355-2" tabindex="-1"></a>                <span class="at">burn =</span> <span class="dv">1000</span>)</span>
 <span id="cb355-3"><a href="missing-values-anomalies-structural-shift.html#cb355-3" tabindex="-1"></a></span>
 <span id="cb355-4"><a href="missing-values-anomalies-structural-shift.html#cb355-4" tabindex="-1"></a>frst<span class="sc">$</span>mean</span></code></pre></div>
-<pre><code>##  [1] 6.113840 6.159961 6.166569 6.188670 6.272479 6.411522 6.513412 6.496878 6.366737 6.209076 6.130153 6.150362 6.217765 6.266098 6.276450 6.293505 6.379757
-## [18] 6.520091 6.620041 6.602211 6.474237 6.314879 6.233870 6.257077</code></pre>
+<pre><code>##  [1] 6.113757 6.160336 6.168260 6.188863 6.276916 6.408884 6.513306 6.499296 6.368235 6.211732 6.127861 6.150650 6.219945 6.267264 6.275745 6.297668 6.379138
+## [18] 6.515571 6.618752 6.608020 6.476852 6.317875 6.238504 6.260008</code></pre>
 <div class="sourceCode" id="cb357"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb357-1"><a href="missing-values-anomalies-structural-shift.html#cb357-1" tabindex="-1"></a><span class="fu">plot</span>(frst)</span></code></pre></div>
 <p><img src="_main_files/figure-html/08-missing-42-1.png" width="672" /></p>
 </div>
@@ -819,7 +819,7 @@ gitbook.start({
 "instapaper": false,
 "vk": false,
 "whatsapp": false,
-"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+"all": false
 },
 "fontsettings": {
 "theme": "white",
