@@ -23,7 +23,7 @@
 <meta name="author" content="Dmitry Luchkin" />
 
 
-<meta name="date" content="2024-12-13" />
+<meta name="date" content="2024-12-16" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -421,30 +421,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-3"><a href="components-of-time-series-and-naive-models.html#cb4-3" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&#39;Date&#39;</span>) <span class="sc">+</span></span>
 <span id="cb4-4"><a href="components-of-time-series-and-naive-models.html#cb4-4" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&#39;IID&#39;</span>) <span class="sc">+</span></span>
 <span id="cb4-5"><a href="components-of-time-series-and-naive-models.html#cb4-5" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&#39;Independent observations&#39;</span>)</span></code></pre></div>
-<p><img src="_main_files/figure-html/01-time-series-components-3-1.png" width="672" /></p>
+<p><img src="figure_html/01-time-series-components-3-1.png" width="672" /></p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="components-of-time-series-and-naive-models.html#cb5-1" tabindex="-1"></a>two <span class="sc">|&gt;</span></span>
 <span id="cb5-2"><a href="components-of-time-series-and-naive-models.html#cb5-2" tabindex="-1"></a>  <span class="fu">autoplot</span>(rwalk) <span class="sc">+</span></span>
 <span id="cb5-3"><a href="components-of-time-series-and-naive-models.html#cb5-3" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&#39;Date&#39;</span>) <span class="sc">+</span></span>
 <span id="cb5-4"><a href="components-of-time-series-and-naive-models.html#cb5-4" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&#39;rwalk&#39;</span>) <span class="sc">+</span></span>
 <span id="cb5-5"><a href="components-of-time-series-and-naive-models.html#cb5-5" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&#39;Random walk&#39;</span>)</span></code></pre></div>
-<p><img src="_main_files/figure-html/01-time-series-components-4-1.png" width="672" /></p>
+<p><img src="figure_html/01-time-series-components-4-1.png" width="672" /></p>
 <p>Seasonal plots.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="components-of-time-series-and-naive-models.html#cb6-1" tabindex="-1"></a>two <span class="sc">|&gt;</span> </span>
 <span id="cb6-2"><a href="components-of-time-series-and-naive-models.html#cb6-2" tabindex="-1"></a>  <span class="fu">gg_season</span>(rwalk)</span></code></pre></div>
-<p><img src="_main_files/figure-html/01-time-series-components-5-1.png" width="672" /></p>
+<p><img src="figure_html/01-time-series-components-5-1.png" width="672" /></p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="components-of-time-series-and-naive-models.html#cb7-1" tabindex="-1"></a>two <span class="sc">|&gt;</span></span>
 <span id="cb7-2"><a href="components-of-time-series-and-naive-models.html#cb7-2" tabindex="-1"></a>  <span class="fu">gg_subseries</span>(rwalk)</span></code></pre></div>
-<p><img src="_main_files/figure-html/01-time-series-components-6-1.png" width="672" /></p>
+<p><img src="figure_html/01-time-series-components-6-1.png" width="672" /></p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="components-of-time-series-and-naive-models.html#cb8-1" tabindex="-1"></a><span class="co"># random walk</span></span>
 <span id="cb8-2"><a href="components-of-time-series-and-naive-models.html#cb8-2" tabindex="-1"></a>two <span class="sc">|&gt;</span></span>
 <span id="cb8-3"><a href="components-of-time-series-and-naive-models.html#cb8-3" tabindex="-1"></a>  <span class="fu">gg_lag</span>(rwalk)</span></code></pre></div>
-<p><img src="_main_files/figure-html/01-time-series-components-7-1.png" width="672" /></p>
+<p><img src="figure_html/01-time-series-components-7-1.png" width="672" /></p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="components-of-time-series-and-naive-models.html#cb9-1" tabindex="-1"></a><span class="co"># independent observations</span></span>
 <span id="cb9-2"><a href="components-of-time-series-and-naive-models.html#cb9-2" tabindex="-1"></a>two <span class="sc">|&gt;</span></span>
 <span id="cb9-3"><a href="components-of-time-series-and-naive-models.html#cb9-3" tabindex="-1"></a>  <span class="fu">gg_lag</span>(iid)</span></code></pre></div>
-<p><img src="_main_files/figure-html/01-time-series-components-8-1.png" width="672" /></p>
+<p><img src="figure_html/01-time-series-components-8-1.png" width="672" /></p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="components-of-time-series-and-naive-models.html#cb10-1" tabindex="-1"></a>two <span class="sc">|&gt;</span> <span class="fu">gg_tsdisplay</span>(rwalk, <span class="at">plot_type =</span> <span class="st">&#39;season&#39;</span>)</span></code></pre></div>
-<p><img src="_main_files/figure-html/01-time-series-components-9-1.png" width="672" /></p>
+<p><img src="figure_html/01-time-series-components-9-1.png" width="672" /></p>
 </div>
 <div id="time-series-data-cleaning" class="section level3 hasAnchor" number="1.6.2">
 <h3><span class="header-section-number">1.6.2</span> Time Series data cleaning<a href="components-of-time-series-and-naive-models.html#time-series-data-cleaning" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -654,7 +654,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb42-3"><a href="components-of-time-series-and-naive-models.html#cb42-3" tabindex="-1"></a>  <span class="fu">filter</span>(code <span class="sc">==</span> <span class="dv">643</span>) <span class="sc">|&gt;</span> <span class="fu">autoplot</span>()</span></code></pre></div>
 <pre><code>## Plot variable not specified, automatically selected `.vars = total`</code></pre>
 <pre><code>## Warning: Removed 7 rows containing missing values or values outside the scale range (`geom_line()`).</code></pre>
-<p><img src="_main_files/figure-html/01-time-series-components-24-1.png" width="672" /></p>
+<p><img src="figure_html/01-time-series-components-24-1.png" width="672" /></p>
 <div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="components-of-time-series-and-naive-models.html#cb45-1" tabindex="-1"></a>marriages <span class="sc">|&gt;</span></span>
 <span id="cb45-2"><a href="components-of-time-series-and-naive-models.html#cb45-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">as.Date</span>(date)) <span class="sc">|&gt;</span></span>
 <span id="cb45-3"><a href="components-of-time-series-and-naive-models.html#cb45-3" tabindex="-1"></a>  <span class="fu">export</span>(<span class="fu">paste0</span>(<span class="fu">getwd</span>(), <span class="st">&#39;/00_data/marriages.csv&#39;</span>))</span></code></pre></div>
@@ -694,7 +694,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## Warning: Removed 7 rows containing missing values or values outside the scale range (`geom_line()`).</code></pre>
 <pre><code>## Warning: Removed 7 rows containing missing values or values outside the scale range (`geom_point()`).</code></pre>
 <pre><code>## Warning: Removed 7 rows containing missing values or values outside the scale range (`geom_line()`).</code></pre>
-<p><img src="_main_files/figure-html/01-time-series-components-28-1.png" width="672" /></p>
+<p><img src="figure_html/01-time-series-components-28-1.png" width="672" /></p>
 <div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="components-of-time-series-and-naive-models.html#cb56-1" tabindex="-1"></a>m_rf <span class="ot">&lt;-</span> ts_marriages <span class="sc">|&gt;</span></span>
 <span id="cb56-2"><a href="components-of-time-series-and-naive-models.html#cb56-2" tabindex="-1"></a>  <span class="fu">filter</span>(code <span class="sc">==</span> <span class="dv">643</span>)</span>
 <span id="cb56-3"><a href="components-of-time-series-and-naive-models.html#cb56-3" tabindex="-1"></a></span>
@@ -732,7 +732,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## ! Incompatible methods (&quot;&lt;.vctrs_vctr&quot;, &quot;&lt;.Date&quot;) for &quot;&lt;&quot;</code></pre>
 <div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="components-of-time-series-and-naive-models.html#cb62-1" tabindex="-1"></a>m_rf_full <span class="sc">|&gt;</span></span>
 <span id="cb62-2"><a href="components-of-time-series-and-naive-models.html#cb62-2" tabindex="-1"></a>  <span class="fu">gg_tsdisplay</span>(total, <span class="at">plot_type =</span> <span class="st">&#39;season&#39;</span>)</span></code></pre></div>
-<p><img src="_main_files/figure-html/01-time-series-components-30-1.png" width="672" />
+<p><img src="figure_html/01-time-series-components-30-1.png" width="672" />
 4. Time Series Analysis</p>
 <div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="components-of-time-series-and-naive-models.html#cb63-1" tabindex="-1"></a>stl_model <span class="ot">&lt;-</span> m_rf_full <span class="sc">|&gt;</span></span>
 <span id="cb63-2"><a href="components-of-time-series-and-naive-models.html#cb63-2" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">decomp =</span> <span class="fu">STL</span>(total <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="dv">100</span>)))</span>
@@ -757,17 +757,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="components-of-time-series-and-naive-models.html#cb65-1" tabindex="-1"></a>stl_model <span class="sc">|&gt;</span></span>
 <span id="cb65-2"><a href="components-of-time-series-and-naive-models.html#cb65-2" tabindex="-1"></a>  <span class="fu">components</span>() <span class="sc">|&gt;</span></span>
 <span id="cb65-3"><a href="components-of-time-series-and-naive-models.html#cb65-3" tabindex="-1"></a>    <span class="fu">autoplot</span>()</span></code></pre></div>
-<p><img src="_main_files/figure-html/01-time-series-components-32-1.png" width="672" /></p>
+<p><img src="figure_html/01-time-series-components-32-1.png" width="672" /></p>
 <div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="components-of-time-series-and-naive-models.html#cb66-1" tabindex="-1"></a>m_rf_full <span class="sc">|&gt;</span></span>
 <span id="cb66-2"><a href="components-of-time-series-and-naive-models.html#cb66-2" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">decomp =</span> <span class="fu">STL</span>(total <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">100</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="dv">100</span>))) <span class="sc">|&gt;</span></span>
 <span id="cb66-3"><a href="components-of-time-series-and-naive-models.html#cb66-3" tabindex="-1"></a>  <span class="fu">components</span>() <span class="sc">|&gt;</span></span>
 <span id="cb66-4"><a href="components-of-time-series-and-naive-models.html#cb66-4" tabindex="-1"></a>    <span class="fu">autoplot</span>()</span></code></pre></div>
-<p><img src="_main_files/figure-html/01-time-series-components-33-1.png" width="672" /></p>
+<p><img src="figure_html/01-time-series-components-33-1.png" width="672" /></p>
 <div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="components-of-time-series-and-naive-models.html#cb67-1" tabindex="-1"></a>m_rf_full <span class="sc">|&gt;</span></span>
 <span id="cb67-2"><a href="components-of-time-series-and-naive-models.html#cb67-2" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">decomp =</span> <span class="fu">STL</span>(total <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">100</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="dv">5</span>))) <span class="sc">|&gt;</span></span>
 <span id="cb67-3"><a href="components-of-time-series-and-naive-models.html#cb67-3" tabindex="-1"></a>  <span class="fu">components</span>() <span class="sc">|&gt;</span></span>
 <span id="cb67-4"><a href="components-of-time-series-and-naive-models.html#cb67-4" tabindex="-1"></a>    <span class="fu">autoplot</span>()</span></code></pre></div>
-<p><img src="_main_files/figure-html/01-time-series-components-34-1.png" width="672" /></p>
+<p><img src="figure_html/01-time-series-components-34-1.png" width="672" /></p>
 <ol start="5" style="list-style-type: decimal">
 <li>Time series features</li>
 </ol>
@@ -794,7 +794,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb72-3"><a href="components-of-time-series-and-naive-models.html#cb72-3" tabindex="-1"></a><span class="fu">ggplot</span>(marr_features, <span class="fu">aes</span>(<span class="at">x =</span> trend_strength, <span class="at">y =</span> seasonal_strength_year, <span class="at">label=</span>name)) <span class="sc">+</span></span>
 <span id="cb72-4"><a href="components-of-time-series-and-naive-models.html#cb72-4" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
 <span id="cb72-5"><a href="components-of-time-series-and-naive-models.html#cb72-5" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>()</span></code></pre></div>
-<p><img src="_main_files/figure-html/01-time-series-components-36-1.png" width="672" /></p>
+<p><img src="figure_html/01-time-series-components-36-1.png" width="672" /></p>
 
 </div>
 </div>

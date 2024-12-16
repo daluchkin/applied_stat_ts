@@ -23,7 +23,7 @@
 <meta name="author" content="Dmitry Luchkin" />
 
 
-<meta name="date" content="2024-12-13" />
+<meta name="date" content="2024-12-16" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -346,7 +346,7 @@ constant (approximately).</li>
 <span id="cb206-2"><a href="arima-and-seasonal-arima-sarima.html#cb206-2" tabindex="-1"></a>  <span class="fu">filter</span>(code <span class="sc">==</span> <span class="dv">643</span>, <span class="sc">!</span><span class="fu">is.na</span>(total))</span></code></pre></div>
 <div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="arima-and-seasonal-arima-sarima.html#cb207-1" tabindex="-1"></a>rf_m <span class="sc">|&gt;</span></span>
 <span id="cb207-2"><a href="arima-and-seasonal-arima-sarima.html#cb207-2" tabindex="-1"></a>  <span class="fu">gg_tsdisplay</span>(total)</span></code></pre></div>
-<p><img src="_main_files/figure-html/06-ARIMA-sARIMA-5-1.png" width="672" /></p>
+<p><img src="figure_html/06-ARIMA-sARIMA-5-1.png" width="672" /></p>
 <div id="kpss-test" class="section level3 hasAnchor" number="6.1.1">
 <h3><span class="header-section-number">6.1.1</span> KPSS test<a href="arima-and-seasonal-arima-sarima.html#kpss-test" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb208-1"><a href="arima-and-seasonal-arima-sarima.html#cb208-1" tabindex="-1"></a>kpss_res <span class="ot">&lt;-</span> <span class="fu">ur.kpss</span>(rf_m<span class="sc">$</span>total, <span class="at">type =</span> <span class="st">&#39;mu&#39;</span>)</span>
@@ -454,7 +454,7 @@ differenced test, otherwise, work with the first differenced series.</li>
 <span id="cb214-2"><a href="arima-and-seasonal-arima-sarima.html#cb214-2" tabindex="-1"></a></span>
 <span id="cb214-3"><a href="arima-and-seasonal-arima-sarima.html#cb214-3" tabindex="-1"></a>rf_m <span class="sc">|&gt;</span></span>
 <span id="cb214-4"><a href="arima-and-seasonal-arima-sarima.html#cb214-4" tabindex="-1"></a>  <span class="fu">gg_tsdisplay</span>(total, <span class="at">plot_type =</span> <span class="st">&#39;partial&#39;</span>)</span></code></pre></div>
-<p><img src="_main_files/figure-html/06-ARIMA-sARIMA-8-1.png" width="672" /></p>
+<p><img src="figure_html/06-ARIMA-sARIMA-8-1.png" width="672" /></p>
 <p>Observations:</p>
 <ul>
 <li>ACF is sinusoidal - it is typical for seasonal series</li>

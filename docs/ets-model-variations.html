@@ -23,7 +23,7 @@
 <meta name="author" content="Dmitry Luchkin" />
 
 
-<meta name="date" content="2024-12-13" />
+<meta name="date" content="2024-12-16" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -386,7 +386,7 @@ y_{T+2} = l_{T+1} + \phi b_{T+1} + u_{T+2} = (l_T + \phi b_T + \alpha u_{T+1}) +
 <span id="cb117-8"><a href="ets-model-variations.html#cb117-8" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
 <span id="cb117-9"><a href="ets-model-variations.html#cb117-9" tabindex="-1"></a>  <span class="fu">autoplot</span>(rf_y) <span class="sc">+</span></span>
 <span id="cb117-10"><a href="ets-model-variations.html#cb117-10" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&#39;ETS(AAdN): mariages in Russia&#39;</span>, <span class="at">y =</span> <span class="st">&#39;Mariages&#39;</span>)</span></code></pre></div>
-<p><img src="_main_files/figure-html/03-exponential-smoothing-5-1.png" width="672" /></p>
+<p><img src="figure_html/03-exponential-smoothing-5-1.png" width="672" /></p>
 </div>
 </div>
 <div id="etsmnm-multiplicative-components" class="section level2 hasAnchor" number="3.2">
@@ -461,7 +461,7 @@ y_{T+2} = l_{T+1} \times s_{T-10} \times (1+u_{T+2}) = l_T (1+ \alpha u_{T+1}) \
 <span id="cb118-16"><a href="ets-model-variations.html#cb118-16" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&#39;ETS(MNM): electricity production in Australia&#39;</span>)</span></code></pre></div>
 <pre><code>## Scale for fill_ramp is already present.
 ## Adding another scale for fill_ramp, which will replace the existing scale.</code></pre>
-<p><img src="_main_files/figure-html/03-exponential-smoothing-6-1.png" width="672" /></p>
+<p><img src="figure_html/03-exponential-smoothing-6-1.png" width="672" /></p>
 </div>
 </div>
 <div id="etsmadm-combinations" class="section level2 hasAnchor" number="3.3">
@@ -504,7 +504,7 @@ y_{T+1} = (l_T + \phi b_T) \times s_{T-11} \times (1 + u_{T+1})
 <span id="cb120-4"><a href="ets-model-variations.html#cb120-4" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">48</span>) <span class="sc">|&gt;</span></span>
 <span id="cb120-5"><a href="ets-model-variations.html#cb120-5" tabindex="-1"></a>  <span class="fu">autoplot</span>(rf_m) <span class="sc">+</span></span>
 <span id="cb120-6"><a href="ets-model-variations.html#cb120-6" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&#39;EST(MAdM): forecast&#39;</span>)</span></code></pre></div>
-<p><img src="_main_files/figure-html/03-exponential-smoothing-7-1.png" width="672" /></p>
+<p><img src="figure_html/03-exponential-smoothing-7-1.png" width="672" /></p>
 <p>Combinations:</p>
 <ul>
 <li><strong>Errors:</strong> A, M</li>
@@ -525,7 +525,7 @@ y_{T+1} = (l_T + \phi b_T) \times s_{T-11} \times (1 + u_{T+1})
 <h2><span class="header-section-number">3.4</span> Examples<a href="ets-model-variations.html#examples-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb121-1"><a href="ets-model-variations.html#cb121-1" tabindex="-1"></a>rf_m <span class="sc">|&gt;</span></span>
 <span id="cb121-2"><a href="ets-model-variations.html#cb121-2" tabindex="-1"></a>  <span class="fu">gg_tsdisplay</span>(total)</span></code></pre></div>
-<p><img src="_main_files/figure-html/03-exponential-smoothing-8-1.png" width="672" /></p>
+<p><img src="figure_html/03-exponential-smoothing-8-1.png" width="672" /></p>
 <p>Split into training and test set.</p>
 <div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="ets-model-variations.html#cb122-1" tabindex="-1"></a>rf_train <span class="ot">&lt;-</span> rf_m <span class="sc">|&gt;</span></span>
 <span id="cb122-2"><a href="ets-model-variations.html#cb122-2" tabindex="-1"></a>      <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&lt;</span> <span class="dv">2020</span>)</span>
@@ -582,7 +582,7 @@ y_{T+1} = (l_T + \phi b_T) \times s_{T-11} \times (1 + u_{T+1})
 <span id="cb132-2"><a href="ets-model-variations.html#cb132-2" tabindex="-1"></a>  <span class="fu">autoplot</span>(total) <span class="sc">+</span></span>
 <span id="cb132-3"><a href="ets-model-variations.html#cb132-3" tabindex="-1"></a>  <span class="fu">autolayer</span>(fc) <span class="sc">+</span></span>
 <span id="cb132-4"><a href="ets-model-variations.html#cb132-4" tabindex="-1"></a>  <span class="fu">facet_grid</span>(.model <span class="sc">~</span> .)</span></code></pre></div>
-<p><img src="_main_files/figure-html/03-exponential-smoothing-15-1.png" width="576" />
+<p><img src="figure_html/03-exponential-smoothing-15-1.png" width="576" />
 Composite model.</p>
 <div class="sourceCode" id="cb133"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb133-1"><a href="ets-model-variations.html#cb133-1" tabindex="-1"></a>models <span class="ot">&lt;-</span> rf_train <span class="sc">|&gt;</span></span>
 <span id="cb133-2"><a href="ets-model-variations.html#cb133-2" tabindex="-1"></a>  <span class="fu">model</span>(</span>

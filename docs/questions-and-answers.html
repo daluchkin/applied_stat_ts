@@ -23,7 +23,7 @@
 <meta name="author" content="Dmitry Luchkin" />
 
 
-<meta name="date" content="2024-12-13" />
+<meta name="date" content="2024-12-16" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -328,7 +328,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## # ℹ 27,706 more rows</code></pre>
 <div class="sourceCode" id="cb373"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb373-1"><a href="questions-and-answers.html#cb373-1" tabindex="-1"></a>bank_calls <span class="sc">|&gt;</span></span>
 <span id="cb373-2"><a href="questions-and-answers.html#cb373-2" tabindex="-1"></a>  <span class="fu">autoplot</span>(Calls)</span></code></pre></div>
-<p><img src="_main_files/figure-html/09-QA-3-1.png" width="672" /></p>
+<p><img src="figure_html/09-QA-3-1.png" width="672" /></p>
 <div class="sourceCode" id="cb374"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb374-1"><a href="questions-and-answers.html#cb374-1" tabindex="-1"></a>calls_t <span class="ot">&lt;-</span> bank_calls <span class="sc">|&gt;</span></span>
 <span id="cb374-2"><a href="questions-and-answers.html#cb374-2" tabindex="-1"></a>          <span class="fu">mutate</span>(<span class="at">t =</span> <span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
 <span id="cb374-3"><a href="questions-and-answers.html#cb374-3" tabindex="-1"></a>          <span class="fu">as_tsibble</span>(<span class="at">index =</span> t)</span>
@@ -354,7 +354,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb376-4"><a href="questions-and-answers.html#cb376-4" tabindex="-1"></a>mod <span class="sc">|&gt;</span></span>
 <span id="cb376-5"><a href="questions-and-answers.html#cb376-5" tabindex="-1"></a>  <span class="fu">components</span>() <span class="sc">|&gt;</span></span>
 <span id="cb376-6"><a href="questions-and-answers.html#cb376-6" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code></pre></div>
-<p><img src="_main_files/figure-html/09-QA-5-1.png" width="672" /></p>
+<p><img src="figure_html/09-QA-5-1.png" width="672" /></p>
 </div>
 <div id="crostons-algorithm" class="section level2 hasAnchor" number="9.2">
 <h2><span class="header-section-number">9.2</span> Croston’s Algorithm<a href="questions-and-answers.html#crostons-algorithm" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -373,7 +373,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb378-9"><a href="questions-and-answers.html#cb378-9" tabindex="-1"></a></span>
 <span id="cb378-10"><a href="questions-and-answers.html#cb378-10" tabindex="-1"></a>frcst <span class="sc">|&gt;</span></span>
 <span id="cb378-11"><a href="questions-and-answers.html#cb378-11" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code></pre></div>
-<p><img src="_main_files/figure-html/09-QA-7-1.png" width="672" /></p>
+<p><img src="figure_html/09-QA-7-1.png" width="672" /></p>
 
 </div>
 </div>

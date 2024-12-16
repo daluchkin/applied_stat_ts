@@ -23,7 +23,7 @@
 <meta name="author" content="Dmitry Luchkin" />
 
 
-<meta name="date" content="2024-12-13" />
+<meta name="date" content="2024-12-16" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -413,7 +413,7 @@ l_t = l_{t-1} + \alpha(y_t-l_{t-1}) = \alpha y_t + (1-\alpha)l_{t-1}
 <span id="cb79-7"><a href="exponential-smoothing-models.html#cb79-7" tabindex="-1"></a>  <span class="fu">autoplot</span>(rf_m) <span class="sc">+</span></span>
 <span id="cb79-8"><a href="exponential-smoothing-models.html#cb79-8" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&#39;ETS(ANN)&#39;</span>)</span></code></pre></div>
 <pre><code>## Warning: Input forecast horizon `h` will be ignored as `new_data` has been provided.</code></pre>
-<p><img src="_main_files/figure-html/02-exponential-smoothing-5-1.png" width="672" /></p>
+<p><img src="figure_html/02-exponential-smoothing-5-1.png" width="672" /></p>
 </div>
 </div>
 <div id="etsaan-model" class="section level2 hasAnchor" number="2.2">
@@ -467,7 +467,7 @@ y_{T+2} = l_{T+1} + b_{T+1} + u_{T+2} = (l_T + b_T+ \alpha u_{T+1}) + (b_T + \be
 <span id="cb81-7"><a href="exponential-smoothing-models.html#cb81-7" tabindex="-1"></a>  <span class="fu">autoplot</span>(rf_m) <span class="sc">+</span></span>
 <span id="cb81-8"><a href="exponential-smoothing-models.html#cb81-8" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&#39;ETS(AAN)&#39;</span>)</span></code></pre></div>
 <pre><code>## Warning: Input forecast horizon `h` will be ignored as `new_data` has been provided.</code></pre>
-<p><img src="_main_files/figure-html/02-exponential-smoothing-6-1.png" width="672" /></p>
+<p><img src="figure_html/02-exponential-smoothing-6-1.png" width="672" /></p>
 </div>
 </div>
 <div id="etsaaa-model" class="section level2 hasAnchor" number="2.3">
@@ -525,7 +525,7 @@ y_{T+2} = l_{T+1} + b_{T+1} + s_{T-10} + u_{T+2} = (l_T + b_T+ \alpha u_{T+1}) +
 <span id="cb83-7"><a href="exponential-smoothing-models.html#cb83-7" tabindex="-1"></a>  <span class="fu">autoplot</span>(rf_m) <span class="sc">+</span></span>
 <span id="cb83-8"><a href="exponential-smoothing-models.html#cb83-8" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&#39;ETS(AAA)&#39;</span>)</span></code></pre></div>
 <pre><code>## Warning: Input forecast horizon `h` will be ignored as `new_data` has been provided.</code></pre>
-<p><img src="_main_files/figure-html/02-exponential-smoothing-7-1.png" width="672" /></p>
+<p><img src="figure_html/02-exponential-smoothing-7-1.png" width="672" /></p>
 </div>
 </div>
 <div id="model-selection" class="section level2 hasAnchor" number="2.4">
@@ -603,7 +603,7 @@ AIC = -2lnL + 3k
 <span id="cb87-4"><a href="exponential-smoothing-models.html#cb87-4" tabindex="-1"></a>rf_m <span class="sc">|&gt;</span></span>
 <span id="cb87-5"><a href="exponential-smoothing-models.html#cb87-5" tabindex="-1"></a>  <span class="fu">gg_tsdisplay</span>()</span></code></pre></div>
 <pre><code>## Plot variable not specified, automatically selected `y = total`</code></pre>
-<p><img src="_main_files/figure-html/02-exponential-smoothing-9-1.png" width="672" /></p>
+<p><img src="figure_html/02-exponential-smoothing-9-1.png" width="672" /></p>
 <div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="exponential-smoothing-models.html#cb89-1" tabindex="-1"></a>train <span class="ot">&lt;-</span> rf_m <span class="sc">|&gt;</span></span>
 <span id="cb89-2"><a href="exponential-smoothing-models.html#cb89-2" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&lt;</span> <span class="fu">yearmonth</span>(<span class="st">&#39;2022 Jan&#39;</span>))</span>
 <span id="cb89-3"><a href="exponential-smoothing-models.html#cb89-3" tabindex="-1"></a></span>
@@ -620,7 +620,7 @@ AIC = -2lnL + 3k
 <span id="cb92-3"><a href="exponential-smoothing-models.html#cb92-3" tabindex="-1"></a>  <span class="fu">autoplot</span>(total) <span class="sc">+</span></span>
 <span id="cb92-4"><a href="exponential-smoothing-models.html#cb92-4" tabindex="-1"></a>  <span class="fu">autolayer</span>(fc <span class="sc">|&gt;</span> <span class="fu">filter</span>(.model <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&#39;snaive&#39;</span>, <span class="st">&#39;ets_aaa&#39;</span>))) <span class="sc">+</span></span>
 <span id="cb92-5"><a href="exponential-smoothing-models.html#cb92-5" tabindex="-1"></a>  <span class="fu">facet_grid</span>(.model <span class="sc">~</span> .)</span></code></pre></div>
-<p><img src="_main_files/figure-html/02-exponential-smoothing-13-1.png" width="672" /></p>
+<p><img src="figure_html/02-exponential-smoothing-13-1.png" width="672" /></p>
 <div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="exponential-smoothing-models.html#cb93-1" tabindex="-1"></a>fc <span class="sc">|&gt;</span></span>
 <span id="cb93-2"><a href="exponential-smoothing-models.html#cb93-2" tabindex="-1"></a>  <span class="fu">accuracy</span>(test)</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 12

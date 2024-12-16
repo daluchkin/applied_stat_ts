@@ -23,7 +23,7 @@
 <meta name="author" content="Dmitry Luchkin" />
 
 
-<meta name="date" content="2024-12-13" />
+<meta name="date" content="2024-12-16" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -388,17 +388,17 @@ where <span class="math inline">\(\alpha_q \ne 0\)</span> and <span class="math 
 ## # ℹ 110 more rows</code></pre>
 <div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="stationary-process.html#cb150-1" tabindex="-1"></a>data <span class="sc">|&gt;</span> <span class="fu">gg_tsdisplay</span>()</span></code></pre></div>
 <pre><code>## Plot variable not specified, automatically selected `y = y`</code></pre>
-<p><img src="_main_files/figure-html/04-stationarity-5-1.png" width="672" /></p>
+<p><img src="figure_html/04-stationarity-5-1.png" width="672" /></p>
 <div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb152-1"><a href="stationary-process.html#cb152-1" tabindex="-1"></a>data <span class="sc">|&gt;</span></span>
 <span id="cb152-2"><a href="stationary-process.html#cb152-2" tabindex="-1"></a>  <span class="fu">ACF</span>() <span class="sc">|&gt;</span></span>
 <span id="cb152-3"><a href="stationary-process.html#cb152-3" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code></pre></div>
 <pre><code>## Response variable not specified, automatically selected `var = y`</code></pre>
-<p><img src="_main_files/figure-html/04-stationarity-6-1.png" width="672" /></p>
+<p><img src="figure_html/04-stationarity-6-1.png" width="672" /></p>
 <div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb154-1"><a href="stationary-process.html#cb154-1" tabindex="-1"></a>data <span class="sc">|&gt;</span></span>
 <span id="cb154-2"><a href="stationary-process.html#cb154-2" tabindex="-1"></a>  <span class="fu">PACF</span>() <span class="sc">|&gt;</span></span>
 <span id="cb154-3"><a href="stationary-process.html#cb154-3" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code></pre></div>
 <pre><code>## Response variable not specified, automatically selected `var = y`</code></pre>
-<p><img src="_main_files/figure-html/04-stationarity-7-1.png" width="672" /></p>
+<p><img src="figure_html/04-stationarity-7-1.png" width="672" /></p>
 <div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb156-1"><a href="stationary-process.html#cb156-1" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="fu">paste0</span>(<span class="fu">getwd</span>(), <span class="st">&#39;/00_data/marriages.csv&#39;</span>))</span>
 <span id="cb156-2"><a href="stationary-process.html#cb156-2" tabindex="-1"></a><span class="fu">glimpse</span>(m)</span></code></pre></div>
 <pre><code>## Rows: 24,852
@@ -422,7 +422,7 @@ where <span class="math inline">\(\alpha_q \ne 0\)</span> and <span class="math 
 <span id="cb160-2"><a href="stationary-process.html#cb160-2" tabindex="-1"></a>  <span class="fu">filter</span>(code <span class="sc">==</span> <span class="dv">643</span>, <span class="sc">!</span><span class="fu">is.na</span>(total))</span></code></pre></div>
 <div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb161-1"><a href="stationary-process.html#cb161-1" tabindex="-1"></a>rf_m <span class="sc">|&gt;</span></span>
 <span id="cb161-2"><a href="stationary-process.html#cb161-2" tabindex="-1"></a>  <span class="fu">gg_tsdisplay</span>(total)</span></code></pre></div>
-<p><img src="_main_files/figure-html/04-stationarity-11-1.png" width="672" /></p>
+<p><img src="figure_html/04-stationarity-11-1.png" width="672" /></p>
 <div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb162-1"><a href="stationary-process.html#cb162-1" tabindex="-1"></a>rf_train <span class="ot">&lt;-</span> rf_m <span class="sc">|&gt;</span></span>
 <span id="cb162-2"><a href="stationary-process.html#cb162-2" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&lt;</span> <span class="fu">yearmonth</span>(<span class="st">&#39;2022 May&#39;</span>))</span>
 <span id="cb162-3"><a href="stationary-process.html#cb162-3" tabindex="-1"></a></span>

@@ -23,7 +23,7 @@
 <meta name="author" content="Dmitry Luchkin" />
 
 
-<meta name="date" content="2024-12-13" />
+<meta name="date" content="2024-12-16" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -337,13 +337,13 @@ y_t = c + \beta_1 y_{t-1} + \ldots + \beta_p y_{t-p} + u_t + \alpha_1 u_{t-1} + 
 <span id="cb174-2"><a href="arma-processes.html#cb174-2" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span> <span class="fu">as_tsibble</span>(<span class="at">index =</span> year)</span></code></pre></div>
 <div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb175-1"><a href="arma-processes.html#cb175-1" tabindex="-1"></a>data <span class="sc">|&gt;</span></span>
 <span id="cb175-2"><a href="arma-processes.html#cb175-2" tabindex="-1"></a>  <span class="fu">gg_tsdisplay</span>(a, <span class="at">plot_type =</span> <span class="st">&#39;partial&#39;</span>)</span></code></pre></div>
-<p><img src="_main_files/figure-html/05-ARMA-5-1.png" width="672" /></p>
+<p><img src="figure_html/05-ARMA-5-1.png" width="672" /></p>
 <div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="arma-processes.html#cb176-1" tabindex="-1"></a>data <span class="sc">|&gt;</span></span>
 <span id="cb176-2"><a href="arma-processes.html#cb176-2" tabindex="-1"></a>  <span class="fu">gg_tsdisplay</span>(b, <span class="at">plot_type =</span> <span class="st">&#39;partial&#39;</span>)</span></code></pre></div>
-<p><img src="_main_files/figure-html/05-ARMA-6-1.png" width="672" /></p>
+<p><img src="figure_html/05-ARMA-6-1.png" width="672" /></p>
 <div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb177-1"><a href="arma-processes.html#cb177-1" tabindex="-1"></a>data <span class="sc">|&gt;</span></span>
 <span id="cb177-2"><a href="arma-processes.html#cb177-2" tabindex="-1"></a>  <span class="fu">gg_tsdisplay</span>(c, <span class="at">plot_type =</span> <span class="st">&#39;partial&#39;</span>)</span></code></pre></div>
-<p><img src="_main_files/figure-html/05-ARMA-7-1.png" width="672" /></p>
+<p><img src="figure_html/05-ARMA-7-1.png" width="672" /></p>
 <div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="arma-processes.html#cb178-1" tabindex="-1"></a>train <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span> <span class="fu">filter</span>(year <span class="sc">&lt;</span> <span class="dv">2081</span>)</span></code></pre></div>
 <div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb179-1"><a href="arma-processes.html#cb179-1" tabindex="-1"></a>mod_b <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span></span>
 <span id="cb179-2"><a href="arma-processes.html#cb179-2" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">ar1 =</span> <span class="fu">ARIMA</span>(b <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>)), <span class="co"># is correct</span></span>
@@ -356,9 +356,9 @@ y_t = c + \beta_1 y_{t-1} + \ldots + \beta_p y_{t-p} + u_t + \alpha_1 u_{t-1} + 
 <div class="sourceCode" id="cb181"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb181-1"><a href="arma-processes.html#cb181-1" tabindex="-1"></a>fc_b <span class="ot">&lt;-</span> mod_b <span class="sc">|&gt;</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">20</span>)</span>
 <span id="cb181-2"><a href="arma-processes.html#cb181-2" tabindex="-1"></a>fc_c <span class="ot">&lt;-</span> mod_c <span class="sc">|&gt;</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">20</span>)</span></code></pre></div>
 <div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="arma-processes.html#cb182-1" tabindex="-1"></a>fc_b <span class="sc">|&gt;</span> <span class="fu">autoplot</span>(data <span class="sc">|&gt;</span> <span class="fu">filter</span>(year <span class="sc">&gt;</span> <span class="dv">2050</span>))</span></code></pre></div>
-<p><img src="_main_files/figure-html/05-ARMA-12-1.png" width="672" /></p>
+<p><img src="figure_html/05-ARMA-12-1.png" width="672" /></p>
 <div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb183-1"><a href="arma-processes.html#cb183-1" tabindex="-1"></a>fc_c <span class="sc">|&gt;</span> <span class="fu">autoplot</span>(data <span class="sc">|&gt;</span> <span class="fu">filter</span>(year <span class="sc">&gt;</span> <span class="dv">2050</span>))</span></code></pre></div>
-<p><img src="_main_files/figure-html/05-ARMA-13-1.png" width="672" /></p>
+<p><img src="figure_html/05-ARMA-13-1.png" width="672" /></p>
 </div>
 <div id="comparing-ar-ma-and-arma" class="section level2 hasAnchor" number="5.4">
 <h2><span class="header-section-number">5.4</span> Comparing AR, MA and ARMA<a href="arma-processes.html#comparing-ar-ma-and-arma" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -393,7 +393,7 @@ y_t = c + \beta_1 y_{t-1} + \ldots + \beta_p y_{t-p} + u_t + \alpha_1 u_{t-1} + 
 <span id="cb188-5"><a href="arma-processes.html#cb188-5" tabindex="-1"></a>  <span class="fu">gg_tsdisplay</span>(sum, <span class="at">plot_type =</span> <span class="st">&#39;partial&#39;</span>)  </span></code></pre></div>
 <pre><code>## Warning: Removed 1 row containing missing values or values outside the scale range (`geom_line()`).</code></pre>
 <pre><code>## Warning: Removed 1 row containing missing values or values outside the scale range (`geom_point()`).</code></pre>
-<p><img src="_main_files/figure-html/05-ARMA-16-1.png" width="672" /></p>
+<p><img src="figure_html/05-ARMA-16-1.png" width="672" /></p>
 <div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb191-1"><a href="arma-processes.html#cb191-1" tabindex="-1"></a>train <span class="ot">&lt;-</span> rfy <span class="sc">|&gt;</span> <span class="fu">filter</span>(year <span class="sc">&lt;</span> <span class="dv">2020</span>)</span>
 <span id="cb191-2"><a href="arma-processes.html#cb191-2" tabindex="-1"></a></span>
 <span id="cb191-3"><a href="arma-processes.html#cb191-3" tabindex="-1"></a>models <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span></span>
